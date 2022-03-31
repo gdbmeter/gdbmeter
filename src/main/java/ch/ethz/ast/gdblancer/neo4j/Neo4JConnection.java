@@ -2,11 +2,14 @@ package ch.ethz.ast.gdblancer.neo4j;
 
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.FileSystems;
 
 public class Neo4JConnection {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(Neo4JConnection.class);
     private final GraphDatabaseService databaseService;
 
     public Neo4JConnection() {
@@ -18,12 +21,12 @@ public class Neo4JConnection {
     }
 
     public void executeQuery(String query) {
-        System.out.println(query); // TODO: use log
+        LOGGER.info(query);
         this.databaseService.executeTransactionally(query);
     }
 
     public void cleanup() {
-        this.databaseService.executeTransactionally("MATCH (n) DETACH DELETE n");
+        executeQuery("MATCH (n) DETACH DELETE n");
     }
 
 }
