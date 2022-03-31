@@ -6,7 +6,7 @@ public class Neo4JCreateGenerator {
 
     private static final String VARIABLE_PREFIX = "v";
 
-    private int variable_id = 0;
+    private int variableCounter = 0;
     private final StringBuilder query = new StringBuilder();
 
     public static String createEntities() {
@@ -22,6 +22,13 @@ public class Neo4JCreateGenerator {
             generateNode();
         }
 
+        // TODO: Maybe add support for more complex return statements
+        if (variableCounter > 0 && Randomization.getBoolean()) {
+            query.append(" RETURN ");
+            query.append(VARIABLE_PREFIX);
+            query.append(Randomization.nextInt(0, variableCounter));
+        }
+
         return query.toString();
     }
 
@@ -30,7 +37,7 @@ public class Neo4JCreateGenerator {
 
         if (Randomization.getBoolean()) {
             query.append(VARIABLE_PREFIX);
-            query.append(variable_id++);
+            query.append(variableCounter++);
         }
 
         if (!Randomization.smallBiasProbability()) {
