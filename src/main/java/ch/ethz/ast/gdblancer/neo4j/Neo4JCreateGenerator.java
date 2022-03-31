@@ -16,6 +16,12 @@ public class Neo4JCreateGenerator {
     private String generateCreate() {
         query.append("CREATE ");
         generateNode();
+
+        while (Randomization.getBooleanWithRatherLowProbability()) {
+            query.append(", ");
+            generateNode();
+        }
+
         return query.toString();
     }
 
