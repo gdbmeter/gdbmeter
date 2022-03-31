@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
+import org.neo4j.cypher.internal.expressions.functions.Rand;
 
 public class Neo4JCreateGenerator {
 
@@ -18,7 +19,13 @@ public class Neo4JCreateGenerator {
         generateNode();
 
         while (Randomization.getBooleanWithRatherLowProbability()) {
-            query.append(", ");
+
+            if (Randomization.getBoolean()) {
+                generateRelationship();
+            } else {
+                query.append(", ");
+            }
+
             generateNode();
         }
 
@@ -30,6 +37,38 @@ public class Neo4JCreateGenerator {
         }
 
         return query.toString();
+    }
+
+    private void generateRelationship() {
+        boolean leftToRight = Randomization.getBoolean();
+
+        if (leftToRight) {
+            query.append("-");
+        } else {
+            query.append("<-");
+        }
+
+        query.append("[");
+
+        if (Randomization.getBoolean()) {
+            query.append(VARIABLE_PREFIX);
+            query.append(variableCounter++);
+        }
+
+        if (!Randomization.smallBiasProbability()) {
+            generateRandomLabel();
+        }
+
+        query.append(" ");
+        generateProperties();
+
+        query.append("]");
+
+        if (leftToRight) {
+            query.append("->");
+        } else {
+            query.append("-");
+        }
     }
 
     private void generateNode() {
@@ -57,9 +96,16 @@ public class Neo4JCreateGenerator {
     }
 
     private void generateProperties() {
+        int iterations = Randomization.smallNumber();
+
+        if (iterations == 0) {
+            if (Randomization.getBoolean()) {
+                return;
+            }
+        }
+
         query.append("{");
 
-        int iterations = Randomization.smallNumber();
         for (int i = 0; i < iterations; i++) {
             generateProperty(i == iterations - 1);
         }
