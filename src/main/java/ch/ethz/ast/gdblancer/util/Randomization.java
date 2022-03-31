@@ -1,10 +1,16 @@
 package ch.ethz.ast.gdblancer.util;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Randomization {
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
+
+    public static void shuffleList(List<?> list) {
+        Collections.shuffle(list, random);
+    }
 
     public static int nextInt(int lower, int upper) {
         return random.nextInt(lower, upper);
@@ -18,7 +24,7 @@ public class Randomization {
         return (int) (Math.abs(random.nextGaussian()) * 2);
     }
 
-    private static boolean smallBiasProbability() {
+    public static boolean smallBiasProbability() {
         return random.nextInt(100) == 1;
     }
 
