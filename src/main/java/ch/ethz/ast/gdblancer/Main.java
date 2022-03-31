@@ -7,9 +7,13 @@ import ch.ethz.ast.gdblancer.neo4j.Neo4JGraphGenerator;
 public class Main {
 
     public static void main(String[] args) {
-        Neo4JConnection connection = new Neo4JConnection();
-        Neo4JGraphGenerator generator = new Neo4JGraphGenerator();
-        generator.generate(connection);
+
+        for (int i = 0; i < 100; i++) {
+            try (Neo4JConnection connection = new Neo4JConnection()) {
+                Neo4JGraphGenerator generator = new Neo4JGraphGenerator();
+                generator.generate(connection);
+            }
+        }
     }
 
 }

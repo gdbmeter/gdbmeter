@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
+import org.apache.commons.text.StringEscapeUtils;
 import org.neo4j.cypher.internal.expressions.functions.Rand;
 
 public class Neo4JCreateGenerator {
@@ -114,7 +115,7 @@ public class Neo4JCreateGenerator {
     }
 
     private void generateProperty(boolean last) {
-        query.append(generateValidName());
+        query.append(Neo4JGraphGenerator.generateValidName());
         query.append(": ");
         generateRandomPropertyValue();
 
@@ -134,7 +135,7 @@ public class Neo4JCreateGenerator {
                 break;
             case STRING:
                 query.append("\"");
-                query.append(Randomization.getString());
+                query.append(StringEscapeUtils.unescapeJson(Randomization.getString()));
                 query.append("\"");
                 break;
             case BOOLEAN:
@@ -148,16 +149,7 @@ public class Neo4JCreateGenerator {
 
     private void generateRandomLabel() {
         query.append(":");
-        query.append(generateValidName());
-    }
-
-    /**
-     * A valid name begins with an alphabetic character and not with a number
-     * Furthermore, a valid name does not contain symbols except for underscores
-     */
-    private static String generateValidName() {
-        return Randomization.getCharacterFromAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-                + Randomization.getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_");
+        query.append(Neo4JGraphGenerator.generateValidName());
     }
 
 }
