@@ -33,8 +33,17 @@ public class Neo4JCreateGenerator {
         // TODO: Maybe add support for more complex return statements
         if (variableCounter > 0 && Randomization.getBoolean()) {
             query.append(" RETURN ");
-            query.append(VARIABLE_PREFIX);
-            query.append(Randomization.nextInt(0, variableCounter));
+
+            if (Randomization.getBoolean()) {
+                query.append("DISTINCT ");
+            }
+
+            if (Randomization.getBoolean()) {
+                query.append(VARIABLE_PREFIX);
+                query.append(Randomization.nextInt(0, variableCounter));
+            } else {
+                query.append("*");
+            }
         }
 
         return query.toString();

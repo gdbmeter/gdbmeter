@@ -25,7 +25,7 @@ public class Neo4JGraphGenerator {
 
         switch (action) {
             case CREATE:
-                selectedNumber = Randomization.nextInt(0, 100);
+                selectedNumber = Randomization.nextInt(20, 100);
             case CREATE_INDEX:
                 selectedNumber = Randomization.nextInt(0,  5);
         };
