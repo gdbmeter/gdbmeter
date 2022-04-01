@@ -70,7 +70,7 @@ public class Neo4JPropertyGenerator {
                 break;
             case STRING:
                 query.append("\"");
-                query.append(StringEscapeUtils.unescapeJson(Randomization.getString()));
+                query.append(StringEscapeUtils.escapeJson(Randomization.getString()));
                 query.append("\"");
                 break;
             case BOOLEAN:
