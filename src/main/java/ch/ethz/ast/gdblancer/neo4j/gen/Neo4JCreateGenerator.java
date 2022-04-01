@@ -44,6 +44,11 @@ public class Neo4JCreateGenerator {
             } else {
                 query.append("*");
             }
+
+            if (Randomization.getBoolean())  {
+                query.append(" LIMIT ");
+                query.append(Randomization.getPositiveInteger());
+            }
         }
 
         return query.toString();
@@ -64,10 +69,8 @@ public class Neo4JCreateGenerator {
             query.append(VARIABLE_PREFIX);
             query.append(variableCounter++);
         }
-
-        if (!Randomization.smallBiasProbability()) {
-            generateRandomLabel();
-        }
+        
+        generateRandomLabel();
 
         query.append(" ");
         generateProperties();

@@ -40,6 +40,15 @@ public class Randomization {
         }
     }
 
+    public static long getPositiveInteger() {
+        if (smallBiasProbability()) {
+            return Randomization.fromOptions(0L, Long.MAX_VALUE, 1L);
+        } else {
+            return random.nextLong(0, Long.MAX_VALUE);
+        }
+
+    }
+
     public static boolean getBoolean() {
         return random.nextBoolean();
     }
