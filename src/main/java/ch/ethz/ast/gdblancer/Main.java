@@ -1,8 +1,7 @@
 package ch.ethz.ast.gdblancer;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JCreateGenerator;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JGraphGenerator;
+import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JGraphGenerator;
 
 public class Main {
 

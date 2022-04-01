@@ -1,8 +1,8 @@
-package ch.ethz.ast.gdblancer.neo4j;
+package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.neo4j.PropertyType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.apache.commons.text.StringEscapeUtils;
-import org.neo4j.cypher.internal.expressions.functions.Rand;
 
 public class Neo4JCreateGenerator {
 

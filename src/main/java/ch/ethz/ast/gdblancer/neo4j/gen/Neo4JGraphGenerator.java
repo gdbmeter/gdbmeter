@@ -1,5 +1,6 @@
-package ch.ethz.ast.gdblancer.neo4j;
+package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.*;
