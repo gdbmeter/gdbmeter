@@ -1,8 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.PropertyType;
 import ch.ethz.ast.gdblancer.util.Randomization;
-import org.apache.commons.text.StringEscapeUtils;
 
 public class Neo4JCreateGenerator {
 
@@ -12,22 +10,46 @@ public class Neo4JCreateGenerator {
     private final StringBuilder query = new StringBuilder();
 
     public static String createEntities() {
-        return new Neo4JCreateGenerator().generateCreate();
+        return new Neo4JCreateGenerator().generateInsertion();
     }
 
-    private String generateCreate() {
-        query.append("CREATE ");
-        generateNode();
+    private String generateInsertion() {
+        boolean previousPartIsCreate = false;
+
+        if (Randomization.getBoolean()) {
+            previousPartIsCreate = true;
+            query.append("CREATE ");
+            generateNode(true);
+        } else {
+            query.append("MERGE ");
+            generateNode(false);
+        }
 
         while (Randomization.getBooleanWithRatherLowProbability()) {
-
             if (Randomization.getBoolean()) {
-                generateRelationship();
+                generateRelationship(previousPartIsCreate);
+                generateNode(previousPartIsCreate);
             } else {
-                query.append(", ");
+                if (previousPartIsCreate) {
+                    if (Randomization.getBoolean()) {
+                        query.append(", ");
+                        generateNode(true);
+                    } else {
+                        previousPartIsCreate = false;
+                        query.append(" MERGE ");
+                        generateNode(false);
+                    }
+                } else {
+                    if (Randomization.getBoolean()) {
+                        previousPartIsCreate = true;
+                        query.append(" CREATE ");
+                        generateNode(true);
+                    } else {
+                        query.append(" MERGE ");
+                        generateNode(false);
+                    }
+                }
             }
-
-            generateNode();
         }
 
         // TODO: Maybe add support for more complex return statements
@@ -45,7 +67,7 @@ public class Neo4JCreateGenerator {
                 query.append("*");
             }
 
-            if (Randomization.getBoolean())  {
+            if (Randomization.getBoolean()) {
                 query.append(" LIMIT ");
                 query.append(Randomization.getPositiveInteger());
             }
@@ -54,7 +76,7 @@ public class Neo4JCreateGenerator {
         return query.toString();
     }
 
-    private void generateRelationship() {
+    private void generateRelationship(boolean allowNullPropertyValues) {
         boolean leftToRight = Randomization.getBoolean();
 
         if (leftToRight) {
@@ -69,12 +91,11 @@ public class Neo4JCreateGenerator {
             query.append(VARIABLE_PREFIX);
             query.append(variableCounter++);
         }
-        
-        generateRandomLabel();
+
+        query.append(Neo4JLabelGenerator.generateRandomLabel());
 
         query.append(" ");
-        generateProperties();
-
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(allowNullPropertyValues));
         query.append("]");
 
         if (leftToRight) {
@@ -84,7 +105,7 @@ public class Neo4JCreateGenerator {
         }
     }
 
-    private void generateNode() {
+    private void generateNode(boolean allowNullPropertyValues) {
         query.append("(");
 
         if (Randomization.getBoolean()) {
@@ -93,75 +114,20 @@ public class Neo4JCreateGenerator {
         }
 
         if (!Randomization.smallBiasProbability()) {
-            generateRandomLabel();
+            query.append(Neo4JLabelGenerator.generateRandomLabel());
 
             while (Randomization.getBoolean()) {
-                generateRandomLabel();
+                query.append(Neo4JLabelGenerator.generateRandomLabel());
             }
 
             // TODO: Might not be needed
             query.append(" ");
         }
 
-        generateProperties();
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(allowNullPropertyValues));
 
         query.append(")");
     }
 
-    private void generateProperties() {
-        int iterations = Randomization.smallNumber();
-
-        if (iterations == 0) {
-            if (Randomization.getBoolean()) {
-                return;
-            }
-        }
-
-        query.append("{");
-
-        for (int i = 0; i < iterations; i++) {
-            generateProperty(i == iterations - 1);
-        }
-
-        query.append("}");
-    }
-
-    private void generateProperty(boolean last) {
-        query.append(Neo4JGraphGenerator.generateValidName());
-        query.append(": ");
-        generateRandomPropertyValue();
-
-        // TODO: Can we have a trailing comma at the end?
-        if (!last) {
-            query.append(", ");
-        }
-    }
-
-    private void generateRandomPropertyValue() {
-        switch (Randomization.fromOptions(PropertyType.values())) {
-            case INTEGER:
-                query.append(Randomization.getInteger());
-                break;
-            case FLOAT:
-                query.append(Randomization.nextFloat());
-                break;
-            case STRING:
-                query.append("\"");
-                query.append(StringEscapeUtils.unescapeJson(Randomization.getString()));
-                query.append("\"");
-                break;
-            case BOOLEAN:
-                query.append(Randomization.getBoolean());
-                break;
-            case NULL:
-                query.append("null");
-                break;
-        };
-    }
-
-    private void generateRandomLabel() {
-        query.append(":");
-        query.append(Neo4JGraphGenerator.generateValidName());
-    }
 
 }

@@ -13,7 +13,7 @@ public class Neo4JGraphGenerator {
         CREATE(Neo4JCreateGenerator::createEntities),
         CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex);
 
-        private Supplier<String> generator;
+        private final Supplier<String> generator;
 
         Action(Supplier<String> generator) {
             this.generator = generator;
@@ -25,7 +25,7 @@ public class Neo4JGraphGenerator {
 
         switch (action) {
             case CREATE:
-                selectedNumber = Randomization.nextInt(20, 100);
+                selectedNumber = Randomization.nextInt(0, 100);
                 break;
             case CREATE_INDEX:
                 selectedNumber = Randomization.nextInt(0,  5);
