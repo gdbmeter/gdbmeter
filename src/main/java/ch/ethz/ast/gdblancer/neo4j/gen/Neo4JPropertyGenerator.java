@@ -1,24 +1,25 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.PropertyType;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBEntity;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBPropertyType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.apache.commons.text.StringEscapeUtils;
 
-import java.util.EnumSet;
-
-import static java.util.EnumSet.complementOf;
+import java.util.Map;
 
 public class Neo4JPropertyGenerator {
 
-    private final boolean allowNullValue;
+    private final MongoDBEntity entity;
+    private final boolean allowNull;
     private final StringBuilder query = new StringBuilder();
 
-    public Neo4JPropertyGenerator(boolean allowNullValue) {
-        this.allowNullValue = allowNullValue;
+    public Neo4JPropertyGenerator(MongoDBEntity entity, boolean allowNull) {
+        this.entity = entity;
+        this.allowNull = allowNull;
     }
 
-    public static String generatePropertyQuery(boolean allowNullValue) {
-        return new Neo4JPropertyGenerator(allowNullValue).generateProperties();
+    public static String generatePropertyQuery(MongoDBEntity entity, boolean allowNullValue) {
+        return new Neo4JPropertyGenerator(entity, allowNullValue).generateProperties();
     }
 
     private String generateProperties() {
@@ -41,9 +42,12 @@ public class Neo4JPropertyGenerator {
     }
 
     private void generateProperty(boolean last) {
-        query.append(Neo4JGraphGenerator.generateValidName());
-        query.append(": ");
-        generateRandomPropertyValue();
+        Map<String, MongoDBPropertyType> availableProperties = entity.getAvailableProperties();
+        String name = Randomization.fromOptions(availableProperties.keySet().toArray(new String[0]));
+        MongoDBPropertyType type = availableProperties.get(name);
+
+        query.append(String.format("%s:", name));
+        generateRandomValue(type);
 
         // TODO: Can we have a trailing comma at the end?
         if (!last) {
@@ -51,17 +55,13 @@ public class Neo4JPropertyGenerator {
         }
     }
 
-    private void generateRandomPropertyValue() {
-
-        PropertyType[] types;
-
-        if (allowNullValue) {
-            types = PropertyType.values();
-        } else {
-            types = complementOf(EnumSet.of(PropertyType.NULL)).toArray(new PropertyType[] {});
+    private void generateRandomValue(MongoDBPropertyType type) {
+        if (allowNull && Randomization.getBooleanWithRatherLowProbability()) {
+            query.append("null");
+            return;
         }
 
-        switch (Randomization.fromOptions(types)) {
+        switch (type) {
             case INTEGER:
                 query.append(Randomization.getInteger());
                 break;
@@ -76,11 +76,7 @@ public class Neo4JPropertyGenerator {
             case BOOLEAN:
                 query.append(Randomization.getBoolean());
                 break;
-            case NULL:
-                query.append("null");
-                break;
         }
-        ;
     }
 
 }

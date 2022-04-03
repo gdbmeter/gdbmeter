@@ -1,14 +1,14 @@
-package ch.ethz.ast.gdblancer.neo4j.gen;
+package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Neo4JGraphGeneratorTest {
+public class MongoDBUtilTests {
 
     @Test
     void testGenerateValidName() {
-        String name = Neo4JGraphGenerator.generateValidName();
+        String name = MongoDBUtil.generateValidName();
 
         assertNotNull(name);
         assertFalse(name.isEmpty());

@@ -1,21 +1,22 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class Neo4JGraphGenerator {
 
     enum Action {
-
         CREATE(Neo4JCreateGenerator::createEntities),
         CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex);
 
-        private final Supplier<String> generator;
+        private final Function<MongoDBSchema, String> generator;
 
-        Action(Supplier<String> generator) {
+        Action(Function<MongoDBSchema, String> generator) {
             this.generator = generator;
         }
     }
@@ -36,6 +37,7 @@ public class Neo4JGraphGenerator {
     }
 
     public void generate(Neo4JConnection connection) {
+        MongoDBSchema schema = MongoDBSchema.generateRandomSchema();
         List<String> queries = new ArrayList<>();
 
         // Sample the actions
@@ -43,7 +45,7 @@ public class Neo4JGraphGenerator {
             int amount = mapAction(action);
 
             for (int i = 0; i < amount; i++) {
-                queries.add(action.generator.get());
+                queries.add(action.generator.apply(schema));
             }
         }
 
@@ -52,15 +54,6 @@ public class Neo4JGraphGenerator {
         for (String query : queries) {
             connection.executeQuery(query);
         }
-    }
-
-    /**
-     * A valid name begins with an alphabetic character and not with a number
-     * Furthermore, a valid name does not contain symbols except for underscores
-     */
-    static String generateValidName() {
-        return Randomization.getCharacterFromAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-                + Randomization.getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_");
     }
 
 }

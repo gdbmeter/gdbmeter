@@ -1,15 +1,19 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JCreateIndexGenerator {
 
+    private final MongoDBSchema schema;
     private final StringBuilder query = new StringBuilder();
-    private static final String INDEX_PREFIX = "i";
-    private static int indexCounter = 0;
 
-    public static String createIndex() {
-        return new Neo4JCreateIndexGenerator().generateCreateIndex();
+    public Neo4JCreateIndexGenerator(MongoDBSchema schema) {
+        this.schema = schema;
+    }
+
+    public static String createIndex(MongoDBSchema schema) {
+        return new Neo4JCreateIndexGenerator(schema).generateCreateIndex();
     }
 
     private String generateCreateIndex() {
@@ -19,24 +23,18 @@ public class Neo4JCreateIndexGenerator {
             query.append("BTREE ");
         }
 
-        // TODO: Somehow generate randomized unique index names
         query.append("INDEX ");
-        query.append(INDEX_PREFIX);
-        query.append(indexCounter++);
+        query.append(schema.generateIndexName());
         query.append(" ");
 
+        // TODO: Maybe choose same name deliberately in this case?
         if (Randomization.getBoolean()) {
             query.append("IF NOT EXISTS ");
         }
 
-        query.append("FOR (n:");
-        // TODO: Select a random label instead
-        query.append(Neo4JGraphGenerator.generateValidName());
-        query.append(") ");
-        query.append("ON (n.");
-        // TODO: Select a random property name of above label
-        query.append(Neo4JGraphGenerator.generateValidName());
-        query.append(")");
+        String label = schema.getRandomLabel();
+        String property = schema.getRandomPropertyForLabel(label);
+        query.append(String.format("FOR (n:%s) ON (n.%s)", label, property));
 
         return query.toString();
     }

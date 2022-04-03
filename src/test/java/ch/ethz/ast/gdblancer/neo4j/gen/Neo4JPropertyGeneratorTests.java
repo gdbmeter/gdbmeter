@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBEntity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,10 +9,12 @@ public class Neo4JPropertyGeneratorTests {
 
     @Test
     void testCreatePropertyQuery() {
-        String query = Neo4JPropertyGenerator.generatePropertyQuery(true);
+        MongoDBEntity entity = MongoDBEntity.generateRandomEntity();
+
+        String query = Neo4JPropertyGenerator.generatePropertyQuery(entity, true);
         assertNotNull(query);
 
-        query = Neo4JPropertyGenerator.generatePropertyQuery(false);
+        query = Neo4JPropertyGenerator.generatePropertyQuery(entity, false);
         assertNotNull(query);
     }
 

@@ -1,19 +1,26 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBEntity;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JCreateGenerator {
 
     private static final String VARIABLE_PREFIX = "v";
-
-    private int variableCounter = 0;
+    private final MongoDBSchema schema;
     private final StringBuilder query = new StringBuilder();
+    private int variableCounter = 0;
 
-    public static String createEntities() {
-        return new Neo4JCreateGenerator().generateInsertion();
+    public Neo4JCreateGenerator(MongoDBSchema schema) {
+        this.schema = schema;
+    }
+
+    public static String createEntities(MongoDBSchema schema) {
+        return new Neo4JCreateGenerator(schema).generateInsertion();
     }
 
     private String generateInsertion() {
+        // TODO: Refactor mixed CREATE, MERGE logic
         boolean previousPartIsCreate = false;
 
         if (Randomization.getBoolean()) {
@@ -92,10 +99,10 @@ public class Neo4JCreateGenerator {
             query.append(variableCounter++);
         }
 
-        query.append(Neo4JLabelGenerator.generateRandomLabel());
+        String type = schema.getRandomType();
 
-        query.append(" ");
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(allowNullPropertyValues));
+        query.append(String.format(":%s ", type));
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(schema.getEntityByType(type), allowNullPropertyValues));
         query.append("]");
 
         if (leftToRight) {
@@ -113,19 +120,12 @@ public class Neo4JCreateGenerator {
             query.append(variableCounter++);
         }
 
-        if (!Randomization.smallBiasProbability()) {
-            query.append(Neo4JLabelGenerator.generateRandomLabel());
+        // TODO: Support multiple labels
+        String label = schema.getRandomLabel();
+        MongoDBEntity node = schema.getEntityByLabel(label);
+        query.append(String.format(":%s", label));
 
-            while (Randomization.getBoolean()) {
-                query.append(Neo4JLabelGenerator.generateRandomLabel());
-            }
-
-            // TODO: Might not be needed
-            query.append(" ");
-        }
-
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(allowNullPropertyValues));
-
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(node, allowNullPropertyValues));
         query.append(")");
     }
 
