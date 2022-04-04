@@ -12,7 +12,8 @@ public class Neo4JGraphGenerator {
 
     enum Action {
         CREATE(Neo4JCreateGenerator::createEntities),
-        CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex);
+        CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex),
+        DROP_INDEX(Neo4JDropIndexGenerator::dropIndex);
 
         private final Function<MongoDBSchema, String> generator;
 
@@ -26,10 +27,13 @@ public class Neo4JGraphGenerator {
 
         switch (action) {
             case CREATE:
-                selectedNumber = Randomization.nextInt(0, 100);
+                selectedNumber = Randomization.nextInt(0, 30);
                 break;
             case CREATE_INDEX:
                 selectedNumber = Randomization.nextInt(0,  5);
+                break;
+            case DROP_INDEX:
+                selectedNumber = Randomization.nextInt(0,  2);
                 break;
         };
 
@@ -38,21 +42,21 @@ public class Neo4JGraphGenerator {
 
     public void generate(Neo4JConnection connection) {
         MongoDBSchema schema = MongoDBSchema.generateRandomSchema();
-        List<String> queries = new ArrayList<>();
+        List<Function<MongoDBSchema, String>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
             int amount = mapAction(action);
 
             for (int i = 0; i < amount; i++) {
-                queries.add(action.generator.apply(schema));
+                queries.add(action.generator);
             }
         }
 
         Randomization.shuffleList(queries);
 
-        for (String query : queries) {
-            connection.executeQuery(query);
+        for (Function<MongoDBSchema, String> query : queries) {
+            connection.executeQuery(query.apply(schema));
         }
     }
 

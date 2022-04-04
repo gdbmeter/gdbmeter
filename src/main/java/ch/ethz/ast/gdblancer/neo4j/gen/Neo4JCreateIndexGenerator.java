@@ -27,8 +27,8 @@ public class Neo4JCreateIndexGenerator {
         query.append("INDEX ");
 
         // TODO: Maybe add support for unnamed indices
-        MongoDBIndex index = schema.getRandomIndex();
-        String name = schema.getRandomIndexName();
+        MongoDBIndex index = schema.generateRandomIndex();
+        String name = schema.generateRandomIndexName();
         schema.registerIndex(name, index);
 
         query.append(name);

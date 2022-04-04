@@ -10,11 +10,12 @@ public class MongoDBSchema {
 
     private final Map<String, MongoDBEntity> nodeSchema;
     private final Map<String, MongoDBEntity> relationshipSchema;
-    private final Map<String, MongoDBIndex> indices = new HashMap<>();
+    private final Map<String, MongoDBIndex> indices;
 
     private MongoDBSchema(Map<String, MongoDBEntity> nodeSchema, Map<String, MongoDBEntity> relationshipSchema) {
         this.nodeSchema = nodeSchema;
         this.relationshipSchema = relationshipSchema;
+        this.indices = new HashMap<>();
     }
 
     public static MongoDBSchema generateRandomSchema() {
@@ -48,7 +49,20 @@ public class MongoDBSchema {
         return relationshipSchema.get(type);
     }
 
-    public MongoDBIndex getRandomIndex() {
+    public String getRandomIndex() {
+        String ind = Randomization.fromOptions(indices.keySet().toArray(new String[0]));
+        if (!indices.containsKey(ind)) {
+            System.out.println("not good");
+        }
+
+        return ind;
+    }
+
+    public boolean hasIndices() {
+        return !indices.isEmpty();
+    }
+
+    public MongoDBIndex generateRandomIndex() {
         MongoDBIndex index;
 
         do {
@@ -61,7 +75,7 @@ public class MongoDBSchema {
         return index;
     }
 
-    public String getRandomIndexName() {
+    public String generateRandomIndexName() {
         String name;
 
         do {

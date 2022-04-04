@@ -32,7 +32,7 @@ public class MongoDBSchemaTests {
     @Test
     void testGenerateIndexName() {
         MongoDBSchema schema = MongoDBSchema.generateRandomSchema();
-        assertNotEquals(schema.getRandomIndex(), schema.getRandomIndex());
+        assertNotEquals(schema.generateRandomIndex(), schema.generateRandomIndex());
     }
 
 }
