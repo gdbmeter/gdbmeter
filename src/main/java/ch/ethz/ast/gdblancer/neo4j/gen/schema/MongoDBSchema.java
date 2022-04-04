@@ -50,12 +50,11 @@ public class MongoDBSchema {
     }
 
     public String getRandomIndex() {
-        String ind = Randomization.fromOptions(indices.keySet().toArray(new String[0]));
-        if (!indices.containsKey(ind)) {
-            System.out.println("not good");
-        }
+        return Randomization.fromOptions(indices.keySet().toArray(new String[0]));
+    }
 
-        return ind;
+    public void removeIndex(String name) {
+        indices.remove(name);
     }
 
     public boolean hasIndices() {

@@ -21,7 +21,10 @@ public class Neo4JDropIndexGenerator {
             throw new IgnoreMeException();
         }
 
-        query.append(String.format("DROP INDEX %s", schema.getRandomIndex()));
+        String name = schema.getRandomIndex();
+        schema.removeIndex(name);
+
+        query.append(String.format("DROP INDEX %s", name));
         return query.toString();
     }
 
