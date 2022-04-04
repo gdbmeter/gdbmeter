@@ -2,13 +2,15 @@ package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class MongoDBSchema {
 
     private final Map<String, MongoDBEntity> nodeSchema;
     private final Map<String, MongoDBEntity> relationshipSchema;
-    private final Set<String> indexNames = new HashSet<>();
+    private final Map<String, MongoDBIndex> indices = new HashMap<>();
 
     private MongoDBSchema(Map<String, MongoDBEntity> nodeSchema, Map<String, MongoDBEntity> relationshipSchema) {
         this.nodeSchema = nodeSchema;
@@ -46,15 +48,31 @@ public class MongoDBSchema {
         return relationshipSchema.get(type);
     }
 
-    public String generateIndexName() {
-        String candidate;
+    public MongoDBIndex getRandomIndex() {
+        MongoDBIndex index;
 
         do {
-            candidate = MongoDBUtil.generateValidName();
-        } while (indexNames.contains(candidate));
+            String label = getRandomLabel();
+            String property = getRandomPropertyForLabel(label);
 
-        indexNames.add(candidate);
-        return candidate;
+            index = new MongoDBIndex(label, Set.of(property));
+        } while (indices.containsValue(index));
+
+        return index;
+    }
+
+    public String getRandomIndexName() {
+        String name;
+
+        do {
+            name = MongoDBUtil.generateValidName();
+        } while (indices.containsKey(name));
+
+        return name;
+    }
+
+    public void registerIndex(String name, MongoDBIndex index) {
+        indices.put(name, index);
     }
 
     public String getRandomPropertyForLabel(String label) {

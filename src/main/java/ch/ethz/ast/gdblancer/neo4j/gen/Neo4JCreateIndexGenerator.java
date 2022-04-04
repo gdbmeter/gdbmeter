@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBIndex;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -24,7 +25,13 @@ public class Neo4JCreateIndexGenerator {
         }
 
         query.append("INDEX ");
-        query.append(schema.generateIndexName());
+
+        // TODO: Maybe add support for unnamed indices
+        MongoDBIndex index = schema.getRandomIndex();
+        String name = schema.getRandomIndexName();
+        schema.registerIndex(name, index);
+
+        query.append(name);
         query.append(" ");
 
         // TODO: Maybe choose same name deliberately in this case?
@@ -32,9 +39,9 @@ public class Neo4JCreateIndexGenerator {
             query.append("IF NOT EXISTS ");
         }
 
-        String label = schema.getRandomLabel();
-        String property = schema.getRandomPropertyForLabel(label);
-        query.append(String.format("FOR (n:%s) ON (n.%s)", label, property));
+        query.append(String.format("FOR (n:%s) ON (n.%s)",
+                index.getLabel(),
+                index.getPropertyNames().toArray(new String[0])[0]));
 
         return query.toString();
     }
