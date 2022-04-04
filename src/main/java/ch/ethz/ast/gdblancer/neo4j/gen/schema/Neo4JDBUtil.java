@@ -2,7 +2,7 @@ package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-public class MongoDBUtil {
+public class Neo4JDBUtil {
 
     /**
      * A valid name begins with an alphabetic character and not with a number

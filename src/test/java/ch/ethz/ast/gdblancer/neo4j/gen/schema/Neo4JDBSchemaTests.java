@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MongoDBSchemaTests {
+public class Neo4JDBSchemaTests {
 
     @Test
     void testGenerateRandomSchema() {
-        MongoDBSchema schema = MongoDBSchema.generateRandomSchema();
+        Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
         String label = schema.getRandomLabel();
         String type = schema.getRandomType();
 
@@ -31,7 +31,7 @@ public class MongoDBSchemaTests {
 
     @Test
     void testGenerateIndexName() {
-        MongoDBSchema schema = MongoDBSchema.generateRandomSchema();
+        Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
         assertNotEquals(schema.generateRandomIndex(), schema.generateRandomIndex());
     }
 

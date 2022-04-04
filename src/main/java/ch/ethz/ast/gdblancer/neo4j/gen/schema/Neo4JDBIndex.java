@@ -3,12 +3,12 @@ package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 import java.util.Objects;
 import java.util.Set;
 
-public class MongoDBIndex {
+public class Neo4JDBIndex {
 
     private final String label;
     private final Set<String> propertyNames;
 
-    public MongoDBIndex(String label, Set<String> propertyNames) {
+    public Neo4JDBIndex(String label, Set<String> propertyNames) {
         this.label = label;
         this.propertyNames = propertyNames;
     }
@@ -26,7 +26,7 @@ public class MongoDBIndex {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MongoDBIndex that = (MongoDBIndex) o;
+        Neo4JDBIndex that = (Neo4JDBIndex) o;
         return Objects.equals(label, that.label) && Objects.equals(propertyNames, that.propertyNames);
     }
 

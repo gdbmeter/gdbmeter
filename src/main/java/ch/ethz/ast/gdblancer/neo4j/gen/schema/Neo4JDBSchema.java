@@ -6,38 +6,38 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class MongoDBSchema {
+public class Neo4JDBSchema {
 
-    private final Map<String, MongoDBEntity> nodeSchema;
-    private final Map<String, MongoDBEntity> relationshipSchema;
-    private final Map<String, MongoDBIndex> indices;
+    private final Map<String, Neo4JDBEntity> nodeSchema;
+    private final Map<String, Neo4JDBEntity> relationshipSchema;
+    private final Map<String, Neo4JDBIndex> indices;
 
-    private MongoDBSchema(Map<String, MongoDBEntity> nodeSchema, Map<String, MongoDBEntity> relationshipSchema) {
+    private Neo4JDBSchema(Map<String, Neo4JDBEntity> nodeSchema, Map<String, Neo4JDBEntity> relationshipSchema) {
         this.nodeSchema = nodeSchema;
         this.relationshipSchema = relationshipSchema;
         this.indices = new HashMap<>();
     }
 
-    public static MongoDBSchema generateRandomSchema() {
-        Map<String, MongoDBEntity> nodeSchema = new HashMap<>();
-        Map<String, MongoDBEntity> relationshipSchema = new HashMap<>();
+    public static Neo4JDBSchema generateRandomSchema() {
+        Map<String, Neo4JDBEntity> nodeSchema = new HashMap<>();
+        Map<String, Neo4JDBEntity> relationshipSchema = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(3, 10); i++) {
-            nodeSchema.put(MongoDBUtil.generateValidName(), MongoDBEntity.generateRandomEntity());
+            nodeSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity());
         }
 
         for (int i = 0; i < Randomization.nextInt(2, 4); i++) {
-            relationshipSchema.put(MongoDBUtil.generateValidName(), MongoDBEntity.generateRandomEntity());
+            relationshipSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity());
         }
 
-        return new MongoDBSchema(nodeSchema, relationshipSchema);
+        return new Neo4JDBSchema(nodeSchema, relationshipSchema);
     }
 
     public String getRandomLabel() {
         return Randomization.fromOptions(nodeSchema.keySet().toArray(new String[0]));
     }
 
-    public MongoDBEntity getEntityByLabel(String label) {
+    public Neo4JDBEntity getEntityByLabel(String label) {
         return nodeSchema.get(label);
     }
 
@@ -45,7 +45,7 @@ public class MongoDBSchema {
         return Randomization.fromOptions(relationshipSchema.keySet().toArray(new String[0]));
     }
 
-    public MongoDBEntity getEntityByType(String type) {
+    public Neo4JDBEntity getEntityByType(String type) {
         return relationshipSchema.get(type);
     }
 
@@ -61,14 +61,14 @@ public class MongoDBSchema {
         return !indices.isEmpty();
     }
 
-    public MongoDBIndex generateRandomIndex() {
-        MongoDBIndex index;
+    public Neo4JDBIndex generateRandomIndex() {
+        Neo4JDBIndex index;
 
         do {
             String label = getRandomLabel();
             String property = getRandomPropertyForLabel(label);
 
-            index = new MongoDBIndex(label, Set.of(property));
+            index = new Neo4JDBIndex(label, Set.of(property));
         } while (indices.containsValue(index));
 
         return index;
@@ -78,13 +78,13 @@ public class MongoDBSchema {
         String name;
 
         do {
-            name = MongoDBUtil.generateValidName();
+            name = Neo4JDBUtil.generateValidName();
         } while (indices.containsKey(name));
 
         return name;
     }
 
-    public void registerIndex(String name, MongoDBIndex index) {
+    public void registerIndex(String name, Neo4JDBIndex index) {
         indices.put(name, index);
     }
 

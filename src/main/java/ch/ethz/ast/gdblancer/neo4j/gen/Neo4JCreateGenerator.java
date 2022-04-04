@@ -1,21 +1,21 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBEntity;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBSchema;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JCreateGenerator {
 
     private static final String VARIABLE_PREFIX = "v";
-    private final MongoDBSchema schema;
+    private final Neo4JDBSchema schema;
     private final StringBuilder query = new StringBuilder();
     private int variableCounter = 0;
 
-    public Neo4JCreateGenerator(MongoDBSchema schema) {
+    public Neo4JCreateGenerator(Neo4JDBSchema schema) {
         this.schema = schema;
     }
 
-    public static String createEntities(MongoDBSchema schema) {
+    public static String createEntities(Neo4JDBSchema schema) {
         return new Neo4JCreateGenerator(schema).generateInsertion();
     }
 
@@ -122,7 +122,7 @@ public class Neo4JCreateGenerator {
 
         // TODO: Support multiple labels
         String label = schema.getRandomLabel();
-        MongoDBEntity node = schema.getEntityByLabel(label);
+        Neo4JDBEntity node = schema.getEntityByLabel(label);
         query.append(String.format(":%s", label));
 
         query.append(Neo4JPropertyGenerator.generatePropertyQuery(node, allowNullPropertyValues));

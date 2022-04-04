@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
-public enum MongoDBPropertyType {
+public enum Neo4JDBPropertyType {
 
     INTEGER,
     FLOAT,

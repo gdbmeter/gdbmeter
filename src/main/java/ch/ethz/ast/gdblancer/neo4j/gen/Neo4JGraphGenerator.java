@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.MongoDBSchema;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.ArrayList;
@@ -15,9 +15,9 @@ public class Neo4JGraphGenerator {
         CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex),
         DROP_INDEX(Neo4JDropIndexGenerator::dropIndex);
 
-        private final Function<MongoDBSchema, String> generator;
+        private final Function<Neo4JDBSchema, String> generator;
 
-        Action(Function<MongoDBSchema, String> generator) {
+        Action(Function<Neo4JDBSchema, String> generator) {
             this.generator = generator;
         }
     }
@@ -41,8 +41,8 @@ public class Neo4JGraphGenerator {
     }
 
     public void generate(Neo4JConnection connection) {
-        MongoDBSchema schema = MongoDBSchema.generateRandomSchema();
-        List<Function<MongoDBSchema, String>> queries = new ArrayList<>();
+        Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
+        List<Function<Neo4JDBSchema, String>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -55,7 +55,7 @@ public class Neo4JGraphGenerator {
 
         Randomization.shuffleList(queries);
 
-        for (Function<MongoDBSchema, String> query : queries) {
+        for (Function<Neo4JDBSchema, String> query : queries) {
             connection.executeQuery(query.apply(schema));
         }
     }

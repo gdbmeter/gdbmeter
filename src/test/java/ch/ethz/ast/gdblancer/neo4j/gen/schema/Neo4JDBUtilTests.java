@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MongoDBUtilTests {
+public class Neo4JDBUtilTests {
 
     @Test
     void testGenerateValidName() {
-        String name = MongoDBUtil.generateValidName();
+        String name = Neo4JDBUtil.generateValidName();
 
         assertNotNull(name);
         assertFalse(name.isEmpty());

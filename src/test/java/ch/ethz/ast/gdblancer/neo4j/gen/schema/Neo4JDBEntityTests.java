@@ -6,12 +6,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MongoDBEntityTests {
+public class Neo4JDBEntityTests {
 
     @Test
     void testGenerateRandomEntity() {
-        MongoDBEntity entity = MongoDBEntity.generateRandomEntity();
-        Map<String, MongoDBPropertyType> availableProperties = entity.getAvailableProperties();
+        Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity();
+        Map<String, Neo4JDBPropertyType> availableProperties = entity.getAvailableProperties();
 
         assertNotNull(entity);
         assertNotNull(availableProperties);
