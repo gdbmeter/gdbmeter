@@ -17,6 +17,7 @@ public class Main {
                 generator.generate(connection);
             } catch (IgnoreMeException ignore) {
                 // These are exceptions that are allowed to happen
+                LOGGER.info("Ignore me exception thrown");
             } catch (Exception e) {
                 LOGGER.error("Exception thrown: ", e);
                 System.exit(0);
