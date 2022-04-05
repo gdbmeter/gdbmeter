@@ -86,7 +86,8 @@ public class Neo4JPropertyGenerator {
                 generateDate();
                 break;
             case LOCAL_TIME:
-                throw new IgnoreMeException();
+                generateTime();
+                break;
         }
     }
 
@@ -166,6 +167,39 @@ public class Neo4JPropertyGenerator {
             query.append(String.format("%04d-%02d-%02d", year, month, day));
         } else {
             query.append(String.format("%04d%02d%02d", year, month, day));
+        }
+
+        query.append("')");
+    }
+
+    private void generateTime() {
+        query.append("time('");
+        query.append(String.format("%02d", Randomization.nextInt(0, 24)));
+
+        String separator = "";
+
+        if (Randomization.getBoolean()) {
+            separator = ":";
+        }
+
+        if (Randomization.getBoolean()) {
+            query.append(separator);
+            query.append(String.format("%02d", Randomization.nextInt(0, 59)));
+
+            if (Randomization.getBoolean()) {
+                query.append(separator);
+                query.append(String.format("%02d", Randomization.nextInt(0, 59)));
+
+                if (Randomization.getBoolean()) {
+                    if (Randomization.getBoolean()) {
+                        query.append(".");
+                    } else {
+                        query.append(",");
+                    }
+
+                    query.append(Randomization.nextInt(0, 1000000000));
+                }
+            }
         }
 
         query.append("')");
