@@ -2,9 +2,11 @@ package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBPropertyType;
+import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Neo4JPropertyGenerator {
@@ -75,6 +77,47 @@ public class Neo4JPropertyGenerator {
                 break;
             case BOOLEAN:
                 query.append(Randomization.getBoolean());
+                break;
+            case DURATION:
+                // Format: P[nY][nM][nW][nD][T[nH][nM][nS]]
+                // TODO: Add support for Date-and-time-based form
+                // TODO: Add support for different duration syntax
+
+                query.append("duration('P");
+                Map<String, Long> datePart = new LinkedHashMap<>();
+
+                for (String current : new String[] {"Y", "M", "W", "D"}) {
+                    if (Randomization.getBoolean()) {
+                        datePart.put(current, Randomization.getPositiveInt());
+                    }
+                }
+
+                Map<String, Long> timePart = new LinkedHashMap<>();
+
+                for (String current : new String[] {"H", "M", "S"}) {
+                    if (Randomization.getBoolean()) {
+                        timePart.put(current, Randomization.getPositiveInt());
+                    }
+                }
+
+                // TODO: Only 'P' is not valid
+                if (datePart.isEmpty() && timePart.isEmpty()) {
+                    throw new IgnoreMeException();
+                }
+
+                for (String current : datePart.keySet()) {
+                    query.append(String.format("%d%s", datePart.get(current), current));
+                }
+
+                // TODO: Only 'T' is not valid
+                if (!timePart.isEmpty()) {
+                    query.append("T");
+                    for (String current : timePart.keySet()) {
+                        query.append(String.format("%d%s", timePart.get(current), current));
+                    }
+                }
+
+                query.append("')");
                 break;
         }
     }

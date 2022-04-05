@@ -8,8 +8,9 @@ public class Randomization {
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    public static void shuffleList(List<?> list) {
+    public static <T> List<T> shuffleList(List<T> list) {
         Collections.shuffle(list, random);
+        return list;
     }
 
     public static int nextInt(int lower, int upper) {
@@ -46,7 +47,14 @@ public class Randomization {
         } else {
             return random.nextLong(0, Long.MAX_VALUE);
         }
+    }
 
+    public static long getPositiveInt() {
+        if (smallBiasProbability()) {
+            return Randomization.fromOptions(0, Integer.MAX_VALUE, 1);
+        } else {
+            return random.nextInt(0, Integer.MAX_VALUE);
+        }
     }
 
     public static boolean getBoolean() {
@@ -56,6 +64,10 @@ public class Randomization {
     @SafeVarargs
     public static <T> T fromOptions(T... options) {
         return options[nextInt(0, options.length)];
+    }
+
+    public static <T> T fromList(List<T> list) {
+        return list.get((int) random.nextLong(0, list.size()));
     }
 
     private static final String ALPHANUMERIC_SPECIALCHAR_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\";

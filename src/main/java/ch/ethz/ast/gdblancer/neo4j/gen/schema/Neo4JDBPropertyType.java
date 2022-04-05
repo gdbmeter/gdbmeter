@@ -5,7 +5,8 @@ public enum Neo4JDBPropertyType {
     INTEGER,
     FLOAT,
     STRING,
-    BOOLEAN
-    // TODO: Maybe add support for Point, Date, Time, Duration, List
+    BOOLEAN,
+    DURATION
+    // TODO: Add support for Point, Date, Time, LocalTime, DateTime, LocalDateTime, and Duration
 
 }
