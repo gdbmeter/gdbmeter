@@ -6,6 +6,7 @@ import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.time.Year;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -79,47 +80,95 @@ public class Neo4JPropertyGenerator {
                 query.append(Randomization.getBoolean());
                 break;
             case DURATION:
-                // Format: P[nY][nM][nW][nD][T[nH][nM][nS]]
-                // TODO: Add support for Date-and-time-based form
-                // TODO: Add support for different duration syntax
+                generateDuration();
+                break;
+            case DATE:
+                generateDate();
+                break;
+            case LOCAL_TIME:
+                throw new IgnoreMeException();
+        }
+    }
 
-                query.append("duration('P");
-                Map<String, Long> datePart = new LinkedHashMap<>();
+    private void generateDuration() {
+        // Format: P[nY][nM][nW][nD][T[nH][nM][nS]]
+        // TODO: Add support for Date-and-time-based form
+        // TODO: Add support for different duration syntax
 
-                for (String current : new String[] {"Y", "M", "W", "D"}) {
-                    if (Randomization.getBoolean()) {
-                        datePart.put(current, Randomization.getPositiveInt());
-                    }
-                }
+        query.append("duration('P");
+        Map<String, Long> datePart = new LinkedHashMap<>();
 
-                Map<String, Long> timePart = new LinkedHashMap<>();
+        for (String current : new String[] {"Y", "M", "W", "D"}) {
+            if (Randomization.getBoolean()) {
+                datePart.put(current, Randomization.getPositiveInt());
+            }
+        }
 
-                for (String current : new String[] {"H", "M", "S"}) {
-                    if (Randomization.getBoolean()) {
-                        timePart.put(current, Randomization.getPositiveInt());
-                    }
-                }
+        Map<String, Long> timePart = new LinkedHashMap<>();
 
-                // TODO: Only 'P' is not valid
-                if (datePart.isEmpty() && timePart.isEmpty()) {
+        for (String current : new String[] {"H", "M", "S"}) {
+            if (Randomization.getBoolean()) {
+                timePart.put(current, Randomization.getPositiveInt());
+            }
+        }
+
+        // TODO: Only 'P' is not valid
+        if (datePart.isEmpty() && timePart.isEmpty()) {
+            throw new IgnoreMeException();
+        }
+
+        for (String current : datePart.keySet()) {
+            query.append(String.format("%d%s", datePart.get(current), current));
+        }
+
+        // TODO: Only 'T' is not valid
+        if (!timePart.isEmpty()) {
+            query.append("T");
+            for (String current : timePart.keySet()) {
+                query.append(String.format("%d%s", timePart.get(current), current));
+            }
+        }
+
+        query.append("')");
+    }
+
+    private void generateDate() {
+        // Format: YYYY-MM-DD or YYYYMMDD
+        // TODO: Support more formats
+
+        int year = Randomization.nextInt(0, 1000);
+        int month = Randomization.nextInt(1, 13);
+        int day = Randomization.nextInt(1, 32);
+
+        // Some edge cases ;)
+        if (month == 2 && day >= 30) {
+            throw new IgnoreMeException();
+        }
+
+        switch (month) {
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                if (day == 31) {
                     throw new IgnoreMeException();
                 }
-
-                for (String current : datePart.keySet()) {
-                    query.append(String.format("%d%s", datePart.get(current), current));
-                }
-
-                // TODO: Only 'T' is not valid
-                if (!timePart.isEmpty()) {
-                    query.append("T");
-                    for (String current : timePart.keySet()) {
-                        query.append(String.format("%d%s", timePart.get(current), current));
-                    }
-                }
-
-                query.append("')");
                 break;
         }
+
+        if (!Year.of(year).isLeap() && month == 2 && day >= 29) {
+            throw new IgnoreMeException();
+        }
+
+        query.append("date('");
+
+        if (Randomization.getBoolean()) {
+            query.append(String.format("%04d-%02d-%02d", year, month, day));
+        } else {
+            query.append(String.format("%04d%02d%02d", year, month, day));
+        }
+
+        query.append("')");
     }
 
 }
