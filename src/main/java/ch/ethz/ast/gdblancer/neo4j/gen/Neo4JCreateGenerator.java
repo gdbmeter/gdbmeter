@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JCreateGenerator {
@@ -70,6 +71,11 @@ public class Neo4JCreateGenerator {
             if (Randomization.getBoolean()) {
                 query.append(VARIABLE_PREFIX);
                 query.append(Randomization.nextInt(0, variableCounter));
+
+                if (Randomization.getBoolean()) {
+                    query.append(" AS ");
+                    query.append(Neo4JDBUtil.generateValidName());
+                }
             } else {
                 query.append("*");
             }
