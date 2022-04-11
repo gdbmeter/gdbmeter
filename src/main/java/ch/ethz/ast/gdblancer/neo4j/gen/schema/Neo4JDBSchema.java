@@ -26,7 +26,7 @@ public class Neo4JDBSchema {
             nodeSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity());
         }
 
-        for (int i = 0; i < Randomization.nextInt(2, 4); i++) {
+        for (int i = 0; i < Randomization.nextInt(3, 4); i++) {
             relationshipSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity());
         }
 
