@@ -4,6 +4,8 @@ import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBIndex;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.Set;
+
 public class Neo4JCreateIndexGenerator {
 
     private final Neo4JDBSchema schema;
@@ -18,6 +20,7 @@ public class Neo4JCreateIndexGenerator {
     }
 
     private String generateCreateIndex() {
+        // TODO: Merge both index methods
         if (Randomization.getBoolean()) {
             generateNodeIndex();
         } else {
@@ -49,16 +52,8 @@ public class Neo4JCreateIndexGenerator {
             query.append("IF NOT EXISTS ");
         }
 
-        query.append(String.format("FOR (n:%s) ON (", index.getLabel()));
-        String delimiter = "";
-
-        for (String property : index.getPropertyNames()) {
-            query.append(delimiter);
-            query.append(String.format("n.%s", property));
-            delimiter = ", ";
-        }
-
-        query.append(")");
+        query.append(String.format("FOR (n:%s) ", index.getLabel()));
+        generateOnClause(index.getPropertyNames());
     }
 
     private void generateRelationshipIndex() {
@@ -83,9 +78,21 @@ public class Neo4JCreateIndexGenerator {
             query.append("IF NOT EXISTS ");
         }
 
-        query.append(String.format("FOR ()-[r:%s]-() ON (r.%s)",
-                index.getLabel(),
-                index.getPropertyNames().toArray(new String[0])[0]));
+        query.append(String.format("FOR ()-[n:%s]-() ", index.getLabel()));
+        generateOnClause(index.getPropertyNames());
+    }
+
+    private void generateOnClause(Set<String> properties) {
+        query.append("ON (");
+        String delimiter = "";
+
+        for (String property : properties) {
+            query.append(delimiter);
+            query.append(String.format("n.%s", property));
+            delimiter = ", ";
+        }
+
+        query.append(")");
     }
 
 }

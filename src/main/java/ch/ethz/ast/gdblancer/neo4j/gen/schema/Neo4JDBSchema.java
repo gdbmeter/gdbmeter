@@ -79,9 +79,9 @@ public class Neo4JDBSchema {
 
         do {
             String type = getRandomType();
-            String property = getRandomPropertyForRelationship(type);
+            Set<String> properties = Randomization.nonEmptySubset(relationshipSchema.get(type).getAvailableProperties().keySet());
 
-            index = new Neo4JDBIndex(type, Set.of(property));
+            index = new Neo4JDBIndex(type, properties);
         } while (indices.containsValue(index));
 
         return index;
@@ -99,11 +99,6 @@ public class Neo4JDBSchema {
 
     public void registerIndex(String name, Neo4JDBIndex index) {
         indices.put(name, index);
-    }
-
-    public String getRandomPropertyForRelationship(String type) {
-        Set<String> properties = relationshipSchema.get(type).getAvailableProperties().keySet();
-        return Randomization.fromOptions(properties.toArray(new String[0]));
     }
 
 }

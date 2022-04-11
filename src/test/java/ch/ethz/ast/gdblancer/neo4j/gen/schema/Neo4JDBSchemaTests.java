@@ -19,10 +19,6 @@ public class Neo4JDBSchemaTests {
 
         assertNotNull(type);
         assertFalse(type.isEmpty());
-
-        String property = schema.getRandomPropertyForRelationship(type);
-        assertNotNull(label);
-        assertFalse(property.isEmpty());
     }
 
     @Test
