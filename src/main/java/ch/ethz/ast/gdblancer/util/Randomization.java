@@ -21,6 +21,14 @@ public class Randomization {
         return random.nextFloat();
     }
 
+    public static double getDouble() {
+        if (smallBiasProbability()) {
+            return Randomization.fromOptions(0.0, -0.0, Double.MAX_VALUE, -Double.MAX_VALUE);
+        }
+
+        return random.nextDouble();
+    }
+
     public static int smallNumber() {
         return (int) (Math.abs(random.nextGaussian()) * 2);
     }

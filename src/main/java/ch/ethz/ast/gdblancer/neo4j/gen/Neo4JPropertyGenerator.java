@@ -69,7 +69,7 @@ public class Neo4JPropertyGenerator {
                 query.append(Randomization.getInteger());
                 break;
             case FLOAT:
-                query.append(Randomization.nextFloat());
+                query.append(Randomization.getDouble());
                 break;
             case STRING:
                 query.append("\"");
@@ -88,6 +88,8 @@ public class Neo4JPropertyGenerator {
             case LOCAL_TIME:
                 generateTime();
                 break;
+            case POINT:
+                generatePoint();
         }
     }
 
@@ -99,7 +101,7 @@ public class Neo4JPropertyGenerator {
         query.append("duration('P");
         Map<String, Long> datePart = new LinkedHashMap<>();
 
-        for (String current : new String[] {"Y", "M", "W", "D"}) {
+        for (String current : new String[]{"Y", "M", "W", "D"}) {
             if (Randomization.getBoolean()) {
                 datePart.put(current, Randomization.getPositiveInt());
             }
@@ -107,7 +109,7 @@ public class Neo4JPropertyGenerator {
 
         Map<String, Long> timePart = new LinkedHashMap<>();
 
-        for (String current : new String[] {"H", "M", "S"}) {
+        for (String current : new String[]{"H", "M", "S"}) {
             if (Randomization.getBoolean()) {
                 timePart.put(current, Randomization.getPositiveInt());
             }
@@ -203,6 +205,20 @@ public class Neo4JPropertyGenerator {
         }
 
         query.append("')");
+    }
+
+    private void generatePoint() {
+        query.append("point({ ");
+        query.append(String.format("x: %f, y: %f",
+                Randomization.getDouble(),
+                Randomization.getDouble()));
+
+        if (Randomization.getBoolean()) {
+            query.append(String.format(", z: %f",
+                    Randomization.getDouble()));
+        }
+
+        query.append(" })");
     }
 
 }

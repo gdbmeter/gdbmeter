@@ -8,7 +8,7 @@ public enum Neo4JDBPropertyType {
     BOOLEAN,
     DURATION,
     DATE,
-    LOCAL_TIME
-    // TODO: Add support for Point
+    LOCAL_TIME,
+    POINT
 
 }
