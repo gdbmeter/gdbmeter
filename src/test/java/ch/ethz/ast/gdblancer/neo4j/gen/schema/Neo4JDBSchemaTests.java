@@ -32,7 +32,7 @@ public class Neo4JDBSchemaTests {
     @Test
     void testGenerateIndexName() {
         Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
-        assertNotEquals(schema.generateRandomIndex(), schema.generateRandomIndex());
+        assertNotEquals(schema.generateRandomNodeIndex(), schema.generateRandomNodeIndex());
     }
 
 }

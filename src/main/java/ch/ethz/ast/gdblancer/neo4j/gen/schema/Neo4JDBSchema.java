@@ -61,7 +61,7 @@ public class Neo4JDBSchema {
         return !indices.isEmpty();
     }
 
-    public Neo4JDBIndex generateRandomIndex() {
+    public Neo4JDBIndex generateRandomNodeIndex() {
         Neo4JDBIndex index;
 
         do {
@@ -69,6 +69,19 @@ public class Neo4JDBSchema {
             String property = getRandomPropertyForLabel(label);
 
             index = new Neo4JDBIndex(label, Set.of(property));
+        } while (indices.containsValue(index));
+
+        return index;
+    }
+
+    public Neo4JDBIndex generateRandomRelationshipIndex() {
+        Neo4JDBIndex index;
+
+        do {
+            String type = getRandomType();
+            String property = getRandomPropertyForRelationship(type);
+
+            index = new Neo4JDBIndex(type, Set.of(property));
         } while (indices.containsValue(index));
 
         return index;

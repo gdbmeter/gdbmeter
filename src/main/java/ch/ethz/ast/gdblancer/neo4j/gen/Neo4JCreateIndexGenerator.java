@@ -18,6 +18,16 @@ public class Neo4JCreateIndexGenerator {
     }
 
     private String generateCreateIndex() {
+        if (Randomization.getBoolean()) {
+            generateNodeIndex();
+        } else {
+            generateRelationshipIndex();
+        }
+
+        return query.toString();
+    }
+
+    private void generateNodeIndex() {
         query.append("CREATE ");
 
         if (Randomization.getBoolean()) {
@@ -27,7 +37,7 @@ public class Neo4JCreateIndexGenerator {
         query.append("INDEX ");
 
         // TODO: Maybe add support for unnamed indices
-        Neo4JDBIndex index = schema.generateRandomIndex();
+        Neo4JDBIndex index = schema.generateRandomNodeIndex();
         String name = schema.generateRandomIndexName();
         schema.registerIndex(name, index);
 
@@ -42,8 +52,33 @@ public class Neo4JCreateIndexGenerator {
         query.append(String.format("FOR (n:%s) ON (n.%s)",
                 index.getLabel(),
                 index.getPropertyNames().toArray(new String[0])[0]));
+    }
 
-        return query.toString();
+    private void generateRelationshipIndex() {
+        query.append("CREATE ");
+
+        if (Randomization.getBoolean()) {
+            query.append("BTREE ");
+        }
+
+        query.append("INDEX ");
+
+        // TODO: Maybe add support for unnamed indices
+        Neo4JDBIndex index = schema.generateRandomRelationshipIndex();
+        String name = schema.generateRandomIndexName();
+        schema.registerIndex(name, index);
+
+        query.append(name);
+        query.append(" ");
+
+        // TODO: Maybe choose same name deliberately in this case?
+        if (Randomization.getBoolean()) {
+            query.append("IF NOT EXISTS ");
+        }
+
+        query.append(String.format("FOR ()-[r:%s]-() ON (r.%s)",
+                index.getLabel(),
+                index.getPropertyNames().toArray(new String[0])[0]));
     }
 
 }
