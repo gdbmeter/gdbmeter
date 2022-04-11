@@ -49,9 +49,16 @@ public class Neo4JCreateIndexGenerator {
             query.append("IF NOT EXISTS ");
         }
 
-        query.append(String.format("FOR (n:%s) ON (n.%s)",
-                index.getLabel(),
-                index.getPropertyNames().toArray(new String[0])[0]));
+        query.append(String.format("FOR (n:%s) ON (", index.getLabel()));
+        String delimiter = "";
+
+        for (String property : index.getPropertyNames()) {
+            query.append(delimiter);
+            query.append(String.format("n.%s", property));
+            delimiter = ", ";
+        }
+
+        query.append(")");
     }
 
     private void generateRelationshipIndex() {

@@ -20,11 +20,7 @@ public class Neo4JDBSchemaTests {
         assertNotNull(type);
         assertFalse(type.isEmpty());
 
-        String property = schema.getRandomPropertyForLabel(label);
-        assertNotNull(label);
-        assertFalse(property.isEmpty());
-
-        property = schema.getRandomPropertyForRelationship(type);
+        String property = schema.getRandomPropertyForRelationship(type);
         assertNotNull(label);
         assertFalse(property.isEmpty());
     }

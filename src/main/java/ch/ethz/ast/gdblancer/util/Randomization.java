@@ -1,7 +1,6 @@
 package ch.ethz.ast.gdblancer.util;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Randomization {
@@ -76,6 +75,22 @@ public class Randomization {
 
     public static <T> T fromList(List<T> list) {
         return list.get((int) random.nextLong(0, list.size()));
+    }
+
+    public static <T> Set<T> nonEmptySubset(Set<T> set) {
+        int nr = 1 + random.nextInt(0, set.size());
+        return new HashSet<>(getNEntries(new ArrayList<>(set), nr));
+    }
+
+    private static <T> List<T> getNEntries(List<T> list, int amount) {
+        List<T> selectedColumns = new ArrayList<>();
+        List<T> remainingColumns = new ArrayList<>(list);
+
+        for (int i = 0; i < amount; i++) {
+            selectedColumns.add(remainingColumns.remove(random.nextInt(0, remainingColumns.size())));
+        }
+
+        return selectedColumns;
     }
 
     private static final String ALPHANUMERIC_SPECIALCHAR_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\";
