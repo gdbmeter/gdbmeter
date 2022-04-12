@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import org.junit.jupiter.api.Test;
 
@@ -9,11 +10,10 @@ public class Neo4JCreateIndexGeneratorTests {
 
     @Test
     void testCreateIndex() {
-        String query = Neo4JCreateIndexGenerator.createIndex(Neo4JDBSchema.generateRandomSchema());
+        Query query = Neo4JCreateIndexGenerator.createIndex(Neo4JDBSchema.generateRandomSchema());
 
         assertNotNull(query);
-        assertFalse(query.isEmpty());
-        assertTrue(query.startsWith("CREATE"));
+        assertTrue(query.getQuery().startsWith("CREATE"));
     }
 
 }

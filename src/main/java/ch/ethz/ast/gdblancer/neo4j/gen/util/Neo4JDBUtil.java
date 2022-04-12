@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.schema;
+package ch.ethz.ast.gdblancer.neo4j.gen.util;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
 

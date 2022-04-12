@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -12,12 +13,12 @@ public class Neo4JDBSchema {
 
     private final Map<String, Neo4JDBEntity> nodeSchema;
     private final Map<String, Neo4JDBEntity> relationshipSchema;
-    private final Map<String, Neo4JDBIndex> indices;
+    private final Set<String> indices;
 
     private Neo4JDBSchema(Map<String, Neo4JDBEntity> nodeSchema, Map<String, Neo4JDBEntity> relationshipSchema) {
         this.nodeSchema = nodeSchema;
         this.relationshipSchema = relationshipSchema;
-        this.indices = new HashMap<>();
+        this.indices = new HashSet<>();
     }
 
     public static Neo4JDBSchema generateRandomSchema() {
@@ -52,7 +53,7 @@ public class Neo4JDBSchema {
     }
 
     public String getRandomIndex() {
-        return Randomization.fromOptions(indices.keySet().toArray(new String[0]));
+        return Randomization.fromOptions(indices.toArray(new String[0]));
     }
 
     public void removeIndex(String name) {
@@ -64,43 +65,21 @@ public class Neo4JDBSchema {
     }
 
     public Neo4JDBIndex generateRandomNodeIndex() {
-        Neo4JDBIndex index;
+        String label = getRandomLabel();
+        Set<String> properties = Randomization.nonEmptySubset(nodeSchema.get(label).getAvailableProperties().keySet());
 
-        do {
-            String label = getRandomLabel();
-            Set<String> properties = Randomization.nonEmptySubset(nodeSchema.get(label).getAvailableProperties().keySet());
-
-            index = new Neo4JDBIndex(label, properties);
-        } while (indices.containsValue(index));
-
-        return index;
+        return new Neo4JDBIndex(label, properties);
     }
 
     public Neo4JDBIndex generateRandomRelationshipIndex() {
-        Neo4JDBIndex index;
+        String type = getRandomType();
+        Set<String> properties = Randomization.nonEmptySubset(relationshipSchema.get(type).getAvailableProperties().keySet());
 
-        do {
-            String type = getRandomType();
-            Set<String> properties = Randomization.nonEmptySubset(relationshipSchema.get(type).getAvailableProperties().keySet());
-
-            index = new Neo4JDBIndex(type, properties);
-        } while (indices.containsValue(index));
-
-        return index;
+        return new Neo4JDBIndex(type, properties);
     }
 
-    // TODO: This is quite complicated, should we just ignore duplicate errors instead?
     public Neo4JDBIndex generateRandomTextIndex() {
         Map<String, Set<String>> stringProperties = getNodeSchemaByPropertyType(Neo4JDBPropertyType.STRING);
-
-        for (String label : stringProperties.keySet()) {
-            Set<String> properties = stringProperties.get(label);
-            properties.removeIf(property -> indices.containsValue(new Neo4JDBIndex(label, Set.of(property))));
-
-            if (properties.isEmpty()) {
-                stringProperties.remove(label);
-            }
-        }
 
         if (stringProperties.isEmpty()) {
             throw new IgnoreMeException();
@@ -117,13 +96,11 @@ public class Neo4JDBSchema {
 
         do {
             name = Neo4JDBUtil.generateValidName();
-        } while (indices.containsKey(name));
+        } while (indices.contains(name));
+
+        indices.add(name);
 
         return name;
-    }
-
-    public void registerIndex(String name, Neo4JDBIndex index) {
-        indices.put(name, index);
     }
 
     private Map<String, Set<String>> getNodeSchemaByPropertyType(Neo4JDBPropertyType type) {

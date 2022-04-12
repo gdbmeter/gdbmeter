@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashMap;

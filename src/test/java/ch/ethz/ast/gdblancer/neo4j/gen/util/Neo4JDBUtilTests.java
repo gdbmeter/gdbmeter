@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.schema;
+package ch.ethz.ast.gdblancer.neo4j.gen.util;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,8 +1,9 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JCreateGenerator {
@@ -16,11 +17,11 @@ public class Neo4JCreateGenerator {
         this.schema = schema;
     }
 
-    public static String createEntities(Neo4JDBSchema schema) {
+    public static Query createEntities(Neo4JDBSchema schema) {
         return new Neo4JCreateGenerator(schema).generateInsertion();
     }
 
-    private String generateInsertion() {
+    private Query generateInsertion() {
         // TODO: Refactor mixed CREATE, MERGE logic
         boolean previousPartIsCreate = false;
 
@@ -86,7 +87,7 @@ public class Neo4JCreateGenerator {
             }
         }
 
-        return query.toString();
+        return new Query(query.toString());
     }
 
     private void generateRelationship(boolean allowNullPropertyValues) {
@@ -134,6 +135,5 @@ public class Neo4JCreateGenerator {
         query.append(Neo4JPropertyGenerator.generatePropertyQuery(node, allowNullPropertyValues));
         query.append(")");
     }
-
 
 }

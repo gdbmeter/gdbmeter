@@ -1,5 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.common.ExpectedErrors;
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBIndex;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -15,17 +17,18 @@ public class Neo4JCreateIndexGenerator {
     }
 
     private final Neo4JDBSchema schema;
+    private final ExpectedErrors errors = new ExpectedErrors();
     private final StringBuilder query = new StringBuilder();
 
     public Neo4JCreateIndexGenerator(Neo4JDBSchema schema) {
         this.schema = schema;
     }
 
-    public static String createIndex(Neo4JDBSchema schema) {
+    public static Query createIndex(Neo4JDBSchema schema) {
         return new Neo4JCreateIndexGenerator(schema).generateCreateIndex();
     }
 
-    private String generateCreateIndex() {
+    private Query generateCreateIndex() {
         switch (Randomization.fromOptions(INDEX_TYPES.values())) {
             // TODO: Merge first two cases
             case NODE_INDEX:
@@ -39,16 +42,14 @@ public class Neo4JCreateIndexGenerator {
                 break;
         }
 
-        return query.toString();
+        return new Query(query.toString(), errors);
     }
 
     private void generateNodeTextIndex() {
         query.append("CREATE TEXT INDEX ");
 
         Neo4JDBIndex index = schema.generateRandomTextIndex();
-
         String name = schema.generateRandomIndexName();
-        schema.registerIndex(name, index);
 
         query.append(name);
         query.append(" ");
@@ -56,6 +57,8 @@ public class Neo4JCreateIndexGenerator {
         // TODO: Maybe choose same name deliberately in this case?
         if (Randomization.getBoolean()) {
             query.append("IF NOT EXISTS ");
+        } else {
+            errors.add("There already exists an index");
         }
 
         query.append(String.format("FOR (n:%s) ON (n.%s)", index.getLabel(), index.getPropertyNames().toArray()[0]));
@@ -73,7 +76,6 @@ public class Neo4JCreateIndexGenerator {
         // TODO: Maybe add support for unnamed indices
         Neo4JDBIndex index = schema.generateRandomNodeIndex();
         String name = schema.generateRandomIndexName();
-        schema.registerIndex(name, index);
 
         query.append(name);
         query.append(" ");
@@ -81,6 +83,8 @@ public class Neo4JCreateIndexGenerator {
         // TODO: Maybe choose same name deliberately in this case?
         if (Randomization.getBoolean()) {
             query.append("IF NOT EXISTS ");
+        } else {
+            errors.add("There already exists an index");
         }
 
         query.append(String.format("FOR (n:%s) ", index.getLabel()));
@@ -99,7 +103,6 @@ public class Neo4JCreateIndexGenerator {
         // TODO: Maybe add support for unnamed indices
         Neo4JDBIndex index = schema.generateRandomRelationshipIndex();
         String name = schema.generateRandomIndexName();
-        schema.registerIndex(name, index);
 
         query.append(name);
         query.append(" ");
@@ -107,6 +110,8 @@ public class Neo4JCreateIndexGenerator {
         // TODO: Maybe choose same name deliberately in this case?
         if (Randomization.getBoolean()) {
             query.append("IF NOT EXISTS ");
+        } else {
+            errors.add("There already exists an index");
         }
 
         query.append(String.format("FOR ()-[n:%s]-() ", index.getLabel()));

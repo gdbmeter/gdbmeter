@@ -1,26 +1,30 @@
 package ch.ethz.ast.gdblancer;
 
+import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
-import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JGraphGenerator;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class Main {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    public static void main(String[] args) throws IOException {
+        GlobalState<Neo4JConnection> state = new GlobalState<>();
 
-    public static void main(String[] args) {
         while (true) {
             try (Neo4JConnection connection = new Neo4JConnection()) {
-                Neo4JGraphGenerator generator = new Neo4JGraphGenerator();
-                generator.generate(connection);
-            } catch (IgnoreMeException ignore) {
-                // These are exceptions that are allowed to happen
-                LOGGER.info("Ignore me exception thrown");
-            } catch (Exception e) {
-                LOGGER.error("Exception thrown: ", e);
-                System.exit(0);
+                Neo4JGenerator generator = new Neo4JGenerator();
+                state.setConnection(connection);
+
+                connection.connect();
+
+                generator.generate(state);
+            } catch (IgnoreMeException exception) {
+                state.getLogger().info("Ignore me exception thrown");
+                // TODO: Shouldn't this be ignored inside the generator so that we can continue
+            } finally {
+                state.getLogger().info("Finished iteration, closing database");
             }
         }
     }
