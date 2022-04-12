@@ -8,6 +8,12 @@ import java.util.Set;
 
 public class Neo4JCreateIndexGenerator {
 
+    enum INDEX_TYPES {
+        NODE_INDEX,
+        RELATIONSHIP_INDEX,
+        TEXT_INDEX
+    }
+
     private final Neo4JDBSchema schema;
     private final StringBuilder query = new StringBuilder();
 
@@ -20,14 +26,39 @@ public class Neo4JCreateIndexGenerator {
     }
 
     private String generateCreateIndex() {
-        // TODO: Merge both index methods
-        if (Randomization.getBoolean()) {
-            generateNodeIndex();
-        } else {
-            generateRelationshipIndex();
+        switch (Randomization.fromOptions(INDEX_TYPES.values())) {
+            // TODO: Merge first two cases
+            case NODE_INDEX:
+                generateNodeIndex();
+                break;
+            case RELATIONSHIP_INDEX:
+                generateRelationshipIndex();
+                break;
+            case TEXT_INDEX:
+                generateNodeTextIndex();
+                break;
         }
 
         return query.toString();
+    }
+
+    private void generateNodeTextIndex() {
+        query.append("CREATE TEXT INDEX ");
+
+        Neo4JDBIndex index = schema.generateRandomTextIndex();
+
+        String name = schema.generateRandomIndexName();
+        schema.registerIndex(name, index);
+
+        query.append(name);
+        query.append(" ");
+
+        // TODO: Maybe choose same name deliberately in this case?
+        if (Randomization.getBoolean()) {
+            query.append("IF NOT EXISTS ");
+        }
+
+        query.append(String.format("FOR (n:%s) ON (n.%s)", index.getLabel(), index.getPropertyNames().toArray()[0]));
     }
 
     private void generateNodeIndex() {

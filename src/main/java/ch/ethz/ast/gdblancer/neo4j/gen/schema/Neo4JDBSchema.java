@@ -1,8 +1,10 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
+import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,6 +89,29 @@ public class Neo4JDBSchema {
         return index;
     }
 
+    // TODO: This is quite complicated, should we just ignore duplicate errors instead?
+    public Neo4JDBIndex generateRandomTextIndex() {
+        Map<String, Set<String>> stringProperties = getNodeSchemaByPropertyType(Neo4JDBPropertyType.STRING);
+
+        for (String label : stringProperties.keySet()) {
+            Set<String> properties = stringProperties.get(label);
+            properties.removeIf(property -> indices.containsValue(new Neo4JDBIndex(label, Set.of(property))));
+
+            if (properties.isEmpty()) {
+                stringProperties.remove(label);
+            }
+        }
+
+        if (stringProperties.isEmpty()) {
+            throw new IgnoreMeException();
+        }
+
+        String label = Randomization.fromSet(stringProperties.keySet());
+        String property = Randomization.fromSet(stringProperties.get(label));
+
+        return new Neo4JDBIndex(label, Set.of(property));
+    }
+
     public String generateRandomIndexName() {
         String name;
 
@@ -99,6 +124,24 @@ public class Neo4JDBSchema {
 
     public void registerIndex(String name, Neo4JDBIndex index) {
         indices.put(name, index);
+    }
+
+    private Map<String, Set<String>> getNodeSchemaByPropertyType(Neo4JDBPropertyType type) {
+        Map<String, Set<String>> schema = new HashMap<>();
+
+        for (String label : nodeSchema.keySet()) {
+            Map<String, Neo4JDBPropertyType> properties = nodeSchema.get(label).getAvailableProperties();
+
+            for (Map.Entry<String, Neo4JDBPropertyType> entry : properties.entrySet()) {
+                if (entry.getValue() == type) {
+                    Set<String> stringProperties = schema.getOrDefault(label, new HashSet<>());
+                    stringProperties.add(entry.getKey());
+                    schema.put(label, stringProperties);
+                }
+            }
+        }
+
+        return schema;
     }
 
 }

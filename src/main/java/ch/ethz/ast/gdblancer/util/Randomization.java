@@ -77,6 +77,10 @@ public class Randomization {
         return list.get((int) random.nextLong(0, list.size()));
     }
 
+    public static <T> T fromSet(Set<T> set) {
+        return new ArrayList<>(set).get((int) random.nextLong(0, set.size()));
+    }
+
     public static <T> Set<T> nonEmptySubset(Set<T> set) {
         int nr = 1 + random.nextInt(0, set.size());
         return new HashSet<>(getNEntries(new ArrayList<>(set), nr));
