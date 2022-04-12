@@ -115,7 +115,7 @@ public class Neo4JPropertyGenerator {
             }
         }
 
-        // TODO: Only 'P' is not valid
+        // Only 'P' is not valid
         if (datePart.isEmpty() && timePart.isEmpty()) {
             throw new IgnoreMeException();
         }
@@ -124,9 +124,10 @@ public class Neo4JPropertyGenerator {
             query.append(String.format("%d%s", datePart.get(current), current));
         }
 
-        // TODO: Only 'T' is not valid
+        // Only 'T' is not valid
         if (!timePart.isEmpty()) {
             query.append("T");
+
             for (String current : timePart.keySet()) {
                 query.append(String.format("%d%s", timePart.get(current), current));
             }

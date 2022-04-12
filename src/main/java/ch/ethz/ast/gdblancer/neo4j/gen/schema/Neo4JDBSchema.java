@@ -56,6 +56,7 @@ public class Neo4JDBSchema {
         return Randomization.fromOptions(indices.toArray(new String[0]));
     }
 
+    // TODO: Read schema directly after running query
     public void removeIndex(String name) {
         indices.remove(name);
     }

@@ -6,6 +6,7 @@ import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JCreateGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JCreateIndexGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JDropIndexGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.ArrayList;
@@ -60,14 +61,12 @@ public class Neo4JGenerator {
         Randomization.shuffleList(queries);
 
         for (Function<Neo4JDBSchema, Query> queryGenerator : queries) {
-            boolean success;
-            int tries = 0;
-
-            do {
+            try {
                 Query query = queryGenerator.apply(schema);
-                success = globalState.execute(query);
-            } while (!success && tries++ < 1000);
-
+                globalState.execute(query);
+            } catch (IgnoreMeException ignored) {
+                globalState.getLogger().info("Ignore me exception thrown");
+            }
         }
     }
 
