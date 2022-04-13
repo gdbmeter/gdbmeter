@@ -13,7 +13,7 @@ public class Neo4JDBSchema {
 
     private final Map<String, Neo4JDBEntity> nodeSchema;
     private final Map<String, Neo4JDBEntity> relationshipSchema;
-    private final Set<String> indices;
+    private Set<String> indices;
 
     private Neo4JDBSchema(Map<String, Neo4JDBEntity> nodeSchema, Map<String, Neo4JDBEntity> relationshipSchema) {
         this.nodeSchema = nodeSchema;
@@ -36,6 +36,10 @@ public class Neo4JDBSchema {
         return new Neo4JDBSchema(nodeSchema, relationshipSchema);
     }
 
+    public void setIndices(Set<String> indices) {
+        this.indices = indices;
+    }
+
     public String getRandomLabel() {
         return Randomization.fromOptions(nodeSchema.keySet().toArray(new String[0]));
     }
@@ -54,11 +58,6 @@ public class Neo4JDBSchema {
 
     public String getRandomIndex() {
         return Randomization.fromOptions(indices.toArray(new String[0]));
-    }
-
-    // TODO: Read schema directly after running query
-    public void removeIndex(String name) {
-        indices.remove(name);
     }
 
     public boolean hasIndices() {
@@ -98,8 +97,6 @@ public class Neo4JDBSchema {
         do {
             name = Neo4JDBUtil.generateValidName();
         } while (indices.contains(name));
-
-        indices.add(name);
 
         return name;
     }

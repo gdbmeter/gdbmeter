@@ -49,9 +49,8 @@ public class Neo4JCreateIndexGenerator {
         query.append("CREATE TEXT INDEX ");
 
         Neo4JDBIndex index = schema.generateRandomTextIndex();
-        String name = schema.generateRandomIndexName();
 
-        query.append(name);
+        query.append(schema.generateRandomIndexName());
         query.append(" ");
 
         // TODO: Maybe choose same name deliberately in this case?
@@ -75,9 +74,8 @@ public class Neo4JCreateIndexGenerator {
 
         // TODO: Maybe add support for unnamed indices
         Neo4JDBIndex index = schema.generateRandomNodeIndex();
-        String name = schema.generateRandomIndexName();
 
-        query.append(name);
+        query.append(schema.generateRandomIndexName());
         query.append(" ");
 
         // TODO: Maybe choose same name deliberately in this case?
@@ -102,9 +100,8 @@ public class Neo4JCreateIndexGenerator {
 
         // TODO: Maybe add support for unnamed indices
         Neo4JDBIndex index = schema.generateRandomRelationshipIndex();
-        String name = schema.generateRandomIndexName();
 
-        query.append(name);
+        query.append(schema.generateRandomIndexName());
         query.append(" ");
 
         // TODO: Maybe choose same name deliberately in this case?

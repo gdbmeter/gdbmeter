@@ -6,10 +6,14 @@ import org.apache.commons.io.FileUtils;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.schema.IndexDefinition;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Neo4JConnection implements Connection {
 
@@ -39,6 +43,18 @@ public class Neo4JConnection implements Connection {
     @Override
     public void clearDatabase() throws IOException {
         FileUtils.deleteDirectory(databasePath.toFile());
+    }
+
+    public Set<String> getIndexNames() {
+        Set<String> indices = new HashSet<>();
+
+        try (Transaction transaction = this.databaseService.beginTx()) {
+            for (IndexDefinition index : transaction.schema().getIndexes()) {
+                indices.add(index.getName());
+            }
+        }
+
+        return indices;
     }
 
 }

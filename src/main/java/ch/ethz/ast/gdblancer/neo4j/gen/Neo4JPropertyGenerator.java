@@ -21,6 +21,7 @@ public class Neo4JPropertyGenerator {
         this.allowNull = allowNull;
     }
 
+    // TODO: Maybe fill all properties with values
     public static String generatePropertyQuery(Neo4JDBEntity entity, boolean allowNullValue) {
         return new Neo4JPropertyGenerator(entity, allowNullValue).generateProperties();
     }

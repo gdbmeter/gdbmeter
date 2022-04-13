@@ -4,14 +4,20 @@ public class Query {
 
     private final String query;
     private final ExpectedErrors expectedErrors;
+    private final boolean couldAffectSchema;
 
     public Query(String query) {
         this(query, new ExpectedErrors());
     }
 
     public Query(String query, ExpectedErrors expectedErrors) {
+        this(query, expectedErrors, false);
+    }
+
+    public Query(String query, ExpectedErrors expectedErrors, boolean couldAffectSchema) {
         this.query = query;
         this.expectedErrors = expectedErrors;
+        this.couldAffectSchema = couldAffectSchema;
     }
 
     public String getQuery() {
@@ -20,6 +26,10 @@ public class Query {
 
     public ExpectedErrors getExpectedErrors() {
         return expectedErrors;
+    }
+
+    public boolean couldAffectSchema() {
+        return couldAffectSchema;
     }
 
 }

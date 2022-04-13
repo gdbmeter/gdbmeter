@@ -30,10 +30,7 @@ public class Neo4JDropIndexGenerator {
             throw new IgnoreMeException();
         }
 
-        String name = schema.getRandomIndex();
-        schema.removeIndex(name);
-
-        query.append(String.format("DROP INDEX %s", name));
+        query.append(String.format("DROP INDEX %s", schema.getRandomIndex()));
 
         if (Randomization.getBoolean()) {
             query.append(" IF EXISTS");

@@ -64,6 +64,12 @@ public class Neo4JGenerator {
             try {
                 Query query = queryGenerator.apply(schema);
                 globalState.execute(query);
+
+                if (query.couldAffectSchema()) {
+                    // TODO: Move to global state later
+                    schema.setIndices(globalState.getConnection().getIndexNames());
+                }
+
             } catch (IgnoreMeException ignored) {
                 globalState.getLogger().info("Ignore me exception thrown");
             }
