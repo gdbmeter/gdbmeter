@@ -13,11 +13,9 @@ public class Main {
 
         while (true) {
             try (Neo4JConnection connection = new Neo4JConnection()) {
-                Neo4JGenerator generator = new Neo4JGenerator();
-                state.setConnection(connection);
-
                 connection.connect();
-                generator.generate(state);
+                state.setConnection(connection);
+                new Neo4JGenerator().generate(state);
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
             }

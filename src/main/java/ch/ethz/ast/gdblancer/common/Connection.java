@@ -8,6 +8,4 @@ public interface Connection extends AutoCloseable {
 
     void execute(Query query) throws Exception;
 
-    void clearDatabase() throws IOException;
-
 }

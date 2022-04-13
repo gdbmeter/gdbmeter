@@ -22,17 +22,13 @@ public class Neo4JConnection implements Connection {
     private GraphDatabaseService databaseService;
 
     @Override
-    public void close()  {
-        this.managementService.shutdown();
-    }
-
-    // TODO: Maybe move this part to the constructor?
-    @Override
     public void connect() throws IOException {
+        // Clear the database by deleting the folder
+        // This seems to be the only option in the Neo4J community edition
+        FileUtils.deleteDirectory(databasePath.toFile());
+
         this.managementService = new DatabaseManagementServiceBuilder(databasePath).build();
         this.databaseService = managementService.database("neo4j");
-
-        this.clearDatabase();
     }
 
     @Override
@@ -41,8 +37,8 @@ public class Neo4JConnection implements Connection {
     }
 
     @Override
-    public void clearDatabase() throws IOException {
-        FileUtils.deleteDirectory(databasePath.toFile());
+    public void close()  {
+        this.managementService.shutdown();
     }
 
     public Set<String> getIndexNames() {
