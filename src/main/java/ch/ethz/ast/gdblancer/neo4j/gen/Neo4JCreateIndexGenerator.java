@@ -42,6 +42,7 @@ public class Neo4JCreateIndexGenerator {
                 break;
         }
 
+        errors.add("An equivalent index already exists");
         return new Query(query.toString(), errors);
     }
 
