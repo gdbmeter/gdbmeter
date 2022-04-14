@@ -22,42 +22,16 @@ public class Neo4JCreateGenerator {
     }
 
     private Query generateInsertion() {
-        // TODO: Refactor mixed CREATE, MERGE logic
-        boolean previousPartIsCreate = false;
-
-        if (Randomization.getBoolean()) {
-            previousPartIsCreate = true;
-            query.append("CREATE ");
-            generateNode(true);
-        } else {
-            query.append("MERGE ");
-            generateNode(false);
-        }
+        query.append("CREATE ");
+        generateNode();
 
         while (Randomization.getBooleanWithRatherLowProbability()) {
             if (Randomization.getBoolean()) {
-                generateRelationship(previousPartIsCreate);
-                generateNode(previousPartIsCreate);
+                generateRelationship();
+                generateNode();
             } else {
-                if (previousPartIsCreate) {
-                    if (Randomization.getBoolean()) {
-                        query.append(", ");
-                        generateNode(true);
-                    } else {
-                        previousPartIsCreate = false;
-                        query.append(" MERGE ");
-                        generateNode(false);
-                    }
-                } else {
-                    if (Randomization.getBoolean()) {
-                        previousPartIsCreate = true;
-                        query.append(" CREATE ");
-                        generateNode(true);
-                    } else {
-                        query.append(" MERGE ");
-                        generateNode(false);
-                    }
-                }
+                query.append(", ");
+                generateNode();
             }
         }
 
@@ -90,7 +64,7 @@ public class Neo4JCreateGenerator {
         return new Query(query.toString());
     }
 
-    private void generateRelationship(boolean allowNullPropertyValues) {
+    private void generateRelationship() {
         boolean leftToRight = Randomization.getBoolean();
 
         if (leftToRight) {
@@ -109,7 +83,7 @@ public class Neo4JCreateGenerator {
         String type = schema.getRandomType();
 
         query.append(String.format(":%s ", type));
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(schema.getEntityByType(type), allowNullPropertyValues));
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(schema.getEntityByType(type)));
         query.append("]");
 
         if (leftToRight) {
@@ -119,7 +93,7 @@ public class Neo4JCreateGenerator {
         }
     }
 
-    private void generateNode(boolean allowNullPropertyValues) {
+    private void generateNode() {
         query.append("(");
 
         if (Randomization.getBoolean()) {
@@ -132,7 +106,7 @@ public class Neo4JCreateGenerator {
         Neo4JDBEntity node = schema.getEntityByLabel(label);
         query.append(String.format(":%s", label));
 
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(node, allowNullPropertyValues));
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(node));
         query.append(")");
     }
 

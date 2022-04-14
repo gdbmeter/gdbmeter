@@ -13,10 +13,7 @@ public class Neo4JPropertyGeneratorTests {
         try {
             Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity();
 
-            String query = Neo4JPropertyGenerator.generatePropertyQuery(entity, true);
-            assertNotNull(query);
-
-            query = Neo4JPropertyGenerator.generatePropertyQuery(entity, false);
+            String query = Neo4JPropertyGenerator.generatePropertyQuery(entity);
             assertNotNull(query);
         } catch (IgnoreMeException ignored) {
 
