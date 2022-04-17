@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
@@ -12,6 +13,7 @@ public class Neo4JCreateGenerator {
     private final Neo4JDBSchema schema;
     private final StringBuilder query = new StringBuilder();
     private int variableCounter = 0;
+    private final ExpectedErrors errors = new ExpectedErrors();
 
     public Neo4JCreateGenerator(Neo4JDBSchema schema) {
         this.schema = schema;
@@ -22,6 +24,14 @@ public class Neo4JCreateGenerator {
     }
 
     private Query generateInsertion() {
+        // TODO: Move to util if needed elsewhere
+        errors.add("Invalid Regex: Unclosed character class");
+        errors.add("Invalid Regex: Illegal repetition");
+        errors.add("Invalid Regex: Unclosed group");
+        errors.add("Invalid Regex: Dangling meta character");
+        errors.add("Invalid Regex: Illegal/unsupported escape sequence");
+        errors.add("Invalid Regex: Unmatched closing");
+
         query.append("CREATE ");
         generateNode();
 
@@ -61,7 +71,7 @@ public class Neo4JCreateGenerator {
             }
         }
 
-        return new Query(query.toString());
+        return new Query(query.toString(), errors);
     }
 
     private void generateRelationship() {

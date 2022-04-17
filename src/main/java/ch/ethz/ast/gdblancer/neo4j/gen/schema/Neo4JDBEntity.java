@@ -8,23 +8,23 @@ import java.util.Map;
 
 public class Neo4JDBEntity {
 
-    private final Map<String, Neo4JDBPropertyType> availableProperties;
+    private final Map<String, Neo4JType> availableProperties;
 
-    private Neo4JDBEntity(Map<String, Neo4JDBPropertyType> availableProperties) {
+    private Neo4JDBEntity(Map<String, Neo4JType> availableProperties) {
         this.availableProperties = availableProperties;
     }
 
     public static Neo4JDBEntity generateRandomEntity() {
-        Map<String, Neo4JDBPropertyType> availableProperties = new HashMap<>();
+        Map<String, Neo4JType> availableProperties = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(1, 6); i++) {
-            availableProperties.put(Neo4JDBUtil.generateValidName(), Randomization.fromOptions(Neo4JDBPropertyType.values()));
+            availableProperties.put(Neo4JDBUtil.generateValidName(), Randomization.fromOptions(Neo4JType.values()));
         }
 
         return new Neo4JDBEntity(availableProperties);
     }
 
-    public Map<String, Neo4JDBPropertyType> getAvailableProperties() {
+    public Map<String, Neo4JType> getAvailableProperties() {
         return availableProperties;
     }
 

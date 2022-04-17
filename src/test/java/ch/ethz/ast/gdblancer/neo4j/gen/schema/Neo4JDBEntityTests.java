@@ -11,7 +11,7 @@ public class Neo4JDBEntityTests {
     @Test
     void testGenerateRandomEntity() {
         Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity();
-        Map<String, Neo4JDBPropertyType> availableProperties = entity.getAvailableProperties();
+        Map<String, Neo4JType> availableProperties = entity.getAvailableProperties();
 
         assertNotNull(entity);
         assertNotNull(availableProperties);

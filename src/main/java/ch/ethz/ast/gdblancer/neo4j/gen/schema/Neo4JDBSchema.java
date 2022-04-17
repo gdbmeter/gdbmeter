@@ -79,7 +79,7 @@ public class Neo4JDBSchema {
     }
 
     public Neo4JDBIndex generateRandomTextIndex() {
-        Map<String, Set<String>> stringProperties = getNodeSchemaByPropertyType(Neo4JDBPropertyType.STRING);
+        Map<String, Set<String>> stringProperties = getNodeSchemaByPropertyType(Neo4JType.STRING);
 
         if (stringProperties.isEmpty()) {
             throw new IgnoreMeException();
@@ -101,13 +101,13 @@ public class Neo4JDBSchema {
         return name;
     }
 
-    private Map<String, Set<String>> getNodeSchemaByPropertyType(Neo4JDBPropertyType type) {
+    private Map<String, Set<String>> getNodeSchemaByPropertyType(Neo4JType type) {
         Map<String, Set<String>> schema = new HashMap<>();
 
         for (String label : nodeSchema.keySet()) {
-            Map<String, Neo4JDBPropertyType> properties = nodeSchema.get(label).getAvailableProperties();
+            Map<String, Neo4JType> properties = nodeSchema.get(label).getAvailableProperties();
 
-            for (Map.Entry<String, Neo4JDBPropertyType> entry : properties.entrySet()) {
+            for (Map.Entry<String, Neo4JType> entry : properties.entrySet()) {
                 if (entry.getValue() == type) {
                     Set<String> stringProperties = schema.getOrDefault(label, new HashSet<>());
                     stringProperties.add(entry.getKey());

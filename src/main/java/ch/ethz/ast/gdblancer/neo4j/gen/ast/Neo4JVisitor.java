@@ -4,9 +4,25 @@ public interface Neo4JVisitor {
 
     void visit(Neo4JConstant constant);
 
+    void visit(Neo4JPrefixOperation operation);
+
+    void visit(Neo4JPostfixOperation operation);
+
+    void visit(BinaryOperatorNode<Neo4JExpression, ?> operation);
+
+    void visit(Neo4JRegularExpression expression);
+
     default void visit(Neo4JExpression expression) {
-        if (expression instanceof Neo4JConstant) {
+        if (expression instanceof BinaryOperatorNode) {
+            visit((BinaryOperatorNode<Neo4JExpression, ?>) expression);
+        } else if (expression instanceof Neo4JConstant) {
             visit((Neo4JConstant) expression);
+        }  else if (expression instanceof Neo4JPrefixOperation) {
+            visit((Neo4JPrefixOperation) expression);
+        } else if (expression instanceof Neo4JPostfixOperation) {
+            visit((Neo4JPostfixOperation) expression);
+        } else if (expression instanceof Neo4JRegularExpression) {
+            visit((Neo4JRegularExpression) expression);
         } else {
             throw new AssertionError(expression);
         }
