@@ -31,6 +31,15 @@ public class Neo4JCreateGenerator {
         errors.add("Invalid Regex: Dangling meta character");
         errors.add("Invalid Regex: Illegal/unsupported escape sequence");
         errors.add("Invalid Regex: Unmatched closing");
+        errors.add("Invalid Regex: Unclosed counted closure");
+
+        // See: #12866
+        errors.add("Invalid Regex: Unexpected internal error");
+        errors.add("Invalid Regex: Unknown character property name");       // WITH (""=~"5\\P") AS x RETURN x
+        errors.add("Invalid Regex: Illegal octal escape sequence");         // WITH (""=~"\\0q") AS x RETURN x
+        errors.add("Invalid Regex: Illegal hexadecimal escape sequence");   // WITH (""=~"\\xp") AS x RETURN x
+
+        errors.add("/ by zero");
 
         query.append("CREATE ");
         generateNode();

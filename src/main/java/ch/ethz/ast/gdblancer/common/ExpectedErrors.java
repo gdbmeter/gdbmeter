@@ -14,6 +14,10 @@ public class ExpectedErrors {
     public boolean isExpected(Exception exception) {
         String message = exception.getMessage();
 
+        if (message == null) {
+            return false;
+        }
+
         for (String error : errors) {
             if (message.contains(error)) {
                 return true;

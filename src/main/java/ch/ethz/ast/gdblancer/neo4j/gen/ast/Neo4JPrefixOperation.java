@@ -6,11 +6,19 @@ public class Neo4JPrefixOperation implements Neo4JExpression {
 
     public enum PrefixOperator implements Operator {
 
-        NOT;
+        NOT("NOT"),
+        UNARY_PLUS("+"),
+        UNARY_MINUS("-");
+
+        private final String representation;
+
+        PrefixOperator(String representation) {
+            this.representation = representation;
+        }
 
         @Override
         public String getTextRepresentation() {
-            return toString();
+            return representation;
         }
 
         public static PrefixOperator getRandom() {

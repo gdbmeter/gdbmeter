@@ -148,12 +148,37 @@ public class Neo4JExpressionGenerator {
                 Neo4JBinaryComparisonOperation.BinaryComparisonOperator.getRandom());
     }
 
+    private enum IntExpression {
+        UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION
+    }
+
+    // TODO: Support functions and casts
+    private static Neo4JExpression generateIntExpression(int depth) {
+        switch (Randomization.fromOptions(IntExpression.values())) {
+            case UNARY_OPERATION:
+                Neo4JExpression intExpression = generateExpression(depth + 1, Neo4JType.INTEGER);
+                Neo4JPrefixOperation.PrefixOperator operator = Randomization.getBoolean()
+                        ? Neo4JPrefixOperation.PrefixOperator.UNARY_PLUS
+                        : Neo4JPrefixOperation.PrefixOperator.UNARY_MINUS;
+
+                return new Neo4JPrefixOperation(intExpression, operator);
+            case BINARY_ARITHMETIC_EXPRESSION:
+                Neo4JExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
+                Neo4JExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
+                return new Neo4JBinaryArithmeticOperation(left, right, Neo4JBinaryArithmeticOperation.ArithmeticOperator.getRandom());
+            default:
+                throw new AssertionError();
+        }
+    }
+
     public static Neo4JExpression generateExpression(int depth, Neo4JType type) {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
             if (type == Neo4JType.BOOLEAN) {
                 return generateBooleanExpression(depth);
+            } else if (type == Neo4JType.INTEGER) {
+                return generateIntExpression(depth);
             } else {
                 return generateConstant(type);
             }

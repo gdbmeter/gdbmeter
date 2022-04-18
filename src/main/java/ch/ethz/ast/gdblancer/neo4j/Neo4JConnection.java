@@ -33,7 +33,10 @@ public class Neo4JConnection implements Connection {
 
     @Override
     public void execute(Query query) {
-        this.databaseService.executeTransactionally(query.getQuery());
+        try (Transaction transaction = this.databaseService.beginTx()) {
+            transaction.execute(query.getQuery());
+            transaction.commit();
+        }
     }
 
     @Override

@@ -1,10 +1,12 @@
 package ch.ethz.ast.gdblancer;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Main {
 
@@ -19,6 +21,19 @@ public class Main {
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
             }
+        }
+    }
+
+    public static void execute(List<String> queries) {
+        try (Neo4JConnection connection = new Neo4JConnection()) {
+            connection.connect();
+
+            for (String query : queries) {
+                connection.execute(new Query(query));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
