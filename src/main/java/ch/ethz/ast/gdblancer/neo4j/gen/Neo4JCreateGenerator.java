@@ -39,7 +39,9 @@ public class Neo4JCreateGenerator {
         errors.add("Invalid Regex: Illegal octal escape sequence");         // WITH (""=~"\\0q") AS x RETURN x
         errors.add("Invalid Regex: Illegal hexadecimal escape sequence");   // WITH (""=~"\\xp") AS x RETURN x
 
+        // Arithmetic errors
         errors.add("/ by zero");
+        errors.add("cannot be represented as an integer");
 
         query.append("CREATE ");
         generateNode();

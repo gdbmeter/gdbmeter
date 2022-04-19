@@ -17,7 +17,7 @@ public class Neo4JExpressionGenerator {
 
         switch (type) {
             case INTEGER:
-                return new Neo4JConstant.IntegerConstant((int) Randomization.getInteger());
+                return new Neo4JConstant.IntegerConstant(Randomization.getInteger());
             case BOOLEAN:
                 return new Neo4JConstant.BooleanConstant(Randomization.getBoolean());
             case FLOAT:

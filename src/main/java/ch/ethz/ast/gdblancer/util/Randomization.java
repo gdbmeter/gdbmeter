@@ -44,7 +44,7 @@ public class Randomization {
         if (smallBiasProbability()) {
             return Randomization.fromOptions(-1L, Long.MAX_VALUE, Long.MIN_VALUE, 1L, 0L);
         } else {
-            return random.nextInt();
+            return random.nextLong();
         }
     }
 

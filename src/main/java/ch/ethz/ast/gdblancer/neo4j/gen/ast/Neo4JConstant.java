@@ -33,9 +33,9 @@ public abstract class Neo4JConstant implements Neo4JExpression {
 
     public static class IntegerConstant extends Neo4JConstant {
 
-        private final int value;
+        private final long value;
 
-        public IntegerConstant(int value) {
+        public IntegerConstant(long value) {
             this.value = value;
         }
 
