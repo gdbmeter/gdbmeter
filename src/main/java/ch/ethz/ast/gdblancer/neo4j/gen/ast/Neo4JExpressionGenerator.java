@@ -114,7 +114,7 @@ public class Neo4JExpressionGenerator {
     }
 
     private enum BooleanExpression {
-        BINARY_LOGICAL_OPERATOR, NOT, POSTFIX_OPERATOR, BINARY_COMPARISON, STRING_STRING_OPERATOR, REGEX
+        BINARY_LOGICAL_OPERATOR, NOT, POSTFIX_OPERATOR, BINARY_COMPARISON, BINARY_STRING_OPERATOR, REGEX
     }
 
     // TODO: Support IN_OPERATION, functions, IS (NOT) NULL
@@ -141,7 +141,7 @@ public class Neo4JExpressionGenerator {
                         Neo4JPostfixOperation.PostfixOperator.getRandom());
             case BINARY_COMPARISON:
                 return generateComparison(depth, Randomization.fromOptions(Neo4JType.values()));
-            case STRING_STRING_OPERATOR:
+            case BINARY_STRING_OPERATOR:
                 return new Neo4JBinaryStringOperation(generateExpression(depth + 1, Neo4JType.STRING),
                         generateExpression(depth + 1, Neo4JType.STRING),
                         Neo4JBinaryStringOperation.BinaryStringOperation.getRandom());
