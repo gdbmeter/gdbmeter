@@ -16,6 +16,7 @@ public class Neo4JExpressionGenerator {
 
         switch (type) {
             case INTEGER:
+                // TODO: Support octal and hex format
                 return new Neo4JConstant.IntegerConstant(Randomization.getInteger());
             case BOOLEAN:
                 return new Neo4JConstant.BooleanConstant(Randomization.getBoolean());
@@ -104,7 +105,7 @@ public class Neo4JExpressionGenerator {
         BINARY_LOGICAL_OPERATOR, NOT, POSTFIX_OPERATOR, BINARY_COMPARISON, STRING_STRING_OPERATOR, REGEX
     }
 
-    // TODO: Support IN_OPERATION and functions
+    // TODO: Support IN_OPERATION, functions, IS (NOT) NULL
     private static Neo4JExpression generateBooleanExpression(int depth) {
         BooleanExpression option = Randomization.fromOptions(BooleanExpression.values());
 
