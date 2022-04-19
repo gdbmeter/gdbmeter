@@ -33,7 +33,7 @@ public abstract class Neo4JConstant implements Neo4JExpression {
 
     public static class IntegerConstant extends Neo4JConstant {
 
-        private final long value;
+        protected final long value;
 
         public IntegerConstant(long value) {
             this.value = value;
@@ -42,6 +42,22 @@ public abstract class Neo4JConstant implements Neo4JExpression {
         @Override
         public String getTextRepresentation() {
             return String.valueOf(value);
+        }
+    }
+
+    public static class IntegerHexConstant extends IntegerConstant {
+
+        public IntegerHexConstant(long value) {
+            super(value);
+        }
+
+        @Override
+        public String getTextRepresentation() {
+            if (value < 0) {
+                return "-0x" + Long.toHexString(-1 * value);
+            } else {
+                return "0x" + Long.toHexString(value);
+            }
         }
     }
 

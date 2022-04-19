@@ -16,8 +16,12 @@ public class Neo4JExpressionGenerator {
 
         switch (type) {
             case INTEGER:
-                // TODO: Support octal and hex format
-                return new Neo4JConstant.IntegerConstant(Randomization.getInteger());
+                // TODO: Support octal format
+                if (Randomization.getBoolean()) {
+                    return new Neo4JConstant.IntegerHexConstant(Randomization.getInteger());
+                } else {
+                    return new Neo4JConstant.IntegerConstant(Randomization.getInteger());
+                }
             case BOOLEAN:
                 return new Neo4JConstant.BooleanConstant(Randomization.getBoolean());
             case FLOAT:
