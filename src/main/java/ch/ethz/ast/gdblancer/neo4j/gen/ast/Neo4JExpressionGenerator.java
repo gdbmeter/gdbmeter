@@ -117,7 +117,7 @@ public class Neo4JExpressionGenerator {
         BINARY_LOGICAL_OPERATOR, NOT, POSTFIX_OPERATOR, BINARY_COMPARISON, BINARY_STRING_OPERATOR, REGEX
     }
 
-    // TODO: Support IN_OPERATION, functions, IS (NOT) NULL
+    // TODO: Support IN_OPERATION, functions
     private static Neo4JExpression generateBooleanExpression(int depth) {
         BooleanExpression option = Randomization.fromOptions(BooleanExpression.values());
 
