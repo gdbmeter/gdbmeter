@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.ast;
 
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
+import ch.ethz.ast.gdblancer.util.Randomization;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.time.Year;
@@ -58,6 +59,49 @@ public abstract class Neo4JConstant implements Neo4JExpression {
             } else {
                 return "0x" + Long.toHexString(value);
             }
+        }
+    }
+
+    public static class IntegerOctalConstant extends IntegerConstant {
+
+        public enum OctalPrefix {
+            ZERO,
+            ZERO_O;
+
+            public static OctalPrefix getRandom() {
+                return Randomization.fromOptions(OctalPrefix.values());
+            }
+        }
+
+        private final OctalPrefix prefix;
+
+        public IntegerOctalConstant(long value, OctalPrefix prefix) {
+            super(value);
+            this.prefix = prefix;
+        }
+
+        @Override
+        public String getTextRepresentation() {
+            StringBuilder sb = new StringBuilder();
+            long modifiedValue = value;
+
+            if (value < 0) {
+                sb.append("-");
+                modifiedValue *= -1;
+            }
+
+            switch (prefix) {
+                case ZERO:
+                    sb.append("0").append(Long.toOctalString(modifiedValue));
+                    break;
+                case ZERO_O:
+                    sb.append("0o").append(Long.toOctalString(modifiedValue));
+                    break;
+                default:
+                    throw new AssertionError(prefix);
+            }
+
+            return sb.toString();
         }
     }
 

@@ -9,6 +9,12 @@ public class Neo4JExpressionGenerator {
 
     private static final int MAX_DEPTH = 3;
 
+    private enum IntegerConstantFormat {
+        NORMAL_INTEGER,
+        HEX_INTEGER,
+        OCTAL_INTEGER
+    }
+
     public static Neo4JExpression generateConstant(Neo4JType type) {
         if (Randomization.smallBiasProbability()) {
             return new Neo4JConstant.NullConstant();
@@ -16,11 +22,13 @@ public class Neo4JExpressionGenerator {
 
         switch (type) {
             case INTEGER:
-                // TODO: Support octal format
-                if (Randomization.getBoolean()) {
-                    return new Neo4JConstant.IntegerHexConstant(Randomization.getInteger());
-                } else {
-                    return new Neo4JConstant.IntegerConstant(Randomization.getInteger());
+                switch (Randomization.fromOptions(IntegerConstantFormat.values())) {
+                    case NORMAL_INTEGER:
+                        return new Neo4JConstant.IntegerConstant(Randomization.getInteger());
+                    case HEX_INTEGER:
+                        return new Neo4JConstant.IntegerHexConstant(Randomization.getInteger());
+                    case OCTAL_INTEGER:
+                        return new Neo4JConstant.IntegerOctalConstant(Randomization.getInteger(), Neo4JConstant.IntegerOctalConstant.OctalPrefix.getRandom());
                 }
             case BOOLEAN:
                 return new Neo4JConstant.BooleanConstant(Randomization.getBoolean());
