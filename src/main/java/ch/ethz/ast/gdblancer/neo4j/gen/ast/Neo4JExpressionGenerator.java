@@ -3,8 +3,7 @@ package ch.ethz.ast.gdblancer.neo4j.gen.ast;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Neo4JExpressionGenerator {
 
@@ -105,7 +104,7 @@ public class Neo4JExpressionGenerator {
         BINARY_LOGICAL_OPERATOR, NOT, POSTFIX_OPERATOR, BINARY_COMPARISON, STRING_STRING_OPERATOR, REGEX
     }
 
-    // TODO: Support IN_OPERATION
+    // TODO: Support IN_OPERATION and functions
     private static Neo4JExpression generateBooleanExpression(int depth) {
         BooleanExpression option = Randomization.fromOptions(BooleanExpression.values());
 
@@ -152,7 +151,7 @@ public class Neo4JExpressionGenerator {
         UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION
     }
 
-    // TODO: Support functions and casts
+    // TODO: Support functions
     private static Neo4JExpression generateIntExpression(int depth) {
         switch (Randomization.fromOptions(IntExpression.values())) {
             case UNARY_OPERATION:
@@ -171,16 +170,35 @@ public class Neo4JExpressionGenerator {
         }
     }
 
+    private enum StringExpression {
+        CONCAT
+    }
+
+    // TODO: Add support for functions
+    private static Neo4JExpression generateStringExpression(int depth) {
+        switch (Randomization.fromOptions(StringExpression.values())) {
+            case CONCAT:
+                Neo4JExpression left = generateExpression(depth + 1, Neo4JType.STRING);
+                Neo4JExpression right = generateExpression(depth + 1, Randomization.fromOptions(Neo4JType.STRING, Neo4JType.FLOAT, Neo4JType.INTEGER));
+                return new Neo4JConcatOperation(left, right);
+            default:
+                throw new AssertionError();
+        }
+    }
+
     public static Neo4JExpression generateExpression(int depth, Neo4JType type) {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
-            if (type == Neo4JType.BOOLEAN) {
-                return generateBooleanExpression(depth);
-            } else if (type == Neo4JType.INTEGER) {
-                return generateIntExpression(depth);
-            } else {
-                return generateConstant(type);
+            switch (type) {
+                case BOOLEAN:
+                    return generateBooleanExpression(depth);
+                case INTEGER:
+                    return generateIntExpression(depth);
+                case STRING:
+                    return generateStringExpression(depth);
+                default:
+                    return generateConstant(type);
             }
         }
     }

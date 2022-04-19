@@ -76,6 +76,7 @@ public class Neo4JGenerator {
                     schema.setIndices(globalState.getConnection().getIndexNames());
                 }
             } catch (IgnoreMeException ignored) {
+                // We skip the current query if it throws this exception
                 globalState.getLogger().info("Ignore me exception thrown");
             }
         }

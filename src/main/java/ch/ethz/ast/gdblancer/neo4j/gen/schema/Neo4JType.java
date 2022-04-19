@@ -1,5 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.schema;
 
+import ch.ethz.ast.gdblancer.util.Randomization;
+
 public enum Neo4JType {
 
     INTEGER,
@@ -9,6 +11,10 @@ public enum Neo4JType {
     DURATION,
     DATE,
     LOCAL_TIME,
-    POINT
+    POINT;
+
+    public static Neo4JType getRandom() {
+        return Randomization.fromOptions(Neo4JType.values());
+    }
 
 }
