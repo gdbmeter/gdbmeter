@@ -98,6 +98,50 @@ public class Neo4JFunctionCall implements Neo4JExpression {
             public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
                 return new Neo4JType[] { Neo4JType.getRandom() };
             }
+        },
+        DURATION_BETWEEN("duration.between", 2) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.DURATION;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.DATE, Neo4JType.DATE };
+            }
+        },
+        DURATION_IN_MONTHS("duration.inMonths", 2) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.DURATION;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.DATE, Neo4JType.DATE };
+            }
+        },
+        DURATION_IN_DAYS("duration.inDays", 2) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.DURATION;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.DATE, Neo4JType.DATE };
+            }
+        },
+        DURATION_IN_SECONDS("duration.inSeconds", 2) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.DURATION;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.DATE, Neo4JType.DATE };
+            }
         };
 
         private final String name;

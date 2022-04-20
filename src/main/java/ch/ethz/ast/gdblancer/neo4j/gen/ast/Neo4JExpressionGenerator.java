@@ -208,6 +208,10 @@ public class Neo4JExpressionGenerator {
         }
     }
 
+    private static Neo4JExpression generateDurationExpression(int depth) {
+        return generateFunction(depth + 1, Neo4JType.DURATION);
+    }
+
     public static Neo4JExpression generateExpression(int depth, Neo4JType type) {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
@@ -220,6 +224,8 @@ public class Neo4JExpressionGenerator {
                     return generateIntExpression(depth);
                 case STRING:
                     return generateStringExpression(depth);
+                case DURATION:
+                    return generateDurationExpression(depth);
                 default:
                     return generateConstant(type);
             }

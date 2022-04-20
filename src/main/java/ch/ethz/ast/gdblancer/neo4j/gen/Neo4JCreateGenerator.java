@@ -49,6 +49,7 @@ public class Neo4JCreateGenerator {
         errors.add("cannot be represented as an integer");
         errors.add("long overflow");
         errors.addRegex("integer, [0-9]+([.][0-9]*)?, is too large");
+
         query.append("CREATE ");
         generateNode();
 
