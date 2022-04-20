@@ -8,6 +8,7 @@ import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
+import java.util.Set;
 
 public class Neo4JPropertyGenerator {
 
@@ -23,35 +24,30 @@ public class Neo4JPropertyGenerator {
     }
 
     private String generateProperties() {
-        int iterations = Randomization.smallNumber();
+        Map<String, Neo4JType> availableProperties = entity.getAvailableProperties();
+        Set<String> selectedProperties = Randomization.nonEmptySubset(availableProperties.keySet());
 
-        if (iterations == 0) {
-            if (Randomization.getBoolean()) {
-                return "";
-            }
+        if (selectedProperties.isEmpty()) {
+            return "";
         }
 
         query.append("{");
+        String delimiter = "";
 
-        for (int i = 0; i < iterations; i++) {
-            generateProperty(i == iterations - 1);
+        for (String property : selectedProperties) {
+            query.append(delimiter);
+            generateProperty(property, availableProperties.get(property));
+            delimiter = ", ";
+
         }
 
         query.append("}");
         return query.toString();
     }
 
-    private void generateProperty(boolean last) {
-        Map<String, Neo4JType> availableProperties = entity.getAvailableProperties();
-        String name = Randomization.fromOptions(availableProperties.keySet().toArray(new String[0]));
-        Neo4JType type = availableProperties.get(name);
-
+    private void generateProperty(String name, Neo4JType type) {
         query.append(String.format("%s:", name));
         generateRandomValue(type);
-
-        if (!last) {
-            query.append(", ");
-        }
     }
 
     private void generateRandomValue(Neo4JType type) {
