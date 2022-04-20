@@ -24,9 +24,14 @@ public class Neo4JFunctionCall implements Neo4JExpression {
 
     public enum Neo4JFunction {
 
-        TO_BOOLEAN("toBoolean", 1, Neo4JType.BOOLEAN) {
+        TO_BOOLEAN("toBoolean", 1) {
             @Override
-            public Neo4JType[] getArgumentTypes() {
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.BOOLEAN;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
                 Neo4JType chosenType = Randomization.fromOptions(Neo4JType.BOOLEAN,
                         Neo4JType.STRING,
                         Neo4JType.INTEGER);
@@ -34,27 +39,73 @@ public class Neo4JFunctionCall implements Neo4JExpression {
                 return new Neo4JType[] { chosenType };
             }
         },
-        TO_BOOLEAN_OR_NULL("toBooleanOrNull" , 1, Neo4JType.BOOLEAN) {
+        TO_BOOLEAN_OR_NULL("toBooleanOrNull" , 1) {
             @Override
-            public Neo4JType[] getArgumentTypes() {
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.BOOLEAN;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
                 return new Neo4JType[]{Neo4JType.getRandom()};
+            }
+        },
+        ABS("abs", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.INTEGER;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.INTEGER };
+            }
+        },
+        SIGN("sign", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.INTEGER;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.INTEGER };
+            }
+        },
+        TO_INTEGER("toInteger", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.INTEGER;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                Neo4JType chosenType = Randomization.fromOptions(Neo4JType.BOOLEAN,
+                        Neo4JType.STRING,
+                        Neo4JType.INTEGER,
+                        Neo4JType.FLOAT);
+
+                return new Neo4JType[] { chosenType };
+            }
+        },
+        TO_INTEGER_OR_NULL("toIntegerOrNull", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.INTEGER;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.getRandom() };
             }
         };
 
         private final String name;
         private final int arity;
-        private final Neo4JType returnType;
 
-        Neo4JFunction(String name,
-                      int arity,
-                      Neo4JType returnType) {
+        Neo4JFunction(String name, int arity) {
             this.name = name;
             this.arity = arity;
-            this.returnType = returnType;
-        }
-
-        public Neo4JType getReturnType() {
-            return returnType;
         }
 
         public int getArity() {
@@ -65,9 +116,10 @@ public class Neo4JFunctionCall implements Neo4JExpression {
             return name;
         }
 
-        public abstract Neo4JType[] getArgumentTypes();
+        public abstract boolean supportReturnType(Neo4JType returnType);
+
+        public abstract Neo4JType[] getArgumentTypes(Neo4JType returnType);
 
     }
-
 
 }

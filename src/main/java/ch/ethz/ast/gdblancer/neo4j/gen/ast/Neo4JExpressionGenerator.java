@@ -168,7 +168,7 @@ public class Neo4JExpressionGenerator {
     }
 
     private enum IntExpression {
-        UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION
+        UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION, FUNCTION
     }
 
     // TODO: Support functions
@@ -185,6 +185,8 @@ public class Neo4JExpressionGenerator {
                 Neo4JExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
                 Neo4JExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
                 return new Neo4JBinaryArithmeticOperation(left, right, Neo4JBinaryArithmeticOperation.ArithmeticOperator.getRandom());
+            case FUNCTION:
+                return generateFunction(depth + 1, Neo4JType.INTEGER);
             default:
                 throw new AssertionError();
         }
@@ -226,7 +228,7 @@ public class Neo4JExpressionGenerator {
 
     private static Neo4JFunctionCall generateFunction(int depth, Neo4JType returnType) {
         List<Neo4JFunctionCall.Neo4JFunction> functions = Stream.of(Neo4JFunctionCall.Neo4JFunction.values())
-                .filter(neo4JFunction -> neo4JFunction.getReturnType() == returnType)
+                .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());
 
         if (functions.isEmpty()) {
@@ -235,7 +237,7 @@ public class Neo4JExpressionGenerator {
 
         Neo4JFunctionCall.Neo4JFunction chosenFunction = Randomization.fromList(functions);
         int arity = chosenFunction.getArity();
-        Neo4JType[] argumentTypes = chosenFunction.getArgumentTypes();
+        Neo4JType[] argumentTypes = chosenFunction.getArgumentTypes(returnType);
         Neo4JExpression[] arguments = new Neo4JExpression[arity];
 
         for (int i = 0; i < arity; i++) {

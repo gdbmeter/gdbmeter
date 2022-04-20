@@ -35,6 +35,7 @@ public class Neo4JCreateGenerator {
         errors.add("Invalid Regex: Illegal character range");
         errors.add("Invalid Regex: Unclosed character family");
         errors.add("Invalid Regex: Unknown inline modifier");
+        errors.add("Invalid Regex: \\k is not followed by '<' for named capturing group");
 
         // See: #12866
         errors.add("Invalid Regex: Unexpected internal error");
@@ -46,6 +47,8 @@ public class Neo4JCreateGenerator {
         // Arithmetic errors
         errors.add("/ by zero");
         errors.add("cannot be represented as an integer");
+        errors.add("long overflow");
+        errors.addRegex("integer, \\d+, is too large");
 
         query.append("CREATE ");
         generateNode();

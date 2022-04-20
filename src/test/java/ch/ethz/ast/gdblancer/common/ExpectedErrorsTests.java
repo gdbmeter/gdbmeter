@@ -45,4 +45,18 @@ public class ExpectedErrorsTests {
         assertFalse(errors.isExpected(new Exception("I am groot")));
     }
 
+    @Test
+    void testExpectedRegexErrorIsExpected() {
+        ExpectedErrors errors = new ExpectedErrors();
+        errors.addRegex("integer, \\d+, is too large");
+
+        assertTrue(errors.isExpected(new Exception("integer, 26684475740775100355, is too large")));
+    }
+
+    @Test
+    void testNullExceptionMessageIsUnexpected() {
+        ExpectedErrors errors = new ExpectedErrors();
+        assertFalse(errors.isExpected(new Exception()));
+    }
+
 }
