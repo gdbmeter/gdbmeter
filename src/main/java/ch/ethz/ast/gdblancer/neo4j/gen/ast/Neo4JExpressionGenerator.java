@@ -1,9 +1,12 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.ast;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Neo4JExpressionGenerator {
 
@@ -114,7 +117,9 @@ public class Neo4JExpressionGenerator {
     }
 
     private enum BooleanExpression {
-        BINARY_LOGICAL_OPERATOR, NOT, POSTFIX_OPERATOR, BINARY_COMPARISON, BINARY_STRING_OPERATOR, REGEX
+        BINARY_LOGICAL_OPERATOR, NOT,
+        POSTFIX_OPERATOR, BINARY_COMPARISON,
+        BINARY_STRING_OPERATOR, REGEX, FUNCTION
     }
 
     // TODO: Support IN_OPERATION, functions
@@ -148,6 +153,8 @@ public class Neo4JExpressionGenerator {
             case REGEX:
                 return new Neo4JRegularExpression(generateExpression(depth + 1, Neo4JType.STRING),
                         generateExpression(depth + 1, Neo4JType.STRING));
+            case FUNCTION:
+                return generateFunction(depth + 1, Neo4JType.BOOLEAN);
             default:
                 throw new AssertionError(option);
         }
@@ -203,6 +210,7 @@ public class Neo4JExpressionGenerator {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
+            // TODO: Handle floats
             switch (type) {
                 case BOOLEAN:
                     return generateBooleanExpression(depth);
@@ -214,6 +222,27 @@ public class Neo4JExpressionGenerator {
                     return generateConstant(type);
             }
         }
+    }
+
+    private static Neo4JFunctionCall generateFunction(int depth, Neo4JType returnType) {
+        List<Neo4JFunctionCall.Neo4JFunction> functions = Stream.of(Neo4JFunctionCall.Neo4JFunction.values())
+                .filter(neo4JFunction -> neo4JFunction.getReturnType() == returnType)
+                .collect(Collectors.toList());
+
+        if (functions.isEmpty()) {
+            throw new IgnoreMeException();
+        }
+
+        Neo4JFunctionCall.Neo4JFunction chosenFunction = Randomization.fromList(functions);
+        int arity = chosenFunction.getArity();
+        Neo4JType[] argumentTypes = chosenFunction.getArgumentTypes();
+        Neo4JExpression[] arguments = new Neo4JExpression[arity];
+
+        for (int i = 0; i < arity; i++) {
+            arguments[i] = generateExpression(depth + 1, argumentTypes[i]);
+        }
+
+        return new Neo4JFunctionCall(chosenFunction, arguments);
     }
 
 }

@@ -11,8 +11,8 @@ public class Neo4JBinaryArithmeticOperation
         SUBTRACTION("-"),
         MULTIPLICATION("*"),
         DIVISION("/"),
-        MODULO("%"),
-        EXPONENTIATION("^");
+        MODULO("%");
+        // EXPONENTIATION("^"); TODO: Exponentiation always returns a float!
 
         private final String representation;
 

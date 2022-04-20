@@ -12,6 +12,8 @@ public interface Neo4JVisitor {
 
     void visit(Neo4JRegularExpression expression);
 
+    void visit(Neo4JFunctionCall functionCall);
+
     default void visit(Neo4JExpression expression) {
         if (expression instanceof BinaryOperatorNode) {
             visit((BinaryOperatorNode<Neo4JExpression, ?>) expression);
@@ -23,6 +25,8 @@ public interface Neo4JVisitor {
             visit((Neo4JPostfixOperation) expression);
         } else if (expression instanceof Neo4JRegularExpression) {
             visit((Neo4JRegularExpression) expression);
+        } else if (expression instanceof Neo4JFunctionCall) {
+            visit((Neo4JFunctionCall) expression);
         } else {
             throw new AssertionError(expression);
         }

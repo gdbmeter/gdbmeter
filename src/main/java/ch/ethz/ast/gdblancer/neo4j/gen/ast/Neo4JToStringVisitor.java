@@ -25,6 +25,22 @@ public class Neo4JToStringVisitor implements Neo4JVisitor {
     }
 
     @Override
+    public void visit(Neo4JFunctionCall functionCall) {
+        sb.append(functionCall.getFunctionName());
+        sb.append("(");
+
+        String delimiter = "";
+
+        for (Neo4JExpression argument : functionCall.getArguments()) {
+            sb.append(delimiter);
+            visit(argument);
+            delimiter = ",";
+        }
+
+        sb.append(")");
+    }
+
+    @Override
     public void visit(Neo4JConstant constant) {
         sb.append(constant.getTextRepresentation());
     }
