@@ -33,12 +33,15 @@ public class Neo4JCreateGenerator {
         errors.add("Invalid Regex: Unmatched closing");
         errors.add("Invalid Regex: Unclosed counted closure");
         errors.add("Invalid Regex: Illegal character range");
+        errors.add("Invalid Regex: Unclosed character family");
+        errors.add("Invalid Regex: Unknown inline modifier");
 
         // See: #12866
         errors.add("Invalid Regex: Unexpected internal error");
-        errors.add("Invalid Regex: Unknown character property name");       // RETURN (""=~"5\\P")
-        errors.add("Invalid Regex: Illegal octal escape sequence");         // RETURN (""=~"\\0q")
-        errors.add("Invalid Regex: Illegal hexadecimal escape sequence");   // RETURN (""=~"\\xp")
+        errors.add("Invalid Regex: Unknown character property name");           // RETURN (""=~"5\\P")
+        errors.add("Invalid Regex: Illegal octal escape sequence");             // RETURN (""=~"\\0q")
+        errors.add("Invalid Regex: Illegal hexadecimal escape sequence");       // RETURN (""=~"\\xp")
+        errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
 
         // Arithmetic errors
         errors.add("/ by zero");
