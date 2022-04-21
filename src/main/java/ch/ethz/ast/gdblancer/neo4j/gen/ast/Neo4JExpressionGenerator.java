@@ -194,10 +194,9 @@ public class Neo4JExpressionGenerator {
     }
 
     private enum FloatExpression {
-        UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION
+        UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION, FUNCTION
     }
 
-    // TODO: Support functions
     private static Neo4JExpression generateFloatExpression(int depth) {
         switch (Randomization.fromOptions(FloatExpression.values())) {
             case UNARY_OPERATION:
@@ -226,6 +225,8 @@ public class Neo4JExpressionGenerator {
                 }
 
                 return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
+            case FUNCTION:
+                return generateFunction(depth + 1, Neo4JType.FLOAT);
             default:
                 throw new AssertionError();
         }

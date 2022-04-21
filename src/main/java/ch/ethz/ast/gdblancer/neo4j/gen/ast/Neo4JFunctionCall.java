@@ -53,12 +53,13 @@ public class Neo4JFunctionCall implements Neo4JExpression {
         ABS("abs", 1) {
             @Override
             public boolean supportReturnType(Neo4JType returnType) {
-                return returnType == Neo4JType.INTEGER;
+                return returnType == Neo4JType.INTEGER || returnType == Neo4JType.FLOAT;
             }
 
             @Override
             public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-                return new Neo4JType[] { Neo4JType.INTEGER };
+                assert returnType == Neo4JType.INTEGER || returnType == Neo4JType.FLOAT;
+                return new Neo4JType[] { returnType };
             }
         },
         SIGN("sign", 1) {
@@ -69,7 +70,7 @@ public class Neo4JFunctionCall implements Neo4JExpression {
 
             @Override
             public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-                return new Neo4JType[] { Neo4JType.INTEGER };
+                return new Neo4JType[] { Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
             }
         },
         TO_INTEGER("toInteger", 1) {
@@ -273,6 +274,63 @@ public class Neo4JFunctionCall implements Neo4JExpression {
             @Override
             public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
                 return new Neo4JType[] { Neo4JType.getRandom() };
+            }
+        },
+        CEIL("ceil", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.FLOAT;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
+            }
+        },
+        FLOOR("floor", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.FLOAT;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
+            }
+        },
+        TO_FLOAT("toFloat", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.FLOAT;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Randomization.fromOptions(Neo4JType.STRING,
+                        Neo4JType.INTEGER,
+                        Neo4JType.FLOAT) };
+            }
+        },
+        TO_FLOAT_OR_NULL("toFloatOrNull", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.FLOAT;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.getRandom() };
+            }
+        },
+        POINT_DISTANCE("point.distance", 2) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.FLOAT;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.POINT, Neo4JType.POINT };
             }
         };
 
