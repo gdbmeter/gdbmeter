@@ -208,9 +208,23 @@ public class Neo4JExpressionGenerator {
 
                 return new Neo4JPrefixOperation(intExpression, operator);
             case BINARY_ARITHMETIC_EXPRESSION:
-                // TODO: Support a mix of float and integer
-                Neo4JExpression left = generateExpression(depth + 1, Neo4JType.FLOAT);
-                Neo4JExpression right = generateExpression(depth + 1, Neo4JType.FLOAT);
+                Neo4JExpression left;
+                Neo4JExpression right;
+
+                // At least one of the two expressions has to be a float
+                if (Randomization.getBoolean()) {
+                    left = generateExpression(depth + 1, Neo4JType.FLOAT);
+                    right = generateExpression(depth + 1, Neo4JType.FLOAT);
+                } else {
+                    if (Randomization.getBoolean()) {
+                        left = generateExpression(depth + 1, Neo4JType.INTEGER);
+                        right = generateExpression(depth + 1, Neo4JType.FLOAT);
+                    } else {
+                        left = generateExpression(depth + 1, Neo4JType.FLOAT);
+                        right = generateExpression(depth + 1, Neo4JType.INTEGER);
+                    }
+                }
+
                 return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
             default:
                 throw new AssertionError();
