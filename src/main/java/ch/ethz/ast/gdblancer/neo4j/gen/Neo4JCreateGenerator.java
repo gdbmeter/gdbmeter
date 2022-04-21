@@ -43,6 +43,7 @@ public class Neo4JCreateGenerator {
         errors.add("Invalid Regex: Illegal octal escape sequence");             // RETURN (""=~"\\0q")
         errors.add("Invalid Regex: Illegal hexadecimal escape sequence");       // RETURN (""=~"\\xp")
         errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
+        errors.add("Invalid Regex: Illegal Unicode escape sequence");           // RETURN ""=~("\\uA")
 
         // Arithmetic errors
         errors.add("/ by zero");
