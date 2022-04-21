@@ -48,7 +48,7 @@ public class Neo4JCreateGenerator {
         errors.add("/ by zero");
         errors.add("cannot be represented as an integer");
         errors.add("long overflow");
-        errors.addRegex("integer, [0-9]+([.][0-9]*)?, is too large");
+        errors.addRegex("integer, -??[0-9]+([.][0-9]*)?, is too large");
 
         // Functions
         errors.add("Invalid input for length value in function 'left()': Expected a numeric value but got: NO_VALUE");
