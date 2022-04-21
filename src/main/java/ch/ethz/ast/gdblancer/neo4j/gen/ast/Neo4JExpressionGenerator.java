@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.ast;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JBinaryArithmeticOperation.ArithmeticOperator;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -171,7 +172,7 @@ public class Neo4JExpressionGenerator {
         UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION, FUNCTION
     }
 
-    private static Neo4JExpression generateIntExpression(int depth) {
+    private static Neo4JExpression generateIntegerExpression(int depth) {
         switch (Randomization.fromOptions(IntExpression.values())) {
             case UNARY_OPERATION:
                 Neo4JExpression intExpression = generateExpression(depth + 1, Neo4JType.INTEGER);
@@ -183,9 +184,34 @@ public class Neo4JExpressionGenerator {
             case BINARY_ARITHMETIC_EXPRESSION:
                 Neo4JExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
                 Neo4JExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
-                return new Neo4JBinaryArithmeticOperation(left, right, Neo4JBinaryArithmeticOperation.ArithmeticOperator.getRandom());
+
+                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.INTEGER);
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    private enum FloatExpression {
+        UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION
+    }
+
+    // TODO: Support functions
+    private static Neo4JExpression generateFloatExpression(int depth) {
+        switch (Randomization.fromOptions(FloatExpression.values())) {
+            case UNARY_OPERATION:
+                Neo4JExpression intExpression = generateExpression(depth + 1, Neo4JType.FLOAT);
+                Neo4JPrefixOperation.PrefixOperator operator = Randomization.getBoolean()
+                        ? Neo4JPrefixOperation.PrefixOperator.UNARY_PLUS
+                        : Neo4JPrefixOperation.PrefixOperator.UNARY_MINUS;
+
+                return new Neo4JPrefixOperation(intExpression, operator);
+            case BINARY_ARITHMETIC_EXPRESSION:
+                // TODO: Support a mix of float and integer
+                Neo4JExpression left = generateExpression(depth + 1, Neo4JType.FLOAT);
+                Neo4JExpression right = generateExpression(depth + 1, Neo4JType.FLOAT);
+                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
             default:
                 throw new AssertionError();
         }
@@ -216,16 +242,17 @@ public class Neo4JExpressionGenerator {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
-            // TODO: Handle floats
             switch (type) {
                 case BOOLEAN:
                     return generateBooleanExpression(depth);
                 case INTEGER:
-                    return generateIntExpression(depth);
+                    return generateIntegerExpression(depth);
                 case STRING:
                     return generateStringExpression(depth);
                 case DURATION:
                     return generateDurationExpression(depth);
+                case FLOAT:
+                    return generateFloatExpression(depth);
                 default:
                     return generateConstant(type);
             }

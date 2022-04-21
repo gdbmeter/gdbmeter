@@ -11,8 +11,8 @@ public class Neo4JBinaryArithmeticOperation
         SUBTRACTION("-"),
         MULTIPLICATION("*"),
         DIVISION("/"),
-        MODULO("%");
-        // EXPONENTIATION("^"); TODO: Exponentiation always returns a float!
+        MODULO("%"),
+        EXPONENTIATION("^");
 
         private final String representation;
 
@@ -25,9 +25,13 @@ public class Neo4JBinaryArithmeticOperation
             return representation;
         }
 
-        public static ArithmeticOperator getRandom() {
+        public static ArithmeticOperator getRandomIntegerOperator() {
+            return Randomization.fromOptions(ADDITION, SUBTRACTION, MODULO, DIVISION, MODULO);
+        }
+        public static ArithmeticOperator getRandomFloatOperator() {
             return Randomization.fromOptions(values());
         }
+
 
     }
 
