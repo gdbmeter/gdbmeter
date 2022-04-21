@@ -50,6 +50,12 @@ public class Neo4JCreateGenerator {
         errors.add("long overflow");
         errors.addRegex("integer, [0-9]+([.][0-9]*)?, is too large");
 
+        // Functions
+        errors.add("Invalid input for length value in function 'left()': Expected a numeric value but got: NO_VALUE");
+        errors.add("Invalid input for length value in function 'right()': Expected a numeric value but got: NO_VALUE");
+        errors.add("Invalid input for length value in function 'substring()': Expected a numeric value but got: NO_VALUE");
+        errors.add("Invalid input for start value in function 'substring()': Expected a numeric value but got: NO_VALUE");
+
         query.append("CREATE ");
         generateNode();
 

@@ -29,6 +29,12 @@ public class GlobalState<C extends Connection> {
             if (query.getExpectedErrors().isExpected(exception)) {
                 return false;
             } else {
+
+                // See: #12869
+                if (exception instanceof IndexOutOfBoundsException) {
+                    return false;
+                }
+
                 throw new AssertionError(query.getQuery(), exception);
             }
         }

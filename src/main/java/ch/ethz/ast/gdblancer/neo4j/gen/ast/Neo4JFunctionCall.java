@@ -142,6 +142,138 @@ public class Neo4JFunctionCall implements Neo4JExpression {
             public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
                 return new Neo4JType[] { Neo4JType.DATE, Neo4JType.DATE };
             }
+        },
+        LEFT("left", 2) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING, Neo4JType.INTEGER };
+            }
+        },
+        RIGHT("right", 2) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING, Neo4JType.INTEGER };
+            }
+        },
+        LTRIM("lTrim", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING };
+            }
+        },
+        RTRIM("rTrim", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING };
+            }
+        },
+        TRIM("trim", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING };
+            }
+        },
+        TO_LOWER("toLower", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING };
+            }
+        },
+        TO_UPPER("toUpper", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING };
+            }
+        },
+        REVERSE("reverse", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING };
+            }
+        },
+        REPLACE("replace", 3) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING, Neo4JType.STRING, Neo4JType.STRING };
+            }
+        },
+        SUBSTRING("substring", 3) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.STRING, Neo4JType.INTEGER, Neo4JType.INTEGER };
+            }
+        },
+        TO_STRING("toString", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.getRandom() };
+            }
+        },
+        TO_STRING_OR_NULL("toStringOrNull", 1) {
+            @Override
+            public boolean supportReturnType(Neo4JType returnType) {
+                return returnType == Neo4JType.STRING;
+            }
+
+            @Override
+            public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+                return new Neo4JType[] { Neo4JType.getRandom() };
+            }
         };
 
         private final String name;

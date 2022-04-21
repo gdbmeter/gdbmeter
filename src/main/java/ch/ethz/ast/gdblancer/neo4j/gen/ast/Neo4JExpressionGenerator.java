@@ -122,7 +122,7 @@ public class Neo4JExpressionGenerator {
         BINARY_STRING_OPERATOR, REGEX, FUNCTION
     }
 
-    // TODO: Support IN_OPERATION, functions
+    // TODO: Support IN_OPERATION
     private static Neo4JExpression generateBooleanExpression(int depth) {
         BooleanExpression option = Randomization.fromOptions(BooleanExpression.values());
 
@@ -171,7 +171,6 @@ public class Neo4JExpressionGenerator {
         UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION, FUNCTION
     }
 
-    // TODO: Support functions
     private static Neo4JExpression generateIntExpression(int depth) {
         switch (Randomization.fromOptions(IntExpression.values())) {
             case UNARY_OPERATION:
@@ -193,16 +192,17 @@ public class Neo4JExpressionGenerator {
     }
 
     private enum StringExpression {
-        CONCAT
+        CONCAT, FUNCTION
     }
 
-    // TODO: Add support for functions
     private static Neo4JExpression generateStringExpression(int depth) {
         switch (Randomization.fromOptions(StringExpression.values())) {
             case CONCAT:
                 Neo4JExpression left = generateExpression(depth + 1, Neo4JType.STRING);
                 Neo4JExpression right = generateExpression(depth + 1, Randomization.fromOptions(Neo4JType.STRING, Neo4JType.FLOAT, Neo4JType.INTEGER));
                 return new Neo4JConcatOperation(left, right);
+            case FUNCTION:
+                return generateFunction(depth + 1, Neo4JType.STRING);
             default:
                 throw new AssertionError();
         }
