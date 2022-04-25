@@ -70,7 +70,7 @@ public class Neo4JCreateGenerator {
             }
         }
 
-        // TODO: Maybe add support for more complex return statements
+        // TODO: Maybe add support for more complex return statements and include ORDER BY
         if (variableCounter > 0 && Randomization.getBoolean()) {
             query.append(" RETURN ");
 
