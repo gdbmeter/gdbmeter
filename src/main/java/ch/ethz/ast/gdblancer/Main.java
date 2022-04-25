@@ -6,6 +6,7 @@ import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -24,7 +25,11 @@ public class Main {
         }
     }
 
-    public static void execute(List<String> queries) {
+    public static void executeQuery(String query) {
+        executeQueries(Collections.singletonList(query));
+    }
+
+    public static void executeQueries(List<String> queries) {
         try (Neo4JConnection connection = new Neo4JConnection()) {
             connection.connect();
 
