@@ -74,5 +74,4 @@ public class Neo4JShowFunctionsGenerator {
         return new Query(query.toString());
     }
 
-
 }

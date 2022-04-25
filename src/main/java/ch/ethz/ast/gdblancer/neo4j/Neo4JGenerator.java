@@ -2,10 +2,7 @@ package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Query;
-import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JCreateGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JCreateIndexGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JDropIndexGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JShowFunctionsGenerator;
+import ch.ethz.ast.gdblancer.neo4j.gen.*;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -20,7 +17,8 @@ public class Neo4JGenerator {
         CREATE(Neo4JCreateGenerator::createEntities),
         CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex),
         DROP_INDEX(Neo4JDropIndexGenerator::dropIndex),
-        SHOW_FUNCTIONS(Neo4JShowFunctionsGenerator::showFunctions);
+        SHOW_FUNCTIONS(Neo4JShowFunctionsGenerator::showFunctions),
+        SHOW_PROCEDURES(Neo4JShowProceduresGenerator::showProcedures);
 
         private final Function<Neo4JDBSchema, Query> generator;
 
@@ -41,6 +39,7 @@ public class Neo4JGenerator {
                 break;
             case DROP_INDEX:
             case SHOW_FUNCTIONS:
+            case SHOW_PROCEDURES:
                 selectedNumber = Randomization.nextInt(0,  2);
                 break;
             default:
