@@ -124,7 +124,7 @@ public class Neo4JExpressionGenerator {
     }
 
     // TODO: Support IN_OPERATION
-    private static Neo4JExpression generateBooleanExpression(int depth) {
+    private Neo4JExpression generateBooleanExpression(int depth) {
         BooleanExpression option = Randomization.fromOptions(BooleanExpression.values());
 
         switch (option) {
@@ -161,7 +161,7 @@ public class Neo4JExpressionGenerator {
         }
     }
 
-    private static Neo4JExpression generateComparison(int depth, Neo4JType type) {
+    private Neo4JExpression generateComparison(int depth, Neo4JType type) {
         Neo4JExpression left = generateExpression(depth + 1, type);
         Neo4JExpression right = generateExpression(depth + 1, type);
         return new Neo4JBinaryComparisonOperation(left, right,
@@ -172,7 +172,7 @@ public class Neo4JExpressionGenerator {
         UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION, FUNCTION
     }
 
-    private static Neo4JExpression generateIntegerExpression(int depth) {
+    private Neo4JExpression generateIntegerExpression(int depth) {
         switch (Randomization.fromOptions(IntExpression.values())) {
             case UNARY_OPERATION:
                 Neo4JExpression intExpression = generateExpression(depth + 1, Neo4JType.INTEGER);
@@ -197,7 +197,7 @@ public class Neo4JExpressionGenerator {
         UNARY_OPERATION, BINARY_ARITHMETIC_EXPRESSION, FUNCTION
     }
 
-    private static Neo4JExpression generateFloatExpression(int depth) {
+    private Neo4JExpression generateFloatExpression(int depth) {
         switch (Randomization.fromOptions(FloatExpression.values())) {
             case UNARY_OPERATION:
                 Neo4JExpression intExpression = generateExpression(depth + 1, Neo4JType.FLOAT);
@@ -236,7 +236,7 @@ public class Neo4JExpressionGenerator {
         CONCAT, FUNCTION
     }
 
-    private static Neo4JExpression generateStringExpression(int depth) {
+    private Neo4JExpression generateStringExpression(int depth) {
         switch (Randomization.fromOptions(StringExpression.values())) {
             case CONCAT:
                 Neo4JExpression left = generateExpression(depth + 1, Neo4JType.STRING);
@@ -249,11 +249,19 @@ public class Neo4JExpressionGenerator {
         }
     }
 
-    private static Neo4JExpression generateDurationExpression(int depth) {
+    private Neo4JExpression generateDurationExpression(int depth) {
         return generateFunction(depth + 1, Neo4JType.DURATION);
     }
 
-    public static Neo4JExpression generateExpression(int depth, Neo4JType type) {
+    public static Neo4JExpression generateExpression(Neo4JType type) {
+        return new Neo4JExpressionGenerator().generateExpression(MAX_DEPTH, type);
+    }
+
+    private Neo4JExpression generateExpression(int depth, Neo4JType type) {
+        return generateExpressionInternal(depth, type);
+    }
+
+    private Neo4JExpression generateExpressionInternal(int depth, Neo4JType type) {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
@@ -274,7 +282,7 @@ public class Neo4JExpressionGenerator {
         }
     }
 
-    private static Neo4JFunctionCall generateFunction(int depth, Neo4JType returnType) {
+    private Neo4JFunctionCall generateFunction(int depth, Neo4JType returnType) {
         List<Neo4JFunctionCall.Neo4JFunction> functions = Stream.of(Neo4JFunctionCall.Neo4JFunction.values())
                 .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());

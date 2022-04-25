@@ -56,7 +56,7 @@ public class Neo4JPropertyGenerator {
         if (Randomization.getBoolean()) {
             expression = Neo4JExpressionGenerator.generateConstant(type);
         } else {
-            expression = Neo4JExpressionGenerator.generateExpression(0, type);
+            expression = Neo4JExpressionGenerator.generateExpression(type);
         }
 
         query.append(Neo4JVisitor.asString(expression));
