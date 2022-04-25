@@ -7,23 +7,38 @@ import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public class Neo4JCreateGenerator {
 
-    private static final String VARIABLE_PREFIX = "v";
     private final Neo4JDBSchema schema;
     private final StringBuilder query = new StringBuilder();
-    private int variableCounter = 0;
     private final ExpectedErrors errors = new ExpectedErrors();
+
+    private final Map<String, Neo4JDBEntity> nodeVariables = new HashMap<>();
+    private final Map<String, Neo4JDBEntity> relationshipVariables = new HashMap<>();
 
     public Neo4JCreateGenerator(Neo4JDBSchema schema) {
         this.schema = schema;
     }
 
     public static Query createEntities(Neo4JDBSchema schema) {
-        return new Neo4JCreateGenerator(schema).generateInsertion();
+        return new Neo4JCreateGenerator(schema).generateCreate();
     }
 
-    private Query generateInsertion() {
+    private String getUniqueVariableName() {
+        String name;
+
+        do {
+            name = Neo4JDBUtil.generateValidName();
+        } while (nodeVariables.containsKey(name) || relationshipVariables.containsKey(name));
+
+        return name;
+    }
+
+    private Query generateCreate() {
         // TODO: Move to util if needed elsewhere
         errors.add("Invalid Regex: Unclosed character class");
         errors.add("Invalid Regex: Illegal repetition");
@@ -57,91 +72,119 @@ public class Neo4JCreateGenerator {
         errors.add("Invalid input for length value in function 'substring()': Expected a numeric value but got: NO_VALUE");
         errors.add("Invalid input for start value in function 'substring()': Expected a numeric value but got: NO_VALUE");
 
-        query.append("CREATE ");
-        generateNode();
+        // Return clauses
+        errors.add("Multiple result columns with the same name are not supported");
 
-        while (Randomization.getBooleanWithRatherLowProbability()) {
-            if (Randomization.getBoolean()) {
-                generateRelationship();
-                generateNode();
-            } else {
-                query.append(", ");
-                generateNode();
+        query.append("CREATE ");
+
+        int numberOfNodes = Randomization.nextInt(1, 6);
+        String separator = "";
+
+        for (int i = 0; i < numberOfNodes; i++) {
+            query.append(separator);
+            generateNode();
+            separator = ", ";
+        }
+
+        for (String from : nodeVariables.keySet()) {
+            for (String to : nodeVariables.keySet()) {
+                if (Randomization.getBoolean()) {
+                    query.append(", ");
+                    generateRelationship(from, to);
+                }
             }
         }
 
-        // TODO: Maybe add support for more complex return statements and include ORDER BY
-        if (variableCounter > 0 && Randomization.getBoolean()) {
-            query.append(" RETURN ");
+        if (Randomization.getBoolean()) {
+            generateReturn();
 
             if (Randomization.getBoolean()) {
-                query.append("DISTINCT ");
+                generateOrderBy();
             }
 
             if (Randomization.getBoolean()) {
-                query.append(VARIABLE_PREFIX);
-                query.append(Randomization.nextInt(0, variableCounter));
-
-                if (Randomization.getBoolean()) {
-                    query.append(" AS ");
-                    query.append(Neo4JDBUtil.generateValidName());
-                }
-            } else {
-                query.append("*");
-            }
-
-            if (Randomization.getBoolean()) {
-                query.append(" LIMIT ");
-                query.append(Randomization.getPositiveInteger());
+                generateLimit();
             }
         }
 
         return new Query(query.toString(), errors);
     }
 
-    private void generateRelationship() {
-        boolean leftToRight = Randomization.getBoolean();
-
-        if (leftToRight) {
-            query.append("-");
-        } else {
-            query.append("<-");
+    private void generateReturn() {
+        if (Randomization.getBoolean()) {
+            query.append("RETURN *");
+            return;
         }
 
-        query.append("[");
+        query.append(" RETURN ");
 
         if (Randomization.getBoolean()) {
-            query.append(VARIABLE_PREFIX);
-            query.append(variableCounter++);
+            query.append("DISTINCT ");
         }
 
-        String type = schema.getRandomType();
+        returnVariables(nodeVariables);
 
-        query.append(String.format(":%s ", type));
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(schema.getEntityByType(type)));
-        query.append("]");
-
-        if (leftToRight) {
-            query.append("->");
-        } else {
-            query.append("-");
+        if (!relationshipVariables.isEmpty()) {
+            query.append(", ");
+            returnVariables(relationshipVariables);
         }
     }
 
-    private void generateNode() {
-        query.append("(");
+    private void returnVariables(Map<String, Neo4JDBEntity> availableVariables) {
+        Set<String> variables = Randomization.nonEmptySubset(availableVariables.keySet());
+        String separator = "";
 
-        if (Randomization.getBoolean()) {
-            query.append(VARIABLE_PREFIX);
-            query.append(variableCounter++);
+        for (String variable : variables) {
+            query.append(separator);
+            query.append(variable);
+
+            if (Randomization.getBoolean()) {
+                Neo4JDBEntity entity = availableVariables.get(variable);
+                String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+
+                query.append(".");
+                query.append(property);
+
+                if (Randomization.getBoolean()) {
+                    query.append(String.format(" AS %s", Neo4JDBUtil.generateValidName()));
+                }
+            }
+
+            separator = ", ";
         }
+    }
 
-        // TODO: Support multiple labels
+    private void generateOrderBy() {
+        // TODO: Implement
+    }
+
+    private void generateLimit() {
+        query.append(" LIMIT ");
+        query.append(Randomization.getPositiveInteger());
+    }
+
+    private void generateRelationship(String from, String to) {
+        String type = schema.getRandomType();
+        Neo4JDBEntity relationshipSchema = schema.getEntityByType(type);
+        String name = getUniqueVariableName();
+
+        relationshipVariables.put(name, relationshipSchema);
+
+        query.append(String.format("(%s)-[%s:%s ", from, name, type));
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(relationshipSchema));
+        query.append(String.format("]->(%s)", to));
+    }
+
+    // TODO: Support multiple labels
+    private void generateNode() {
         String label = schema.getRandomLabel();
-        Neo4JDBEntity node = schema.getEntityByLabel(label);
-        query.append(String.format(":%s", label));
+        Neo4JDBEntity nodeSchema = schema.getEntityByLabel(label);
+        String name = getUniqueVariableName();
 
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(node));
+        nodeVariables.put(name, nodeSchema);
+
+        query.append(String.format("(%s:%s ", name, label));
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(nodeSchema));
         query.append(")");
     }
 

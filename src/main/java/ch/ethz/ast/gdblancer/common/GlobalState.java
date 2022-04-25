@@ -30,13 +30,12 @@ public class GlobalState<C extends Connection> {
             if (query.getExpectedErrors().isExpected(exception)) {
                 return false;
             } else {
-
                 // See: #12869
                 if (exception instanceof IndexOutOfBoundsException) {
                     return false;
                 }
 
-                // Weird division by zero exception that gets thrown without any message
+                // See: #12874
                 if (exception instanceof QueryExecutionException) {
                     if (((QueryExecutionException) exception).getStatusCode().equals("Neo.ClientError.Statement.ArithmeticError")) {
                         if (exception.getMessage() == null) {
