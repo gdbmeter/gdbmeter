@@ -18,7 +18,8 @@ public class Neo4JGenerator {
         CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex),
         DROP_INDEX(Neo4JDropIndexGenerator::dropIndex),
         SHOW_FUNCTIONS(Neo4JShowFunctionsGenerator::showFunctions),
-        SHOW_PROCEDURES(Neo4JShowProceduresGenerator::showProcedures);
+        SHOW_PROCEDURES(Neo4JShowProceduresGenerator::showProcedures),
+        SHOW_TRANSACTIONS(Neo4JShowTransactionsGenerator::showTransactions);
 
         private final Function<Neo4JDBSchema, Query> generator;
 
@@ -40,6 +41,7 @@ public class Neo4JGenerator {
             case DROP_INDEX:
             case SHOW_FUNCTIONS:
             case SHOW_PROCEDURES:
+            case SHOW_TRANSACTIONS:
                 selectedNumber = Randomization.nextInt(0,  2);
                 break;
             default:
