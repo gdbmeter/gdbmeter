@@ -5,6 +5,7 @@ import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JCreateGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JCreateIndexGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JDropIndexGenerator;
+import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JShowFunctionsGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -18,7 +19,8 @@ public class Neo4JGenerator {
     enum Action {
         CREATE(Neo4JCreateGenerator::createEntities),
         CREATE_INDEX(Neo4JCreateIndexGenerator::createIndex),
-        DROP_INDEX(Neo4JDropIndexGenerator::dropIndex);
+        DROP_INDEX(Neo4JDropIndexGenerator::dropIndex),
+        SHOW_FUNCTIONS(Neo4JShowFunctionsGenerator::showFunctions);
 
         private final Function<Neo4JDBSchema, Query> generator;
 
@@ -38,8 +40,11 @@ public class Neo4JGenerator {
                 selectedNumber = Randomization.nextInt(0,  5);
                 break;
             case DROP_INDEX:
+            case SHOW_FUNCTIONS:
                 selectedNumber = Randomization.nextInt(0,  2);
                 break;
+            default:
+                throw new AssertionError(action);
         }
 
         return selectedNumber;
