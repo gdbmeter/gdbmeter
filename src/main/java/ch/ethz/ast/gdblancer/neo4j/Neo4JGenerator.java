@@ -19,7 +19,8 @@ public class Neo4JGenerator {
         DROP_INDEX(Neo4JDropIndexGenerator::dropIndex),
         SHOW_FUNCTIONS(Neo4JShowFunctionsGenerator::showFunctions),
         SHOW_PROCEDURES(Neo4JShowProceduresGenerator::showProcedures),
-        SHOW_TRANSACTIONS(Neo4JShowTransactionsGenerator::showTransactions);
+        SHOW_TRANSACTIONS(Neo4JShowTransactionsGenerator::showTransactions),
+        DELETE(Neo4JDeleteGenerator::deleteNodes);
 
         private final Function<Neo4JDBSchema, Query> generator;
 
@@ -34,6 +35,9 @@ public class Neo4JGenerator {
         switch (action) {
             case CREATE:
                 selectedNumber = Randomization.nextInt(0, 30);
+                break;
+            case DELETE:
+                selectedNumber = Randomization.nextInt(0, 6);
                 break;
             case CREATE_INDEX:
                 selectedNumber = Randomization.nextInt(0,  5);

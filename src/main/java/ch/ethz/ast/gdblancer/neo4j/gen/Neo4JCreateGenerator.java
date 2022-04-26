@@ -36,41 +36,9 @@ public class Neo4JCreateGenerator {
     }
 
     private Query generateCreate() {
-        // TODO: Move to util if needed elsewhere
-        errors.add("Invalid Regex: Unclosed character class");
-        errors.add("Invalid Regex: Illegal repetition");
-        errors.add("Invalid Regex: Unclosed group");
-        errors.add("Invalid Regex: Dangling meta character");
-        errors.add("Invalid Regex: Illegal/unsupported escape sequence");
-        errors.add("Invalid Regex: Unmatched closing");
-        errors.add("Invalid Regex: Unclosed counted closure");
-        errors.add("Invalid Regex: Illegal character range");
-        errors.add("Invalid Regex: Unclosed character family");
-        errors.add("Invalid Regex: Unknown inline modifier");
-        errors.add("Invalid Regex: \\k is not followed by '<' for named capturing group");
-
-        // See: #12866
-        errors.add("Invalid Regex: Unexpected internal error");
-        errors.add("Invalid Regex: Unknown character property name");           // RETURN (""=~"5\\P")
-        errors.add("Invalid Regex: Illegal octal escape sequence");             // RETURN (""=~"\\0q")
-        errors.add("Invalid Regex: Illegal hexadecimal escape sequence");       // RETURN (""=~"\\xp")
-        errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
-        errors.add("Invalid Regex: Illegal Unicode escape sequence");           // RETURN ""=~("\\uA")
-
-        // Arithmetic errors
-        errors.add("/ by zero");
-        errors.add("cannot be represented as an integer");
-        errors.add("long overflow");
-        errors.addRegex("integer, -??[0-9]+([.][0-9]*)?, is too large");
-
-        // Functions
-        errors.add("Invalid input for length value in function 'left()': Expected a numeric value but got: NO_VALUE");
-        errors.add("Invalid input for length value in function 'right()': Expected a numeric value but got: NO_VALUE");
-        errors.add("Invalid input for length value in function 'substring()': Expected a numeric value but got: NO_VALUE");
-        errors.add("Invalid input for start value in function 'substring()': Expected a numeric value but got: NO_VALUE");
-
-        // Return clauses
-        errors.add("Multiple result columns with the same name are not supported");
+        Neo4JDBUtil.addRegexErrors(errors);
+        Neo4JDBUtil.addArithmeticErrors(errors);
+        Neo4JDBUtil.addFunctionErrors(errors);
 
         query.append("CREATE ");
 
@@ -109,7 +77,7 @@ public class Neo4JCreateGenerator {
 
     private void generateReturn() {
         if (Randomization.getBoolean()) {
-            query.append("RETURN *");
+            query.append("RETURN * ");
             return;
         }
 
