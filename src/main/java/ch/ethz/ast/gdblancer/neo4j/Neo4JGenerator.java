@@ -21,7 +21,8 @@ public class Neo4JGenerator {
         SHOW_PROCEDURES(Neo4JShowProceduresGenerator::showProcedures),
         SHOW_TRANSACTIONS(Neo4JShowTransactionsGenerator::showTransactions),
         DELETE(Neo4JDeleteGenerator::deleteNodes),
-        SET(Neo4JSetGenerator::setProperties);
+        SET(Neo4JSetGenerator::setProperties),
+        REMOVE(Neo4JRemoveGenerator::removeProperties);
 
         private final Function<Neo4JDBSchema, Query> generator;
 
@@ -39,6 +40,7 @@ public class Neo4JGenerator {
                 break;
             case DELETE:
             case SET:
+            case REMOVE:
                 selectedNumber = Randomization.nextInt(0, 6);
                 break;
             case CREATE_INDEX:

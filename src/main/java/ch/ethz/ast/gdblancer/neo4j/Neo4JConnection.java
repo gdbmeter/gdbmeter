@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.schema.IndexDefinition;
 
@@ -34,7 +35,7 @@ public class Neo4JConnection implements Connection {
     @Override
     public void execute(Query query) {
         try (Transaction transaction = this.databaseService.beginTx()) {
-            transaction.execute(query.getQuery());
+            Result result = transaction.execute(query.getQuery());
             transaction.commit();
         }
     }

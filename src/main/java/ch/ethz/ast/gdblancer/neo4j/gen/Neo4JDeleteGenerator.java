@@ -22,7 +22,7 @@ public class Neo4JDeleteGenerator {
     }
 
     // TODO: Support DELETE based on conditions
-    // TODO: Support DELETE of edges
+    // TODO: Support DELETE of relationships
     // TODO: Support DELETE of nodes of different labels
     // TODO: Add RETURN clause
     private Query generateDelete() {
