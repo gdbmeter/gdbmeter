@@ -8,8 +8,11 @@ import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Neo4JCreateGenerator {
 
@@ -19,6 +22,10 @@ public class Neo4JCreateGenerator {
 
     private final Map<String, Neo4JDBEntity> nodeVariables = new HashMap<>();
     private final Map<String, Neo4JDBEntity> relationshipVariables = new HashMap<>();
+    private final Set<String> aliasVariables = new HashSet<>();
+
+    private boolean usesDistinctReturn = false;
+    private final Set<String> distinctReturnedExpression = new HashSet<>();
 
     public Neo4JCreateGenerator(Neo4JDBSchema schema) {
         this.schema = schema;
@@ -26,16 +33,6 @@ public class Neo4JCreateGenerator {
 
     public static Query createEntities(Neo4JDBSchema schema) {
         return new Neo4JCreateGenerator(schema).generateCreate();
-    }
-
-    private String getUniqueVariableName() {
-        String name;
-
-        do {
-            name = Neo4JDBUtil.generateValidName();
-        } while (nodeVariables.containsKey(name) || relationshipVariables.containsKey(name));
-
-        return name;
     }
 
     private Query generateCreate() {
@@ -120,18 +117,11 @@ public class Neo4JCreateGenerator {
 
         if (Randomization.getBoolean()) {
             query.append("DISTINCT ");
+            usesDistinctReturn = true;
         }
 
-        returnVariables(nodeVariables);
-
-        if (!relationshipVariables.isEmpty()) {
-            query.append(", ");
-            returnVariables(relationshipVariables);
-        }
-    }
-
-    private void returnVariables(Map<String, Neo4JDBEntity> availableVariables) {
-        Set<String> variables = Randomization.nonEmptySubset(availableVariables.keySet());
+        Map<String, Neo4JDBEntity> allVariables = getAllVariables();
+        Set<String> variables = Randomization.nonEmptySubset(allVariables.keySet());
         String separator = "";
 
         for (String variable : variables) {
@@ -139,14 +129,27 @@ public class Neo4JCreateGenerator {
             query.append(variable);
 
             if (Randomization.getBoolean()) {
-                Neo4JDBEntity entity = availableVariables.get(variable);
+                Neo4JDBEntity entity = allVariables.get(variable);
                 String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
                 query.append(".");
                 query.append(property);
+                query.append(" ");
+
+                if (usesDistinctReturn) {
+                    distinctReturnedExpression.add(variable + "." + property);
+                }
 
                 if (Randomization.getBoolean()) {
-                    query.append(String.format(" AS %s", Neo4JDBUtil.generateValidName()));
+                    String alias = getUniqueVariableName();
+                    query.append(String.format("AS %s ", alias));
+                    aliasVariables.add(alias);
+                }
+            } else {
+                query.append(" ");
+
+                if (usesDistinctReturn) {
+                    distinctReturnedExpression.add(variable);
                 }
             }
 
@@ -155,7 +158,58 @@ public class Neo4JCreateGenerator {
     }
 
     private void generateOrderBy() {
-        // TODO: Implement
+        query.append("ORDER BY ");
+
+        if (usesDistinctReturn) {
+            Set<String> expressions = Randomization.nonEmptySubset(distinctReturnedExpression);
+            String separator = "";
+
+            for (String expression : expressions) {
+                query.append(separator);
+                query.append(expression);
+                query.append(" ");
+
+                if (Randomization.getBoolean()) {
+                    if (Randomization.getBoolean()) {
+                        query.append("DESC ");
+                    } else {
+                        query.append("DESCENDING ");
+                    }
+                }
+
+                separator = ", ";
+            }
+
+            return;
+        }
+
+        Map<String, Neo4JDBEntity> allVariables = getAllVariables();
+        Set<String> variables = Randomization.nonEmptySubset(allVariables.keySet());
+        String separator = "";
+
+        for (String variable : variables) {
+            query.append(separator);
+            query.append(variable);
+
+            if (Randomization.getBoolean()) {
+                Neo4JDBEntity entity = allVariables.get(variable);
+                String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+
+                query.append(".");
+                query.append(property);
+                query.append(" ");
+
+                if (Randomization.getBoolean()) {
+                    if (Randomization.getBoolean()) {
+                        query.append("DESC ");
+                    } else {
+                        query.append("DESCENDING ");
+                    }
+                }
+            }
+
+            separator = ", ";
+        }
     }
 
     private void generateLimit() {
@@ -186,6 +240,24 @@ public class Neo4JCreateGenerator {
         query.append(String.format("(%s:%s ", name, label));
         query.append(Neo4JPropertyGenerator.generatePropertyQuery(nodeSchema));
         query.append(")");
+    }
+
+    private String getUniqueVariableName() {
+        String name;
+
+        do {
+            name = Neo4JDBUtil.generateValidName();
+        } while (nodeVariables.containsKey(name)
+                || relationshipVariables.containsKey(name)
+                || aliasVariables.contains(name));
+
+        return name;
+    }
+
+    private Map<String, Neo4JDBEntity> getAllVariables() {
+        return Stream.of(nodeVariables, relationshipVariables)
+                .flatMap(m -> m.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
 }
