@@ -23,6 +23,7 @@ public class Neo4JDeleteGenerator {
 
     // TODO: Support deletion based on conditions
     // TODO: Support deletion of edges
+    // TODO: Add RETURN clause
     private Query generateDelete() {
         Neo4JDBUtil.addRegexErrors(errors);
         Neo4JDBUtil.addArithmeticErrors(errors);
@@ -45,6 +46,5 @@ public class Neo4JDeleteGenerator {
 
         return new Query(query.toString(), errors);
     }
-
 
 }
