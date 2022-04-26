@@ -4,28 +4,31 @@ import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-public class Neo4JDeleteGenerator {
+import java.util.Set;
+
+public class Neo4JSetGenerator {
 
     private final Neo4JDBSchema schema;
     private final StringBuilder query = new StringBuilder();
     private final ExpectedErrors errors = new ExpectedErrors();
 
-    public Neo4JDeleteGenerator(Neo4JDBSchema schema) {
+    public Neo4JSetGenerator(Neo4JDBSchema schema) {
         this.schema = schema;
     }
 
-    public static Query deleteNodes(Neo4JDBSchema schema) {
-        return new Neo4JDeleteGenerator(schema).generateDelete();
+    public static Query setProperties(Neo4JDBSchema schema) {
+        return new Neo4JSetGenerator(schema).generateSet();
     }
 
-    // TODO: Support DELETE based on conditions
-    // TODO: Support DELETE of edges
-    // TODO: Support DELETE of nodes of different labels
+    // TODO: Support SET based on conditions
+    // TODO: Support SET on nodes with different labels
+    // TODO: Support SET of multiple properties
     // TODO: Add RETURN clause
-    private Query generateDelete() {
+    private Query generateSet() {
         Neo4JDBUtil.addRegexErrors(errors);
         Neo4JDBUtil.addArithmeticErrors(errors);
         Neo4JDBUtil.addFunctionErrors(errors);
@@ -37,15 +40,14 @@ public class Neo4JDeleteGenerator {
         query.append(Neo4JPropertyGenerator.generatePropertyQuery(entity));
         query.append(") ");
 
-        if (Randomization.getBoolean()) {
-            query.append("DETACH ");
-        } else {
-            errors.addRegex("Cannot delete node<\\d+>, because it still has relationships. To delete this node, you must first delete its relationships.");
-        }
+        Set<String> properties = entity.getAvailableProperties().keySet();
+        String property = Randomization.fromSet(properties);
+        Neo4JType type = entity.getAvailableProperties().get(property);
 
-        query.append("DELETE n");
+        query.append(String.format("SET n.%s = %s", property, Neo4JPropertyGenerator.generateRandomValue(type)));
 
         return new Query(query.toString(), errors);
     }
+
 
 }

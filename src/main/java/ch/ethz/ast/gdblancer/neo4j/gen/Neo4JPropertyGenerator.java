@@ -47,10 +47,10 @@ public class Neo4JPropertyGenerator {
 
     private void generateProperty(String name, Neo4JType type) {
         query.append(String.format("%s:", name));
-        generateRandomValue(type);
+        query.append(generateRandomValue(type));
     }
 
-    private void generateRandomValue(Neo4JType type) {
+    public static String generateRandomValue(Neo4JType type) {
         Neo4JExpression expression;
 
         if (Randomization.getBoolean()) {
@@ -59,7 +59,7 @@ public class Neo4JPropertyGenerator {
             expression = Neo4JExpressionGenerator.generateExpression(type);
         }
 
-        query.append(Neo4JVisitor.asString(expression));
+        return Neo4JVisitor.asString(expression);
     }
 
 }
