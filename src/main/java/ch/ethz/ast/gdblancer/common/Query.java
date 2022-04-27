@@ -10,6 +10,10 @@ public class Query {
         this(query, new ExpectedErrors());
     }
 
+    public Query(String query, boolean couldAffectSchema) {
+        this(query, new ExpectedErrors(), couldAffectSchema);
+    }
+
     public Query(String query, ExpectedErrors expectedErrors) {
         this(query, expectedErrors, false);
     }

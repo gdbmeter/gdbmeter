@@ -36,7 +36,7 @@ public class Neo4JDropIndexGenerator {
             query.append(" IF EXISTS");
         }
 
-        return new Query(query.toString());
+        return new Query(query.toString(), true);
     }
 
 }

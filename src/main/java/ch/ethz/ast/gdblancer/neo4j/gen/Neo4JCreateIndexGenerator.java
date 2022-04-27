@@ -43,7 +43,7 @@ public class Neo4JCreateIndexGenerator {
         }
 
         errors.add("An equivalent index already exists");
-        return new Query(query.toString(), errors);
+        return new Query(query.toString(), errors, true);
     }
 
     private void generateNodeTextIndex() {
