@@ -1,6 +1,5 @@
 package ch.ethz.ast.gdblancer.common;
 
-import org.neo4j.graphdb.QueryExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,34 +20,4 @@ public class GlobalState<C extends Connection> {
         this.connection = connection;
     }
 
-    public boolean execute(Query query) {
-        LOGGER.info(query.getQuery());
-
-        try {
-            connection.execute(query);
-        } catch (Exception exception) {
-            if (query.getExpectedErrors().isExpected(exception)) {
-                return false;
-            } else {
-                // See: #12869
-                if (exception instanceof IndexOutOfBoundsException) {
-                    return false;
-                }
-
-                // See: #12874
-                if (exception instanceof QueryExecutionException) {
-                    if (((QueryExecutionException) exception).getStatusCode().equals("Neo.ClientError.Statement.ArithmeticError")) {
-                        if (exception.getMessage() == null) {
-                            LOGGER.info("Division by zero thrown without message");
-                            return false;
-                        }
-                    }
-                }
-
-                throw new AssertionError(query.getQuery(), exception);
-            }
-        }
-
-        return true;
-    }
 }

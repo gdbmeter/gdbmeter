@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
@@ -17,7 +17,7 @@ public class Neo4JDeleteGenerator {
         this.schema = schema;
     }
 
-    public static Query deleteNodes(Neo4JDBSchema schema) {
+    public static Neo4JQuery deleteNodes(Neo4JDBSchema schema) {
         return new Neo4JDeleteGenerator(schema).generateDelete();
     }
 
@@ -25,7 +25,7 @@ public class Neo4JDeleteGenerator {
     // TODO: Support DELETE of relationships
     // TODO: Support DELETE of nodes of different labels
     // TODO: Add RETURN clause
-    private Query generateDelete() {
+    private Neo4JQuery generateDelete() {
         Neo4JDBUtil.addRegexErrors(errors);
         Neo4JDBUtil.addArithmeticErrors(errors);
         Neo4JDBUtil.addFunctionErrors(errors);
@@ -45,7 +45,7 @@ public class Neo4JDeleteGenerator {
 
         query.append("DELETE n");
 
-        return new Query(query.toString(), errors);
+        return new Neo4JQuery(query.toString(), errors);
     }
 
 }

@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
@@ -17,7 +17,7 @@ public class Neo4JRemoveGenerator {
         this.schema = schema;
     }
 
-    public static Query removeProperties(Neo4JDBSchema schema) {
+    public static Neo4JQuery removeProperties(Neo4JDBSchema schema) {
         return new Neo4JRemoveGenerator(schema).generateRemove();
     }
 
@@ -25,7 +25,7 @@ public class Neo4JRemoveGenerator {
     // TODO: Support REMOVE on nodes with different labels
     // TODO: Support REMOVE of multiple properties
     // TODO: Add RETURN clause
-    private Query generateRemove() {
+    private Neo4JQuery generateRemove() {
         Neo4JDBUtil.addRegexErrors(errors);
         Neo4JDBUtil.addArithmeticErrors(errors);
         Neo4JDBUtil.addFunctionErrors(errors);
@@ -40,7 +40,7 @@ public class Neo4JRemoveGenerator {
         String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
         query.append(String.format("REMOVE n.%s ", property));
 
-        return new Query(query.toString(), errors);
+        return new Neo4JQuery(query.toString(), errors);
     }
 
 

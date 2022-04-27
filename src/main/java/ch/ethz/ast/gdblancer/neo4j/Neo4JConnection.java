@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Neo4JConnection implements Connection {
 
@@ -32,12 +35,16 @@ public class Neo4JConnection implements Connection {
         this.databaseService = managementService.database("neo4j");
     }
 
-    @Override
-    public void execute(Query query) {
+    public List<Map<String, Object>> execute(Query<Neo4JConnection> query) {
+        List<Map<String, Object>> resultRows;
+
         try (Transaction transaction = this.databaseService.beginTx()) {
             Result result = transaction.execute(query.getQuery());
+            resultRows = result.stream().collect(Collectors.toList());
             transaction.commit();
         }
+
+        return resultRows;
     }
 
     @Override

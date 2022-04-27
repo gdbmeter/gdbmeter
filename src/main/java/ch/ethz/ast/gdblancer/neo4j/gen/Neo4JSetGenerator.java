@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
@@ -20,7 +20,7 @@ public class Neo4JSetGenerator {
         this.schema = schema;
     }
 
-    public static Query setProperties(Neo4JDBSchema schema) {
+    public static Neo4JQuery setProperties(Neo4JDBSchema schema) {
         return new Neo4JSetGenerator(schema).generateSet();
     }
 
@@ -29,7 +29,7 @@ public class Neo4JSetGenerator {
     // TODO: Support SET on nodes with different labels
     // TODO: Support SET of multiple properties
     // TODO: Add RETURN clause
-    private Query generateSet() {
+    private Neo4JQuery generateSet() {
         Neo4JDBUtil.addRegexErrors(errors);
         Neo4JDBUtil.addArithmeticErrors(errors);
         Neo4JDBUtil.addFunctionErrors(errors);
@@ -51,7 +51,7 @@ public class Neo4JSetGenerator {
             query.append(String.format("SET n.%s = %s", property, Neo4JPropertyGenerator.generateRandomValue(type)));
         }
 
-        return new Query(query.toString(), errors);
+        return new Neo4JQuery(query.toString(), errors);
     }
 
 

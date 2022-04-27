@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -15,15 +15,15 @@ public class Neo4JDropIndexGenerator {
         this.schema = schema;
     }
 
-    public static Query dropIndex(Neo4JDBSchema schema) {
+    public static Neo4JQuery dropIndex(Neo4JDBSchema schema) {
         return new Neo4JDropIndexGenerator(schema).generateDropIndex();
     }
 
-    private Query generateDropIndex() {
+    private Neo4JQuery generateDropIndex() {
         // Drop a non-existing index
         if (Randomization.smallBiasProbability()) {
             query.append(String.format("DROP INDEX %s IF EXISTS", Neo4JDBUtil.generateValidName()));
-            return new Query(query.toString());
+            return new Neo4JQuery(query.toString());
         }
 
         if (!schema.hasIndices()) {
@@ -36,7 +36,7 @@ public class Neo4JDropIndexGenerator {
             query.append(" IF EXISTS");
         }
 
-        return new Query(query.toString(), true);
+        return new Neo4JQuery(query.toString(), true);
     }
 
 }

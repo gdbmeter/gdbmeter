@@ -1,5 +1,7 @@
 package ch.ethz.ast.gdblancer.common;
 
+import org.neo4j.graphdb.QueryExecutionException;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -33,6 +35,18 @@ public class ExpectedErrors {
         for (String error : regexErrors) {
             if (Pattern.matches(error, message)) {
                 return true;
+            }
+        }
+
+        // See: #12869
+        if (exception instanceof IndexOutOfBoundsException) {
+            return true;
+        }
+
+        // See: #12874
+        if (exception instanceof QueryExecutionException) {
+            if (((QueryExecutionException) exception).getStatusCode().equals("Neo.ClientError.Statement.ArithmeticError")) {
+                return exception.getMessage() == null;
             }
         }
 

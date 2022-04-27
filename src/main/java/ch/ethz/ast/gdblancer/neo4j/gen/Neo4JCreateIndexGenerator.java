@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBIndex;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -24,11 +24,11 @@ public class Neo4JCreateIndexGenerator {
         this.schema = schema;
     }
 
-    public static Query createIndex(Neo4JDBSchema schema) {
+    public static Neo4JQuery createIndex(Neo4JDBSchema schema) {
         return new Neo4JCreateIndexGenerator(schema).generateCreateIndex();
     }
 
-    private Query generateCreateIndex() {
+    private Neo4JQuery generateCreateIndex() {
         switch (Randomization.fromOptions(INDEX_TYPES.values())) {
             // TODO: Merge first two cases
             case NODE_INDEX:
@@ -43,7 +43,7 @@ public class Neo4JCreateIndexGenerator {
         }
 
         errors.add("An equivalent index already exists");
-        return new Query(query.toString(), errors, true);
+        return new Neo4JQuery(query.toString(), errors, true);
     }
 
     private void generateNodeTextIndex() {

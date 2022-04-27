@@ -6,6 +6,4 @@ public interface Connection extends AutoCloseable {
 
     void connect() throws IOException;
 
-    void execute(Query query) throws Exception;
-
 }

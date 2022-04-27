@@ -1,9 +1,11 @@
 package ch.ethz.ast.gdblancer;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -18,7 +20,13 @@ public class Main {
             try (Neo4JConnection connection = new Neo4JConnection()) {
                 connection.connect();
                 state.setConnection(connection);
-                new Neo4JGenerator().generate(state);
+                Neo4JDBSchema schema = new Neo4JGenerator().generate(state);
+
+                Neo4JPartitionOracle oracle = new Neo4JPartitionOracle(state, schema);
+                for (int i = 0; i < 1000; i++) {
+                    oracle.check();
+                }
+
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
             }
@@ -34,7 +42,7 @@ public class Main {
             connection.connect();
 
             for (String query : queries) {
-                connection.execute(new Query(query));
+                connection.execute(new Neo4JQuery(query));
             }
 
         } catch (IOException e) {

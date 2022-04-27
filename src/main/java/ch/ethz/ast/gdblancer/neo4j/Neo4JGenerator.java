@@ -1,7 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.neo4j.gen.*;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -24,9 +23,9 @@ public class Neo4JGenerator {
         SET(Neo4JSetGenerator::setProperties),
         REMOVE(Neo4JRemoveGenerator::removeProperties);
 
-        private final Function<Neo4JDBSchema, Query> generator;
+        private final Function<Neo4JDBSchema, Neo4JQuery> generator;
 
-        Action(Function<Neo4JDBSchema, Query> generator) {
+        Action(Function<Neo4JDBSchema, Neo4JQuery> generator) {
             this.generator = generator;
         }
     }
@@ -59,9 +58,9 @@ public class Neo4JGenerator {
         return selectedNumber;
     }
 
-    public void generate(GlobalState<Neo4JConnection> globalState) {
+    public Neo4JDBSchema generate(GlobalState<Neo4JConnection> globalState) {
         Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
-        List<Function<Neo4JDBSchema, Query>> queries = new ArrayList<>();
+        List<Function<Neo4JDBSchema, Neo4JQuery>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -74,15 +73,15 @@ public class Neo4JGenerator {
 
         Randomization.shuffleList(queries);
 
-        for (Function<Neo4JDBSchema, Query> queryGenerator : queries) {
+        for (Function<Neo4JDBSchema, Neo4JQuery> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;
-                Query query;
+                Neo4JQuery query;
 
                 do {
                     query = queryGenerator.apply(schema);
-                    success = globalState.execute(query);
+                    success = query.execute(globalState);
                 } while (!success && tries++ < 1000);
 
                 if (success && query.couldAffectSchema()) {
@@ -94,6 +93,8 @@ public class Neo4JGenerator {
                 globalState.getLogger().info("Ignore me exception thrown");
             }
         }
+
+        return schema;
     }
 
 }

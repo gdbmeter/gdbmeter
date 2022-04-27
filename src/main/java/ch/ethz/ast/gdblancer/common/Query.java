@@ -1,6 +1,9 @@
 package ch.ethz.ast.gdblancer.common;
 
-public class Query {
+import java.util.List;
+import java.util.Map;
+
+public abstract class Query<C extends Connection> {
 
     private final String query;
     private final ExpectedErrors expectedErrors;
@@ -35,5 +38,9 @@ public class Query {
     public boolean couldAffectSchema() {
         return couldAffectSchema;
     }
+
+    public abstract boolean execute(GlobalState<C> globalState);
+
+    public abstract List<Map<String, Object>> executeAndGet(GlobalState<C> globalState);
 
 }
