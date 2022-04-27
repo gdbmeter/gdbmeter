@@ -28,7 +28,6 @@ public class Neo4JSetGenerator {
     // TODO: Support SET based on conditions
     // TODO: Support SET on nodes with different labels
     // TODO: Support SET of multiple properties
-    // TODO: Support SET to {}
     // TODO: Add RETURN clause
     private Query generateSet() {
         Neo4JDBUtil.addRegexErrors(errors);
@@ -42,11 +41,15 @@ public class Neo4JSetGenerator {
         query.append(Neo4JPropertyGenerator.generatePropertyQuery(entity));
         query.append(") ");
 
-        Set<String> properties = entity.getAvailableProperties().keySet();
-        String property = Randomization.fromSet(properties);
-        Neo4JType type = entity.getAvailableProperties().get(property);
+        if (Randomization.smallBiasProbability()) {
+            query.append("SET n = {}");
+        } else {
+            Set<String> properties = entity.getAvailableProperties().keySet();
+            String property = Randomization.fromSet(properties);
+            Neo4JType type = entity.getAvailableProperties().get(property);
 
-        query.append(String.format("SET n.%s = %s", property, Neo4JPropertyGenerator.generateRandomValue(type)));
+            query.append(String.format("SET n.%s = %s", property, Neo4JPropertyGenerator.generateRandomValue(type)));
+        }
 
         return new Query(query.toString(), errors);
     }
