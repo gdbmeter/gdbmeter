@@ -254,7 +254,7 @@ public class Neo4JExpressionGenerator {
     }
 
     public static Neo4JExpression generateExpression(Neo4JType type) {
-        return new Neo4JExpressionGenerator().generateExpression(MAX_DEPTH, type);
+        return new Neo4JExpressionGenerator().generateExpression(0, type);
     }
 
     private Neo4JExpression generateExpression(int depth, Neo4JType type) {
