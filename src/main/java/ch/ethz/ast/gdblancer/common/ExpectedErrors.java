@@ -22,6 +22,20 @@ public class ExpectedErrors {
     public boolean isExpected(Exception exception) {
         String message = exception.getMessage();
 
+        // See: #12869
+        if (exception instanceof IndexOutOfBoundsException) {
+            return true;
+        }
+
+        // See: #12874
+        if (exception instanceof QueryExecutionException) {
+            if (((QueryExecutionException) exception).getStatusCode().equals("Neo.ClientError.Statement.ArithmeticError")) {
+                if (exception.getMessage() == null) {
+                    return true;
+                }
+            }
+        }
+
         if (message == null) {
             return false;
         }
@@ -35,18 +49,6 @@ public class ExpectedErrors {
         for (String error : regexErrors) {
             if (Pattern.matches(error, message)) {
                 return true;
-            }
-        }
-
-        // See: #12869
-        if (exception instanceof IndexOutOfBoundsException) {
-            return true;
-        }
-
-        // See: #12874
-        if (exception instanceof QueryExecutionException) {
-            if (((QueryExecutionException) exception).getStatusCode().equals("Neo.ClientError.Statement.ArithmeticError")) {
-                return exception.getMessage() == null;
             }
         }
 
