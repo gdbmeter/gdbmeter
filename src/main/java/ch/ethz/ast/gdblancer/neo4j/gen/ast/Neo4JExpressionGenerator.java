@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.ast;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JBinaryArithmeticOperation.ArithmeticOperator;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -12,6 +13,16 @@ import java.util.stream.Stream;
 public class Neo4JExpressionGenerator {
 
     private static final int MAX_DEPTH = 3;
+
+    private final Map<String, Neo4JDBEntity> variables;
+
+    public Neo4JExpressionGenerator(Map<String, Neo4JDBEntity> variables) {
+        this.variables = variables;
+    }
+
+    public Neo4JExpressionGenerator() {
+        this.variables = new HashMap<>();
+    }
 
     private enum IntegerConstantFormat {
         NORMAL_INTEGER,
@@ -143,7 +154,7 @@ public class Neo4JExpressionGenerator {
                 return new Neo4JPrefixOperation(generateExpression(depth + 1, Neo4JType.BOOLEAN),
                         Neo4JPrefixOperation.PrefixOperator.NOT);
             case POSTFIX_OPERATOR:
-                return new Neo4JPostfixOperation(generateExpression(depth + 1, Randomization.fromOptions(Neo4JType.values())),
+                return new Neo4JPostfixOperation(generateExpression(depth + 1),
                         Neo4JPostfixOperation.PostfixOperator.getRandom());
             case BINARY_COMPARISON:
                 return generateComparison(depth, Randomization.fromOptions(Neo4JType.values()));
@@ -253,12 +264,28 @@ public class Neo4JExpressionGenerator {
         return generateFunction(depth + 1, Neo4JType.DURATION);
     }
 
+    public static Neo4JExpression generateExpression() {
+        return generateExpression(Neo4JType.getRandom());
+    }
+
     public static Neo4JExpression generateExpression(Neo4JType type) {
         return new Neo4JExpressionGenerator().generateExpression(0, type);
     }
 
+    public Neo4JExpression generateExpression(int depth) {
+        return generateExpression(depth, Neo4JType.getRandom());
+    }
+
     private Neo4JExpression generateExpression(int depth, Neo4JType type) {
         return generateExpressionInternal(depth, type);
+    }
+
+    public static Neo4JExpression generateExpression(Map<String, Neo4JDBEntity> variables, Neo4JType type) {
+        return new Neo4JExpressionGenerator(variables).generateExpression(0, type);
+    }
+
+    public static Neo4JExpression generateExpression(Map<String, Neo4JDBEntity> variables) {
+        return generateExpression(variables, Neo4JType.getRandom());
     }
 
     private Neo4JExpression generateExpressionInternal(int depth, Neo4JType type) {
