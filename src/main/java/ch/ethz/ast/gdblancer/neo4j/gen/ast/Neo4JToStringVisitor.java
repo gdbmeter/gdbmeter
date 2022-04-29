@@ -41,6 +41,11 @@ public class Neo4JToStringVisitor implements Neo4JVisitor {
     }
 
     @Override
+    public void visit(Neo4JVariablePropertyAccess propertyAccess) {
+        sb.append(propertyAccess.getVariableName());
+    }
+
+    @Override
     public void visit(Neo4JConstant constant) {
         sb.append(constant.getTextRepresentation());
     }

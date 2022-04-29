@@ -190,11 +190,12 @@ public class Neo4JCreateGenerator {
         Neo4JDBEntity relationshipSchema = schema.getEntityByType(type);
         String name = getUniqueVariableName();
 
-        relationshipVariables.put(name, relationshipSchema);
-
         query.append(String.format("(%s)-[%s:%s ", from, name, type));
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(relationshipSchema));
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(relationshipSchema, getAllVariables()));
         query.append(String.format("]->(%s)", to));
+
+        // Add variable at this point so that we don't reference it before
+        relationshipVariables.put(name, relationshipSchema);
     }
 
     // TODO: Support multiple labels
@@ -203,11 +204,12 @@ public class Neo4JCreateGenerator {
         Neo4JDBEntity nodeSchema = schema.getEntityByLabel(label);
         String name = getUniqueVariableName();
 
-        nodeVariables.put(name, nodeSchema);
-
         query.append(String.format("(%s:%s ", name, label));
-        query.append(Neo4JPropertyGenerator.generatePropertyQuery(nodeSchema));
+        query.append(Neo4JPropertyGenerator.generatePropertyQuery(nodeSchema, getAllVariables()));
         query.append(")");
+
+        // Add variable at this point so that we don't reference it before
+        nodeVariables.put(name, nodeSchema);
     }
 
     private String getUniqueVariableName() {
