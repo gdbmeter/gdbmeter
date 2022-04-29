@@ -277,6 +277,10 @@ public class Neo4JExpressionGenerator {
     }
 
     private Neo4JExpression generateExpression(int depth, Neo4JType type) {
+        if (!filterVariables(type).isEmpty() && Randomization.getBoolean()) {
+            return getVariableExpression(type);
+        }
+
         return generateExpressionInternal(depth, type);
     }
 
@@ -286,6 +290,31 @@ public class Neo4JExpressionGenerator {
 
     public static Neo4JExpression generateExpression(Map<String, Neo4JDBEntity> variables) {
         return generateExpression(variables, Neo4JType.getRandom());
+    }
+
+    private Neo4JExpression getVariableExpression(Neo4JType type) {
+        List<String> variables = filterVariables(type);
+        return new Neo4JVariablePropertyAccess(Randomization.fromList(variables));
+    }
+
+    private List<String> filterVariables(Neo4JType type) {
+        if (variables == null) {
+            return Collections.emptyList();
+        } else {
+            List<String> filteredVariables = new ArrayList<>();
+
+            for (String variable : variables.keySet()) {
+                Map<String, Neo4JType> properties = variables.get(variable).getAvailableProperties();
+
+                for (String property : properties.keySet()) {
+                    if (properties.get(property) == type) {
+                        filteredVariables.add(variable + "." + property);
+                    }
+                }
+            }
+
+            return filteredVariables;
+        }
     }
 
     private Neo4JExpression generateExpressionInternal(int depth, Neo4JType type) {
