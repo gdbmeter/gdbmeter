@@ -62,7 +62,7 @@ public class Neo4JToStringVisitor implements Neo4JVisitor {
     public void visit(Neo4JPostfixOperation operation) {
         sb.append("(");
         visit(operation.getExpression());
-        sb.append(")" );
+        sb.append(") ");
         sb.append(operation.getOperator().getTextRepresentation());
     }
 
