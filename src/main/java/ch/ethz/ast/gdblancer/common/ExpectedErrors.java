@@ -41,6 +41,11 @@ public class ExpectedErrors {
                     return true;
                 }
             }
+
+            // #12878
+            if (exception.getMessage().startsWith("Node with id") && exception.getMessage().endsWith("has been deleted in this transaction")) {
+                return true;
+            }
         }
 
         if (message == null) {
