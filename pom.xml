@@ -30,7 +30,7 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j</artifactId>
-            <version>4.4.5</version>
+            <version>4.4.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
