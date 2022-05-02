@@ -34,13 +34,14 @@ public class Neo4JDBUtil {
         errors.add("Invalid Regex: Illegal hexadecimal escape sequence");       // RETURN (""=~"\\xp")
         errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
         errors.add("Invalid Regex: Illegal Unicode escape sequence");           // RETURN ""=~("\\uA")
+        errors.add("Invalid Regex: Illegal control escape sequence");           // RETURN ""=~("\\c")
     }
 
     public static void addArithmeticErrors(ExpectedErrors errors) {
         errors.add("/ by zero");
         errors.add("cannot be represented as an integer");
         errors.add("long overflow");
-        errors.addRegex("integer, -??[0-9]+([.][0-9]*)?, is too large");
+        errors.addRegex("integer, -??[0-9]+([.][0-9E]*)?, is too large");
     }
 
     public static void addFunctionErrors(ExpectedErrors errors) {
