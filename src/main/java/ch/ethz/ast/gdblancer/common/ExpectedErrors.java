@@ -34,6 +34,13 @@ public class ExpectedErrors {
                     return true;
                 }
             }
+
+            // See: #12876
+            if (((QueryExecutionException) exception).getStatusCode().equals("Neo.DatabaseError.Statement.ExecutionFailed")) {
+                if (exception.getMessage().startsWith("Expected \nRegularSinglePlannerQuery(QueryGraph {Nodes: ['n'],")) {
+                    return true;
+                }
+            }
         }
 
         if (message == null) {
