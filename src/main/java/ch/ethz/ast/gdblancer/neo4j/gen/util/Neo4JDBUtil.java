@@ -3,15 +3,27 @@ package ch.ethz.ast.gdblancer.neo4j.gen.util;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.Set;
+
 public class Neo4JDBUtil {
+
+    private static final Set<String> NEO4J_KEYWORDS = Set.of(
+            "AND", "CONTAINS", "DISTINCT", "IN", "NOT", "OR", "XOR", "CASE", "WHERE", "FROM", "SHOW", "MATCH", "MERGE"
+    );
 
     /**
      * A valid name begins with an alphabetic character and not with a number
      * Furthermore, a valid name does not contain symbols except for underscores
      */
     public static String generateValidName() {
-        return Randomization.getCharacterFromAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
-                + Randomization.getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_");
+        String candidate;
+
+        do {
+            candidate = Randomization.getCharacterFromAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
+                    + Randomization.getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_");
+        } while (NEO4J_KEYWORDS.contains(candidate));
+
+        return candidate;
     }
 
     public static void addRegexErrors(ExpectedErrors errors) {
