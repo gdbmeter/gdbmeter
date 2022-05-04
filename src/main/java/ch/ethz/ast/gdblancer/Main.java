@@ -2,12 +2,14 @@ package ch.ethz.ast.gdblancer;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
-import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JNonEmptyResult;
+import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,11 +28,15 @@ public class Main {
             try (Neo4JConnection connection = new Neo4JConnection()) {
                 connection.connect();
                 state.setConnection(connection);
-                Neo4JDBSchema schema = new Neo4JGenerator().generate(state);
 
-                Neo4JPartitionOracle oracle = new Neo4JPartitionOracle(state, schema);
-                for (int i = 0; i < 1000; i++) {
-                    oracle.check();
+                Neo4JDBSchema schema = new Neo4JGenerator().generate(state);
+                Oracle oracle = new Neo4JNonEmptyResult(state, schema);
+
+                state.getLogger().info("Running oracle");
+                for (int i = 0; i < 100; i++) {
+                    try {
+                        oracle.check();
+                    } catch (IgnoreMeException ignored) {}
                 }
 
             } finally {
@@ -65,7 +71,6 @@ public class Main {
         List<String> lines = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-
             String line;
             while ((line = br.readLine()) != null) {
                 lines.add(line);

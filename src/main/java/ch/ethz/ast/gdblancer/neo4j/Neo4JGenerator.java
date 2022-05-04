@@ -35,7 +35,7 @@ public class Neo4JGenerator {
 
         switch (action) {
             case CREATE:
-                selectedNumber = Randomization.nextInt(0, 20);
+                selectedNumber = Randomization.nextInt(10, 30);
                 break;
             case DELETE:
             case SET:
@@ -88,10 +88,7 @@ public class Neo4JGenerator {
                     // TODO: Move to global state later
                     schema.setIndices(globalState.getConnection().getIndexNames());
                 }
-            } catch (IgnoreMeException ignored) {
-                // We skip the current query if it throws this exception
-                globalState.getLogger().info("Ignore me exception thrown");
-            }
+            } catch (IgnoreMeException ignored) {}
         }
 
         return schema;
