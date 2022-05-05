@@ -7,7 +7,6 @@ import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpression;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JPrefixOperation;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JVisitor;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
@@ -28,6 +27,18 @@ public class Neo4JNonEmptyResult implements Oracle {
         this.schema = schema;
     }
 
+    private String randomMatch(String label) {
+        Neo4JDBEntity entity = schema.getEntityByLabel(label);
+
+        StringBuilder query = new StringBuilder();
+        query.append(String.format("MATCH (n:%s)", label));
+        query.append(" WHERE ");
+        Neo4JExpression matchingExpression = Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN);
+        query.append(Neo4JVisitor.asString(matchingExpression));
+
+        return query.toString();
+    }
+
     @Override
     public void check() {
         ExpectedErrors errors = new ExpectedErrors();
@@ -37,16 +48,7 @@ public class Neo4JNonEmptyResult implements Oracle {
         Neo4JDBUtil.addFunctionErrors(errors);
 
         String label = schema.getRandomLabel();
-        Neo4JDBEntity entity = schema.getEntityByLabel(label);
-
-        StringBuilder query = new StringBuilder();
-        query.append(String.format("MATCH (n:%s)", label));
-        query.append(" WHERE ");
-        Neo4JExpression matchingExpression = Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN);
-        query.append(Neo4JVisitor.asString(matchingExpression));
-        query.append(" RETURN n");
-
-        Neo4JQuery initialQuery = new Neo4JQuery(query.toString(), errors);
+        Neo4JQuery initialQuery = new Neo4JQuery(randomMatch(label) + " RETURN n", errors);
         List<Map<String, Object>> initialResult = initialQuery.executeAndGet(state);
 
         if (initialResult == null) {
@@ -56,11 +58,13 @@ public class Neo4JNonEmptyResult implements Oracle {
         int initialSize = initialResult.size();
 
         if (initialSize != 0) {
-            String deletionQuery = String.format("MATCH (n:%s)", label) +
-                    " WHERE " +
-                    Neo4JVisitor.asString(new Neo4JPrefixOperation(matchingExpression, Neo4JPrefixOperation.PrefixOperator.NOT)) +
-                    " DETACH DELETE n";
+            String otherLabel;
 
+            do {
+                otherLabel = schema.getRandomLabel();
+            } while (label.equals(otherLabel));
+
+            String deletionQuery = randomMatch(otherLabel) + " DETACH DELETE n";
             new Neo4JQuery(deletionQuery, errors).execute(state);
             List<Map<String, Object>> result = initialQuery.executeAndGet(state);
 
