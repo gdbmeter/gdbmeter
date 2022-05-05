@@ -41,6 +41,27 @@ public class ExpectedErrors {
             }
         }
 
+        // #12880
+        if (exception instanceof IllegalArgumentException) {
+            if (exception.getMessage().equals("Comparison method violates its general contract!")) {
+                return true;
+            }
+        }
+
+        // #12879
+        if (exception instanceof UnsupportedOperationException) {
+            if (exception.getMessage().equals("TEXT index has no value capability")) {
+                return true;
+            }
+        }
+
+        // #12881
+        if (exception instanceof IllegalStateException) {
+            if (exception.getMessage().startsWith("Did not find any type information for expression")) {
+                return true;
+            }
+        }
+
         if (message == null) {
             return false;
         }
