@@ -8,20 +8,30 @@ import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
-import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JNonEmptyResult;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        runOracle();
+    }
+
+    public static void replayQueries() throws IOException {
+        replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
+    }
+
+    public static void runOracle() throws IOException {
         GlobalState<Neo4JConnection> state = new GlobalState<>();
 
         while (true) {
@@ -30,7 +40,7 @@ public class Main {
                 state.setConnection(connection);
 
                 Neo4JDBSchema schema = new Neo4JGenerator().generate(state);
-                Oracle oracle = new Neo4JNonEmptyResult(state, schema);
+                Oracle oracle = new Neo4JPartitionOracle(state, schema);
 
                 state.getLogger().info("Running oracle");
                 for (int i = 0; i < 100; i++) {
@@ -61,7 +71,8 @@ public class Main {
             state.setConnection(connection);
 
             for (String query : queries) {
-                new Neo4JQuery(query, errors).execute(state);
+                List<Map<String, Object>> result = new Neo4JQuery(query, errors).executeAndGet(state);
+                System.out.println(result);
             }
 
         } catch (IOException e) {
