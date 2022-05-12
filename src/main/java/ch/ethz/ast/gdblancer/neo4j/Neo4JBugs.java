@@ -32,12 +32,17 @@ public class Neo4JBugs {
         // https://github.com/neo4j/neo4j/issues/12883
         public static boolean bug12883 = true;
 
+        // https://github.com/neo4j/neo4j/issues/12884
+        public static boolean bug12884 = true;
+
         public static void enableAll() {
             bug12883 = true;
+            bug12884 = true;
         }
 
         public static void disableAll() {
             bug12883 = false;
+            bug12884 = false;
         }
 
     }
