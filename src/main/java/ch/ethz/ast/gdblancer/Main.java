@@ -3,6 +3,7 @@ package ch.ethz.ast.gdblancer;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
@@ -43,14 +44,15 @@ public class Main {
                 Oracle oracle = new Neo4JPartitionOracle(state, schema);
 
                 state.getLogger().info("Running oracle");
+                Neo4JBugs.PartitionOracleSpecific.enableAll();
                 for (int i = 0; i < 1000; i++) {
                     try {
                         oracle.check();
                     } catch (IgnoreMeException ignored) {}
                 }
-
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
+                Neo4JBugs.PartitionOracleSpecific.disableAll();
             }
         }
     }

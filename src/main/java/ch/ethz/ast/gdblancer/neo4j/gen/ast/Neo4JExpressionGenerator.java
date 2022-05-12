@@ -205,7 +205,11 @@ public class Neo4JExpressionGenerator {
                 Neo4JExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
                 Neo4JExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
 
-                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
+                if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
+                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperatorNaNSafe());
+                } else {
+                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
+                }
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.INTEGER);
             default:
@@ -244,7 +248,12 @@ public class Neo4JExpressionGenerator {
                     }
                 }
 
-                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
+                if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
+                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperatorNaNSafe());
+                } else {
+                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
+                }
+
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.FLOAT);
             default:

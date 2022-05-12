@@ -28,10 +28,18 @@ public class Neo4JBinaryArithmeticOperation
         public static ArithmeticOperator getRandomIntegerOperator() {
             return Randomization.fromOptions(ADDITION, SUBTRACTION, MODULO, DIVISION, MODULO);
         }
+
+        public static ArithmeticOperator getRandomIntegerOperatorNaNSafe() {
+            return Randomization.fromOptions(ADDITION, SUBTRACTION, MULTIPLICATION);
+        }
+
         public static ArithmeticOperator getRandomFloatOperator() {
             return Randomization.fromOptions(values());
         }
 
+        public static ArithmeticOperator getRandomFloatOperatorNaNSafe() {
+            return Randomization.fromOptions(ADDITION, SUBTRACTION, MULTIPLICATION);
+        }
 
     }
 
