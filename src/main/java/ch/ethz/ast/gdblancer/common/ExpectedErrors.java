@@ -60,10 +60,11 @@ public class ExpectedErrors {
             }
         }
 
-        // #12881
-        if (exception instanceof IllegalStateException) {
-            if (exception.getMessage().startsWith("Did not find any type information for expression")) {
-                return true;
+        if (Neo4JBugs.bug12881) {
+            if (exception instanceof IllegalStateException) {
+                if (exception.getMessage().startsWith("Did not find any type information for expression")) {
+                    return true;
+                }
             }
         }
 

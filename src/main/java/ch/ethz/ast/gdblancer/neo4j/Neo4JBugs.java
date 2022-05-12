@@ -22,5 +22,8 @@ public class Neo4JBugs {
 
     // https://github.com/neo4j/neo4j/issues/12880
     public static boolean bug12880 = true;
+
+    // https://github.com/neo4j/neo4j/issues/12881
+    public static boolean bug12881 = true;
     
 }
