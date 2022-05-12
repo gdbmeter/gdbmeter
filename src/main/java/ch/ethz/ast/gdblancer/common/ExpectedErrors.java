@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.common;
 
+import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import org.neo4j.graphdb.QueryExecutionException;
 
 import java.util.HashSet;
@@ -21,9 +22,8 @@ public class ExpectedErrors {
 
     public boolean isExpected(Exception exception) {
         String message = exception.getMessage();
-
-        // See: #12869
-        if (exception instanceof IndexOutOfBoundsException) {
+        
+        if (Neo4JBugs.bug12869 && exception instanceof IndexOutOfBoundsException) {
             return true;
         }
 
