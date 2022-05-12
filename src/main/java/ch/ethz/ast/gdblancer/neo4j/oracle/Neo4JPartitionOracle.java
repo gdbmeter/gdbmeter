@@ -3,6 +3,7 @@ package ch.ethz.ast.gdblancer.neo4j.oracle;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpression;
@@ -110,4 +111,15 @@ public class Neo4JPartitionOracle implements Oracle {
             throw new AssertionError(String.format("%d + %d + %d is not equal to %d", first, second, third, expectedTotal));
         }
     }
+
+    @Override
+    public void onStart() {
+        Neo4JBugs.PartitionOracleSpecific.enableAll();
+    }
+
+    @Override
+    public void onComplete() {
+        Neo4JBugs.PartitionOracleSpecific.disableAll();
+    }
+    
 }

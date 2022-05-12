@@ -4,4 +4,8 @@ public interface Oracle {
 
     void check();
 
+    default void onStart() {}
+
+    default void onComplete() {}
+
 }
