@@ -43,10 +43,11 @@ public class ExpectedErrors {
             }
         }
 
-        // #12880
-        if (exception instanceof IllegalArgumentException) {
-            if (exception.getMessage().equals("Comparison method violates its general contract!")) {
-                return true;
+        if (Neo4JBugs.bug12880) {
+            if (exception instanceof IllegalArgumentException) {
+                if (exception.getMessage().equals("Comparison method violates its general contract!")) {
+                    return true;
+                }
             }
         }
 
