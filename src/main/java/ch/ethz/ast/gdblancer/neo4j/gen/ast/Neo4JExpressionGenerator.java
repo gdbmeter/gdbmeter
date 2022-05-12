@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.ast;
 
+import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JBinaryArithmeticOperation.ArithmeticOperator;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
@@ -66,7 +67,11 @@ public class Neo4JExpressionGenerator {
 
                     for (String current : new String[]{"Y", "M", "W", "D"}) {
                         if (Randomization.getBoolean()) {
-                            datePart.put(current, Randomization.getPositiveInt());
+                            if (Neo4JBugs.bug12861) {
+                                datePart.put(current, Randomization.getPositiveInt());
+                            } else {
+                                datePart.put(current, Randomization.getPositiveInteger());
+                            }
                         }
                     }
 
@@ -74,7 +79,11 @@ public class Neo4JExpressionGenerator {
 
                     for (String current : new String[]{"H", "M", "S"}) {
                         if (Randomization.getBoolean()) {
-                            timePart.put(current, Randomization.getPositiveInt());
+                            if (Neo4JBugs.bug12861) {
+                                timePart.put(current, Randomization.getPositiveInt());
+                            } else {
+                                timePart.put(current, Randomization.getPositiveInteger());
+                            }
                         }
                     }
                 } while (datePart.isEmpty() && timePart.isEmpty());
@@ -157,7 +166,7 @@ public class Neo4JExpressionGenerator {
                 return new Neo4JPostfixOperation(generateExpression(depth + 1),
                         Neo4JPostfixOperation.PostfixOperator.getRandom());
             case BINARY_COMPARISON:
-                return generateComparison(depth, Randomization.fromOptions(Neo4JType.values()));
+                return generateComparison(depth, Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT, Neo4JType.STRING, Neo4JType.BOOLEAN, Neo4JType.DATE, Neo4JType.LOCAL_TIME, Neo4JType.POINT));
             case BINARY_STRING_OPERATOR:
                 return new Neo4JBinaryStringOperation(generateExpression(depth + 1, Neo4JType.STRING),
                         generateExpression(depth + 1, Neo4JType.STRING),
