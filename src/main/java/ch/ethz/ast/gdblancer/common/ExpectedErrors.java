@@ -36,9 +36,10 @@ public class ExpectedErrors {
                 }
             }
 
-            // #12878
-            if (exception.getMessage().startsWith("Node with id") && exception.getMessage().endsWith("has been deleted in this transaction")) {
-                return true;
+            if (Neo4JBugs.bug12878) {
+                if (exception.getMessage().startsWith("Node with id") && exception.getMessage().endsWith("has been deleted in this transaction")) {
+                    return true;
+                }
             }
         }
 
