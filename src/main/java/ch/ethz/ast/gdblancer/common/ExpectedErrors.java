@@ -22,16 +22,17 @@ public class ExpectedErrors {
 
     public boolean isExpected(Exception exception) {
         String message = exception.getMessage();
-        
+
         if (Neo4JBugs.bug12869 && exception instanceof IndexOutOfBoundsException) {
             return true;
         }
 
         if (exception instanceof QueryExecutionException) {
-            // See: #12876
-            if (((QueryExecutionException) exception).getStatusCode().equals("Neo.DatabaseError.Statement.ExecutionFailed")) {
-                if (exception.getMessage().startsWith("Expected \nRegularSinglePlannerQuery(QueryGraph {Nodes: ['n'],")) {
-                    return true;
+            if (Neo4JBugs.bug12877) {
+                if (((QueryExecutionException) exception).getStatusCode().equals("Neo.DatabaseError.Statement.ExecutionFailed")) {
+                    if (exception.getMessage().startsWith("Expected \nRegularSinglePlannerQuery(QueryGraph {Nodes: ['n'],")) {
+                        return true;
+                    }
                 }
             }
 

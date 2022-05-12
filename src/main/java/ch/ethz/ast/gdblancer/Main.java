@@ -43,7 +43,7 @@ public class Main {
                 Oracle oracle = new Neo4JPartitionOracle(state, schema);
 
                 state.getLogger().info("Running oracle");
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 1000; i++) {
                     try {
                         oracle.check();
                     } catch (IgnoreMeException ignored) {}
