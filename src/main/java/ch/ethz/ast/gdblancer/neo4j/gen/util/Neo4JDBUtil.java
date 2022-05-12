@@ -38,6 +38,7 @@ public class Neo4JDBUtil {
         errors.add("Invalid Regex: Unclosed character family");
         errors.add("Invalid Regex: Unknown inline modifier");
         errors.add("Invalid Regex: \\k is not followed by '<' for named capturing group");
+        errors.add("Invalid Regex: Unclosed hexadecimal escape sequence");      // RETURN (""=~"\x{a")
 
         // See: #12866
         errors.add("Invalid Regex: Unexpected internal error");
