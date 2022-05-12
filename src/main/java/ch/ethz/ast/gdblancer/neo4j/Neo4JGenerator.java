@@ -35,21 +35,21 @@ public class Neo4JGenerator {
 
         switch (action) {
             case CREATE:
-                selectedNumber = Randomization.nextInt(10, 20);
+                selectedNumber = Randomization.nextInt(15, 25);
                 break;
             case DELETE:
             case SET:
             case REMOVE:
-                selectedNumber = Randomization.nextInt(0, 6);
+                selectedNumber = Randomization.nextInt(0, 8);
                 break;
             case CREATE_INDEX:
-                selectedNumber = Randomization.nextInt(0,  5);
+                selectedNumber = Randomization.nextInt(3,  10);
                 break;
             case DROP_INDEX:
             case SHOW_FUNCTIONS:
             case SHOW_PROCEDURES:
             case SHOW_TRANSACTIONS:
-                selectedNumber = Randomization.nextInt(0,  2);
+                selectedNumber = Randomization.nextInt(2,  5);
                 break;
             default:
                 throw new AssertionError(action);
