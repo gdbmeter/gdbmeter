@@ -50,8 +50,7 @@ public class ExpectedErrors {
                 }
             }
         }
-
-        // #12879
+        
         if (Neo4JBugs.bug12879) {
             if (exception instanceof UnsupportedOperationException) {
                 if (exception.getMessage().equals("TEXT index has no value capability")) {
