@@ -166,7 +166,6 @@ public class Neo4JExpressionGenerator {
                 return new Neo4JPostfixOperation(generateExpression(depth + 1),
                         Neo4JPostfixOperation.PostfixOperator.getRandom());
             case BINARY_COMPARISON:
-
                 if (Neo4JBugs.PartitionOracleSpecific.bug12884) {
                     return generateComparison(depth, Randomization.fromOptions(Neo4JType.INTEGER,
                             Neo4JType.FLOAT, Neo4JType.STRING, Neo4JType.BOOLEAN, Neo4JType.DATE,
@@ -368,6 +367,10 @@ public class Neo4JExpressionGenerator {
         List<Neo4JFunctionCall.Neo4JFunction> functions = Stream.of(Neo4JFunctionCall.Neo4JFunction.values())
                 .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());
+
+        if (Neo4JBugs.PartitionOracleSpecific.bug12887) {
+            functions.remove(Neo4JFunctionCall.Neo4JFunction.LTRIM);
+        }
 
         if (functions.isEmpty()) {
             throw new IgnoreMeException();

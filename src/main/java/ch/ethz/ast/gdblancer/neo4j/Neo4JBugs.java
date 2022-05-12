@@ -30,19 +30,24 @@ public class Neo4JBugs {
     static public class PartitionOracleSpecific {
 
         // https://github.com/neo4j/neo4j/issues/12883
-        public static boolean bug12883 = true;
+        public static boolean bug12883 = false;
 
         // https://github.com/neo4j/neo4j/issues/12884
-        public static boolean bug12884 = true;
+        public static boolean bug12884 = false;
+
+        // https://github.com/neo4j/neo4j/issues/12887
+        public static boolean bug12887 = false;
 
         public static void enableAll() {
             bug12883 = true;
             bug12884 = true;
+            bug12887 = true;
         }
 
         public static void disableAll() {
             bug12883 = false;
             bug12884 = false;
+            bug12887 = false;
         }
 
     }
