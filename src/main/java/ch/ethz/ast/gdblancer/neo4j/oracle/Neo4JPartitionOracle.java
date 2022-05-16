@@ -113,6 +113,11 @@ public class Neo4JPartitionOracle implements Oracle {
     }
 
     @Override
+    public void onGenerate() {
+        Neo4JBugs.PartitionOracleSpecific.bug12883 = true;
+    }
+
+    @Override
     public void onStart() {
         Neo4JBugs.PartitionOracleSpecific.enableAll();
     }
@@ -121,5 +126,5 @@ public class Neo4JPartitionOracle implements Oracle {
     public void onComplete() {
         Neo4JBugs.PartitionOracleSpecific.disableAll();
     }
-    
+
 }

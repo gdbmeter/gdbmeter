@@ -39,13 +39,16 @@ public class Main {
                 connection.connect();
                 state.setConnection(connection);
 
-                Neo4JDBSchema schema = new Neo4JGenerator().generate(state);
+                Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
                 Oracle oracle = new Neo4JPartitionOracle(state, schema);
+                oracle.onGenerate();
 
+                new Neo4JGenerator(schema).generate(state);
                 state.getLogger().info("Running oracle");
-                oracle.onStart();
 
                 try {
+                    oracle.onStart();
+
                     for (int i = 0; i < 1000; i++) {
                         try {
                             oracle.check();

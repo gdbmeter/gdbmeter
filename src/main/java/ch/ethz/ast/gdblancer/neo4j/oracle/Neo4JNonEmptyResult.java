@@ -13,9 +13,12 @@ import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
+import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Neo4JNonEmptyResult implements Oracle {
 
@@ -47,8 +50,15 @@ public class Neo4JNonEmptyResult implements Oracle {
         Neo4JDBUtil.addArithmeticErrors(errors);
         Neo4JDBUtil.addFunctionErrors(errors);
 
+        Set<Long> allIds = new HashSet<>();
+        List<Map<String, Object>> idResult = new Neo4JQuery("MATCH (n) RETURN id(n)").executeAndGet(state);
+
+        for (Map<String, Object> properties : idResult) {
+            allIds.add((Long) properties.get("id(n)"));
+        }
+
         String label = schema.getRandomLabel();
-        Neo4JQuery initialQuery = new Neo4JQuery(randomMatch(label) + " RETURN n", errors);
+        Neo4JQuery initialQuery = new Neo4JQuery(randomMatch(label) + " RETURN id(n)", errors);
         List<Map<String, Object>> initialResult = initialQuery.executeAndGet(state);
 
         if (initialResult == null) {
@@ -58,13 +68,16 @@ public class Neo4JNonEmptyResult implements Oracle {
         int initialSize = initialResult.size();
 
         if (initialSize != 0) {
-            String otherLabel;
+            for (Map<String, Object> properties : initialResult) {
+                allIds.remove((Long) properties.get("id(n)"));
+            }
 
-            do {
-                otherLabel = schema.getRandomLabel();
-            } while (label.equals(otherLabel));
+            if (allIds.isEmpty()) {
+                throw new IgnoreMeException();
+            }
 
-            String deletionQuery = randomMatch(otherLabel) + " DETACH DELETE n";
+            Long chosenId = Randomization.fromSet(allIds);
+            String deletionQuery = String.format("MATCH (n) WHERE id(n) = %d DETACH DELETE n", chosenId);
             new Neo4JQuery(deletionQuery, errors).execute(state);
             List<Map<String, Object>> result = initialQuery.executeAndGet(state);
 

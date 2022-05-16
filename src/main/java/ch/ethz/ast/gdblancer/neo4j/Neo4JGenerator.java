@@ -58,8 +58,13 @@ public class Neo4JGenerator {
         return selectedNumber;
     }
 
-    public Neo4JDBSchema generate(GlobalState<Neo4JConnection> globalState) {
-        Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
+    private final Neo4JDBSchema schema;
+
+    public Neo4JGenerator(Neo4JDBSchema schema) {
+        this.schema = schema;
+    }
+
+    public void generate(GlobalState<Neo4JConnection> globalState) {
         List<Function<Neo4JDBSchema, Neo4JQuery>> queries = new ArrayList<>();
 
         // Sample the actions
@@ -91,7 +96,6 @@ public class Neo4JGenerator {
             } catch (IgnoreMeException ignored) {}
         }
 
-        return schema;
     }
 
 }

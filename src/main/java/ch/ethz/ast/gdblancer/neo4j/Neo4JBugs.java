@@ -26,7 +26,6 @@ public class Neo4JBugs {
     // https://github.com/neo4j/neo4j/issues/12881
     public static final boolean bug12881 = true;
 
-    // TODO: Fina a way to make the enable and disable logic easier to handle for Main
     static public class PartitionOracleSpecific {
 
         // https://github.com/neo4j/neo4j/issues/12883
