@@ -56,7 +56,7 @@ public class Neo4JDBUtil {
         errors.add("/ by zero");
         errors.add("cannot be represented as an integer");
         errors.add("long overflow");
-        errors.addRegex("integer, -??[0-9]+([.][0-9E]*)?, is too large");
+        errors.addRegex("integer, (-??)(\\+??)[0-9]+([.][0-9E]*)?, is too large");
     }
 
     public static void addFunctionErrors(ExpectedErrors errors) {
