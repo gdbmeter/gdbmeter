@@ -5,8 +5,6 @@ import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JDeleteGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.Neo4JPropertyGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JVisitor;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
@@ -16,8 +14,10 @@ import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Neo4JEmptyResult implements Oracle {
 
@@ -31,6 +31,17 @@ public class Neo4JEmptyResult implements Oracle {
 
     @Override
     public void check() {
+        Set<Long> allIds = new HashSet<>();
+        List<Map<String, Object>> idResult = new Neo4JQuery("MATCH (n) RETURN id(n)").executeAndGet(state);
+
+        for (Map<String, Object> properties : idResult) {
+            allIds.add((Long) properties.get("id(n)"));
+        }
+
+        if (allIds.isEmpty()) {
+            return;
+        }
+
         ExpectedErrors errors = new ExpectedErrors();
 
         Neo4JDBUtil.addRegexErrors(errors);
@@ -40,21 +51,12 @@ public class Neo4JEmptyResult implements Oracle {
         String label = schema.getRandomLabel();
         Neo4JDBEntity entity = schema.getEntityByLabel(label);
 
-        StringBuilder query = new StringBuilder();
+        String query = String.format("MATCH (n:%s)", label) +
+                " WHERE " +
+                Neo4JVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN)) +
+                " RETURN n";
 
-        if (Randomization.smallBiasProbability()) {
-            query.append(String.format("MATCH (n:%s ", label));
-            query.append(Neo4JPropertyGenerator.generatePropertyQuery(entity));
-            query.append(")");
-        } else {
-            query.append(String.format("MATCH (n:%s)", label));
-            query.append(" WHERE ");
-            query.append(Neo4JVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN)));
-        }
-
-        query.append(" RETURN n");
-
-        Neo4JQuery initialQuery = new Neo4JQuery(query.toString(), errors);
+        Neo4JQuery initialQuery = new Neo4JQuery(query, errors);
         List<Map<String, Object>> initialResult = initialQuery.executeAndGet(state);
 
         if (initialResult == null) {
@@ -62,7 +64,9 @@ public class Neo4JEmptyResult implements Oracle {
         }
 
         if (initialResult.isEmpty()) {
-            Neo4JDeleteGenerator.deleteNodes(schema).execute(state);
+            String deletionQuery = "MATCH (n) WHERE id(n) = " + Randomization.fromSet(allIds) + " DETACH DELETE n";
+            new Neo4JQuery(deletionQuery).execute(state);
+
             List<Map<String, Object>> result = initialQuery.executeAndGet(state);
 
             if (result == null) {
