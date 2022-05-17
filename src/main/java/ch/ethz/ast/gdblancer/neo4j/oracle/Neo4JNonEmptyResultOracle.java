@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Neo4JNonEmptyResult implements Oracle {
+public class Neo4JNonEmptyResultOracle implements Oracle {
 
     private final GlobalState<Neo4JConnection> state;
     private final Neo4JDBSchema schema;
 
-    public Neo4JNonEmptyResult(GlobalState<Neo4JConnection> state, Neo4JDBSchema schema) {
+    public Neo4JNonEmptyResultOracle(GlobalState<Neo4JConnection> state, Neo4JDBSchema schema) {
         this.state = state;
         this.schema = schema;
     }

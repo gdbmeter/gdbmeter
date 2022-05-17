@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Neo4JEmptyResult implements Oracle {
+public class Neo4JEmptyResultOracle implements Oracle {
 
     private final GlobalState<Neo4JConnection> state;
     private final Neo4JDBSchema schema;
 
-    public Neo4JEmptyResult(GlobalState<Neo4JConnection> state, Neo4JDBSchema schema) {
+    public Neo4JEmptyResultOracle(GlobalState<Neo4JConnection> state, Neo4JDBSchema schema) {
         this.state = state;
         this.schema = schema;
     }
