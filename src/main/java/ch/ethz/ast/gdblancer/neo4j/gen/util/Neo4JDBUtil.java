@@ -40,7 +40,8 @@ public class Neo4JDBUtil {
         errors.add("Invalid Regex: Unknown inline modifier");
         errors.add("Invalid Regex: \\k is not followed by '<' for named capturing group");
         errors.add("Invalid Regex: Unclosed hexadecimal escape sequence");      // RETURN (""=~"\x{a")
-        
+        errors.add("Invalid Regex: capturing group name does not start with a Latin letter");
+
         if (Neo4JBugs.bug12866) {
             errors.add("Invalid Regex: Unexpected internal error");
             errors.add("Invalid Regex: Unknown character property name");           // RETURN (""=~"5\\P")
