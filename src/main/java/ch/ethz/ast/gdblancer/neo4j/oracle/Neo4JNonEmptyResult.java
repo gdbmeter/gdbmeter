@@ -76,9 +76,12 @@ public class Neo4JNonEmptyResult implements Oracle {
                 throw new IgnoreMeException();
             }
 
-            Long chosenId = Randomization.fromSet(allIds);
-            String deletionQuery = String.format("MATCH (n) WHERE id(n) = %d DETACH DELETE n", chosenId);
-            new Neo4JQuery(deletionQuery, errors).execute(state);
+            for (int i = 0; i < Randomization.smallNumber() && !allIds.isEmpty(); i++) {
+                Long chosenId = Randomization.fromSet(allIds);
+                new Neo4JQuery(String.format("MATCH (n) WHERE id(n) = %d DETACH DELETE n", chosenId)).execute(state);
+                allIds.remove(chosenId);
+            }
+
             List<Map<String, Object>> result = initialQuery.executeAndGet(state);
 
             if (result == null) {
