@@ -8,7 +8,7 @@ import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
-import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JEmptyResult;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JRefinementOracle;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.io.BufferedReader;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-            runOracle();
+        runOracle();
     }
 
     public static void replayQueries() throws IOException {
@@ -40,7 +40,7 @@ public class Main {
                 state.setConnection(connection);
 
                 Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
-                Oracle oracle = new Neo4JEmptyResult(state, schema);
+                Oracle oracle = new Neo4JRefinementOracle(state, schema);
                 oracle.onGenerate();
 
                 new Neo4JGenerator(schema).generate(state);

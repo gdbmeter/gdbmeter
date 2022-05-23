@@ -1,8 +1,8 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.ast;
 
+import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
-import org.apache.commons.text.StringEscapeUtils;
 
 import java.time.Year;
 import java.util.Map;
@@ -114,15 +114,16 @@ public abstract class Neo4JConstant implements Neo4JExpression {
 
         @Override
         public String getTextRepresentation() {
-            return "\"" + StringEscapeUtils.escapeJson(value) + "\"";
+            return Neo4JDBUtil.escape(value);
         }
     }
 
+    // TODO: Should float actually store a double?
     public static class FloatConstant extends Neo4JConstant {
 
-        private final float value;
+        private final double value;
 
-        public FloatConstant(float value) {
+        public FloatConstant(double value) {
             this.value = value;
         }
 
@@ -134,8 +135,9 @@ public abstract class Neo4JConstant implements Neo4JExpression {
 
     public static class DurationConstant extends Neo4JConstant {
 
-        private final Map<String, Long> datePart;
-        private final Map<String, Long> timePart;
+        private String value;
+        private Map<String, Long> datePart;
+        private Map<String, Long> timePart;
 
         public DurationConstant(Map<String, Long> datePart, Map<String, Long> timePart) {
             this.datePart = datePart;
@@ -146,9 +148,17 @@ public abstract class Neo4JConstant implements Neo4JExpression {
             }
         }
 
+        public DurationConstant(String value) {
+            this.value = value;
+        }
+
         // We support the format: P[nY][nM][nW][nD][T[nH][nM][nS]]
         @Override
         public String getTextRepresentation() {
+            if (value != null) {
+                return String.format("duration('%s')", value);
+            }
+
             StringBuilder representation = new StringBuilder();
             representation.append("duration('P");
 
