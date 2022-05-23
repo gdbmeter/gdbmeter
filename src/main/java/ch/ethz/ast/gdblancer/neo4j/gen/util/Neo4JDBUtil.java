@@ -67,6 +67,10 @@ public class Neo4JDBUtil {
         errors.add("Invalid input for start value in function 'substring()': Expected a numeric value but got: NO_VALUE");
     }
 
+    public static void addDeletionErrors(ExpectedErrors errors) {
+        errors.addRegex("Cannot delete node<\\d+>, because it still has relationships. To delete this node, you must first delete its relationships.");
+    }
+
     // Adapted from: https://stackoverflow.com/questions/3020094/how-should-i-escape-strings-in-json
     public static String escape(String original) {
         if (original == null || original.length() == 0) {

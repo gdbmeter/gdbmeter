@@ -50,7 +50,7 @@ public class Neo4JDeleteGenerator {
         if (Randomization.getBoolean()) {
             query.append(" DETACH");
         } else {
-            errors.addRegex("Cannot delete node<\\d+>, because it still has relationships. To delete this node, you must first delete its relationships.");
+            Neo4JDBUtil.addDeletionErrors(errors);
         }
 
         query.append(" DELETE n");
