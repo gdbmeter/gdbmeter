@@ -31,7 +31,7 @@ public class Main {
         replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
     }
 
-    public static void runOracle() throws IOException {
+    private static void runOracle() throws IOException {
         GlobalState<Neo4JConnection> state = new GlobalState<>();
 
         while (true) {
@@ -68,7 +68,7 @@ public class Main {
         executeQueries(Collections.singletonList(query));
     }
 
-    public static void executeQueries(List<String> queries) {
+    private static void executeQueries(List<String> queries) {
         GlobalState<Neo4JConnection> state = new GlobalState<>();
         ExpectedErrors errors = new ExpectedErrors();
         Neo4JDBUtil.addFunctionErrors(errors);
@@ -89,7 +89,7 @@ public class Main {
         }
     }
 
-    public static void replayFromFile(File file) throws IOException {
+    private static void replayFromFile(File file) throws IOException {
         List<String> lines = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
