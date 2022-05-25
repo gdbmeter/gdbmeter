@@ -116,7 +116,31 @@ public class Neo4JRefinementOracle implements Oracle {
                             expectedConstant = new Neo4JConstant.BooleanConstant((Boolean) value);
                             break;
                         case FLOAT:
-                            expectedConstant = new Neo4JConstant.FloatConstant((Double) value);
+                            Double refinedFloat = (Double) value;
+
+                            // Handle special cases such as Infinity and NaN which aren't supported in Neo4J directly
+                            if (refinedFloat.isInfinite()) {
+                                if (refinedFloat > 0) {
+                                    expectedConstant = new Neo4JBinaryArithmeticOperation(new Neo4JConstant.FloatConstant(1.0D),
+                                            new Neo4JConstant.FloatConstant(0.0D),
+                                            Neo4JBinaryArithmeticOperation.ArithmeticOperator.DIVISION);
+                                } else {
+                                    expectedConstant = new Neo4JBinaryArithmeticOperation(new Neo4JConstant.FloatConstant(-1.0D),
+                                            new Neo4JConstant.FloatConstant(0.0D),
+                                            Neo4JBinaryArithmeticOperation.ArithmeticOperator.DIVISION);
+                                }
+                            } else if (refinedFloat.isNaN()) {
+                                // NaN == NaN is always false
+                                // Therefore we use toString(n.p) == "NaN" which should work
+                                Neo4JExpression toString = new Neo4JFunctionCall(Neo4JFunctionCall.Neo4JFunction.TO_STRING, new Neo4JVariablePropertyAccess[]{new Neo4JVariablePropertyAccess(String.format("n%d.%s", current, key))});
+                                Neo4JExpression expectedString = new Neo4JConstant.StringConstant("NaN");
+                                Neo4JExpression branch = new Neo4JBinaryComparisonOperation(toString, expectedString, Neo4JBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
+                                refinedWhere = new Neo4JBinaryLogicalOperation(refinedWhere, branch, Neo4JBinaryLogicalOperation.BinaryLogicalOperator.AND);
+                                continue;
+                            } else {
+                                expectedConstant = new Neo4JConstant.FloatConstant(refinedFloat);
+                            }
+
                             break;
                         case INTEGER:
                             expectedConstant = new Neo4JConstant.IntegerConstant((Long) value);
