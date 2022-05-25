@@ -8,7 +8,7 @@ public class Neo4JFunctionCall implements Neo4JExpression {
     private final Neo4JFunction function;
     private final Neo4JExpression[] arguments;
 
-    Neo4JFunctionCall(Neo4JFunction function,
+    public Neo4JFunctionCall(Neo4JFunction function,
                       Neo4JExpression[] arguments) {
         this.function = function;
         this.arguments = arguments;
