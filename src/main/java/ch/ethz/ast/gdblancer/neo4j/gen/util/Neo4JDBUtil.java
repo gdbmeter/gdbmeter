@@ -91,7 +91,6 @@ public class Neo4JDBUtil {
             switch (c) {
                 case '\\':
                 case '"':
-                case '/':
                     sb.append('\\');
                     sb.append(c);
                     break;
