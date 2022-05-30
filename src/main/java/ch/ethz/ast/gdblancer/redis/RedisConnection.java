@@ -2,7 +2,7 @@ package ch.ethz.ast.gdblancer.redis;
 
 import ch.ethz.ast.gdblancer.common.Connection;
 import ch.ethz.ast.gdblancer.common.Query;
-import org.neo4j.graphdb.schema.IndexDefinition;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
@@ -21,16 +21,21 @@ public class RedisConnection implements Connection {
     @Override
     public void connect() throws IOException {
         pool = new JedisPool("localhost", 6379);
+
+        try (Jedis resource = pool.getResource()) {
+            resource.flushAll();
+        }
     }
 
     public List<Map<String, Object>> execute(Query<RedisConnection> query) {
         List<Map<String, Object>> resultRows = null;
 
-        try (Transaction transaction = new Transaction(pool.getResource())) {
-            Response<ResultSet> result = transaction.graphQuery("db", query.getQuery());
-            transaction.exec();
-
-            System.out.println(result.toString());
+        try (Jedis resource = pool.getResource()) {
+            try (Transaction transaction = new Transaction(resource)) {
+                Response<ResultSet> result = transaction.graphQuery("db", query.getQuery(), 2000L);
+                transaction.exec();
+                System.out.println(result.toString());
+            }
         }
 
         return resultRows;

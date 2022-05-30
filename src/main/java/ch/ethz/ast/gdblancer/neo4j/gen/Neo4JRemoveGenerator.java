@@ -37,15 +37,9 @@ public class Neo4JRemoveGenerator {
         String label = schema.getRandomLabel();
         Neo4JDBEntity entity = schema.getEntityByLabel(label);
 
-        if (Randomization.smallBiasProbability()) {
-            query.append(String.format("MATCH (n:%s ", label));
-            query.append(Neo4JPropertyGenerator.generatePropertyQuery(entity));
-            query.append(")");
-        } else {
-            query.append(String.format("MATCH (n:%s)", label));
-            query.append(" WHERE ");
-            query.append(Neo4JVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN)));
-        }
+        query.append(String.format("MATCH (n:%s)", label));
+        query.append(" WHERE ");
+        query.append(Neo4JVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN)));
 
         String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
         query.append(String.format(" REMOVE n.%s ", property));

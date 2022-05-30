@@ -10,7 +10,7 @@ public class Neo4JDBEntityTests {
 
     @Test
     void testGenerateRandomEntity() {
-        Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity();
+        Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity(Neo4JType.values());
         Map<String, Neo4JType> availableProperties = entity.getAvailableProperties();
 
         assertNotNull(entity);

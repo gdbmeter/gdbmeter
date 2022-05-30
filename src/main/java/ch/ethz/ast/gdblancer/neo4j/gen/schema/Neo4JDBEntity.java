@@ -14,11 +14,11 @@ public class Neo4JDBEntity {
         this.availableProperties = availableProperties;
     }
 
-    public static Neo4JDBEntity generateRandomEntity() {
+    public static Neo4JDBEntity generateRandomEntity(Neo4JType[] availableTypes) {
         Map<String, Neo4JType> availableProperties = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(1, 6); i++) {
-            availableProperties.put(Neo4JDBUtil.generateValidName(), Randomization.fromOptions(Neo4JType.values()));
+            availableProperties.put(Neo4JDBUtil.generateValidName(), Randomization.fromOptions(availableTypes));
         }
 
         return new Neo4JDBEntity(availableProperties);

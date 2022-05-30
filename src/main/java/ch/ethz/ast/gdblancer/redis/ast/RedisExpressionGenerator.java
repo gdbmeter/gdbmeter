@@ -1,10 +1,10 @@
-package ch.ethz.ast.gdblancer.redis;
+package ch.ethz.ast.gdblancer.redis.ast;
 
-import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.*;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JBinaryArithmeticOperation.ArithmeticOperator;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.redis.RedisBug;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -14,8 +14,8 @@ import java.util.stream.Stream;
 
 public class RedisExpressionGenerator {
 
+    public static final Neo4JType[] supportedTypes = {Neo4JType.INTEGER, Neo4JType.BOOLEAN, Neo4JType.FLOAT, Neo4JType.STRING, Neo4JType.POINT};
     private static final int MAX_DEPTH = 3;
-
     private final Map<String, Neo4JDBEntity> variables;
 
     public RedisExpressionGenerator(Map<String, Neo4JDBEntity> variables) {
@@ -41,11 +41,7 @@ public class RedisExpressionGenerator {
             case STRING:
                 return new Neo4JConstant.StringConstant(Randomization.getString());
             case POINT:
-                if (Randomization.getBoolean()) {
-                    return new Neo4JConstant.PointConstant(Randomization.getDouble(), Randomization.getDouble());
-                } else {
-                    return new Neo4JConstant.PointConstant(Randomization.getDouble(), Randomization.getDouble(), Randomization.getDouble());
-                }
+                return new RedisPointConstant(Randomization.getDouble(), Randomization.getDouble());
             default:
                 throw new AssertionError(type);
         }
@@ -54,7 +50,7 @@ public class RedisExpressionGenerator {
     private enum BooleanExpression {
         BINARY_LOGICAL_OPERATOR, NOT,
         POSTFIX_OPERATOR, BINARY_COMPARISON,
-        BINARY_STRING_OPERATOR, REGEX, FUNCTION
+        BINARY_STRING_OPERATOR, FUNCTION
     }
 
     // TODO: Support IN_OPERATION
@@ -80,21 +76,11 @@ public class RedisExpressionGenerator {
                 return new Neo4JPostfixOperation(generateExpression(depth + 1),
                         Neo4JPostfixOperation.PostfixOperator.getRandom());
             case BINARY_COMPARISON:
-                if (Neo4JBugs.PartitionOracleSpecific.bug12884) {
-                    return generateComparison(depth, Randomization.fromOptions(Neo4JType.INTEGER,
-                            Neo4JType.FLOAT, Neo4JType.STRING, Neo4JType.BOOLEAN, Neo4JType.DATE,
-                            Neo4JType.LOCAL_TIME, Neo4JType.POINT));
-                } else {
-                    return generateComparison(depth, Randomization.fromOptions(Neo4JType.values()));
-                }
-
+                return generateComparison(depth, Randomization.fromOptions(supportedTypes));
             case BINARY_STRING_OPERATOR:
                 return new Neo4JBinaryStringOperation(generateExpression(depth + 1, Neo4JType.STRING),
                         generateExpression(depth + 1, Neo4JType.STRING),
                         Neo4JBinaryStringOperation.BinaryStringOperation.getRandom());
-            case REGEX:
-                return new Neo4JRegularExpression(generateExpression(depth + 1, Neo4JType.STRING),
-                        generateExpression(depth + 1, Neo4JType.STRING));
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.BOOLEAN);
             default:
@@ -126,11 +112,7 @@ public class RedisExpressionGenerator {
                 Neo4JExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
                 Neo4JExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
 
-                if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
-                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperatorNaNSafe());
-                } else {
-                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
-                }
+                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.INTEGER);
             default:
@@ -169,12 +151,7 @@ public class RedisExpressionGenerator {
                     }
                 }
 
-                if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
-                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperatorNaNSafe());
-                } else {
-                    return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
-                }
-
+                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.FLOAT);
             default:
@@ -199,12 +176,8 @@ public class RedisExpressionGenerator {
         }
     }
 
-    private Neo4JExpression generateDurationExpression(int depth) {
-        return generateFunction(depth + 1, Neo4JType.DURATION);
-    }
-
     public static Neo4JExpression generateExpression() {
-        return generateExpression(Neo4JType.getRandom());
+        return generateExpression(Randomization.fromOptions(supportedTypes));
     }
 
     public static Neo4JExpression generateExpression(Neo4JType type) {
@@ -212,7 +185,7 @@ public class RedisExpressionGenerator {
     }
 
     public Neo4JExpression generateExpression(int depth) {
-        return generateExpression(depth, Neo4JType.getRandom());
+        return generateExpression(depth, Randomization.fromOptions(supportedTypes));
     }
 
     private Neo4JExpression generateExpression(int depth, Neo4JType type) {
@@ -228,7 +201,7 @@ public class RedisExpressionGenerator {
     }
 
     public static Neo4JExpression generateExpression(Map<String, Neo4JDBEntity> variables) {
-        return generateExpression(variables, Neo4JType.getRandom());
+        return generateExpression(variables, Randomization.fromOptions(supportedTypes));
     }
 
     private Neo4JExpression getVariableExpression(Neo4JType type) {
@@ -267,8 +240,6 @@ public class RedisExpressionGenerator {
                     return generateIntegerExpression(depth);
                 case STRING:
                     return generateStringExpression(depth);
-                case DURATION:
-                    return generateDurationExpression(depth);
                 case FLOAT:
                     return generateFloatExpression(depth);
                 default:
@@ -278,19 +249,23 @@ public class RedisExpressionGenerator {
     }
 
     private Neo4JFunctionCall generateFunction(int depth, Neo4JType returnType) {
-        List<Neo4JFunctionCall.Neo4JFunction> functions = Stream.of(Neo4JFunctionCall.Neo4JFunction.values())
+        List<RedisFunction> functions = Stream.of(RedisFunction.values())
                 .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());
 
-        if (Neo4JBugs.PartitionOracleSpecific.bug12887) {
-            functions.remove(Neo4JFunctionCall.Neo4JFunction.LTRIM);
+        if (RedisBug.bug2374) {
+            functions.remove(RedisFunction.SUBSTRING);
+        }
+
+        if (RedisBug.bug2375) {
+            functions.remove(RedisFunction.RIGHT);
         }
 
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
         }
 
-        Neo4JFunctionCall.Neo4JFunction chosenFunction = Randomization.fromList(functions);
+        RedisFunction chosenFunction = Randomization.fromList(functions);
         int arity = chosenFunction.getArity();
         Neo4JType[] argumentTypes = chosenFunction.getArgumentTypes(returnType);
         Neo4JExpression[] arguments = new Neo4JExpression[arity];

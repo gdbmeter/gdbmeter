@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
+import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
@@ -11,9 +12,9 @@ public class Neo4JPropertyGeneratorTests {
     @Test
     void testCreatePropertyQuery() {
         try {
-            Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity();
+            Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity(Neo4JType.values());
 
-            String query = Neo4JPropertyGenerator.generatePropertyQuery(entity);
+            String query = new Neo4JPropertyGenerator(entity).generateProperties();
             assertNotNull(query);
         } catch (IgnoreMeException ignored) {
 

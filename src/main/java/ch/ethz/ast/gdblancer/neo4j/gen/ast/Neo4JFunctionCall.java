@@ -5,10 +5,10 @@ import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JFunctionCall implements Neo4JExpression {
 
-    private final Neo4JFunction function;
+    private final CypherFunctionDescription function;
     private final Neo4JExpression[] arguments;
 
-    public Neo4JFunctionCall(Neo4JFunction function,
+    public Neo4JFunctionCall(CypherFunctionDescription function,
                              Neo4JExpression[] arguments) {
         this.function = function;
         this.arguments = arguments;
@@ -22,7 +22,7 @@ public class Neo4JFunctionCall implements Neo4JExpression {
         return arguments;
     }
 
-    public enum Neo4JFunction {
+    public enum Neo4JFunction implements CypherFunctionDescription {
 
         TO_BOOLEAN("toBoolean", 1) {
             @Override
@@ -342,17 +342,15 @@ public class Neo4JFunctionCall implements Neo4JExpression {
             this.arity = arity;
         }
 
+        @Override
         public int getArity() {
             return arity;
         }
 
+        @Override
         public String getName() {
             return name;
         }
-
-        public abstract boolean supportReturnType(Neo4JType returnType);
-
-        public abstract Neo4JType[] getArgumentTypes(Neo4JType returnType);
 
     }
 

@@ -21,19 +21,23 @@ public class Neo4JDBSchema {
         this.indices = new HashSet<>();
     }
 
-    public static Neo4JDBSchema generateRandomSchema() {
+    public static Neo4JDBSchema generateRandomSchema(Neo4JType[] availableTypes) {
         Map<String, Neo4JDBEntity> nodeSchema = new HashMap<>();
         Map<String, Neo4JDBEntity> relationshipSchema = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(3, 10); i++) {
-            nodeSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity());
+            nodeSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity(availableTypes));
         }
 
         for (int i = 0; i < Randomization.nextInt(3, 4); i++) {
-            relationshipSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity());
+            relationshipSchema.put(Neo4JDBUtil.generateValidName(), Neo4JDBEntity.generateRandomEntity(availableTypes));
         }
 
         return new Neo4JDBSchema(nodeSchema, relationshipSchema);
+    }
+
+    public static Neo4JDBSchema generateRandomSchema() {
+        return generateRandomSchema(Neo4JType.values());
     }
 
     public void setIndices(Set<String> indices) {
