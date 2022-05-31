@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.common;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
+import ch.ethz.ast.gdblancer.redis.RedisBug;
 import org.neo4j.graphdb.QueryExecutionException;
 
 import java.util.HashSet;
@@ -62,6 +63,14 @@ public class ExpectedErrors {
         if (Neo4JBugs.bug12881) {
             if (exception instanceof IllegalStateException) {
                 if (exception.getMessage().startsWith("Did not find any type information for expression")) {
+                    return true;
+                }
+            }
+        }
+
+        if (RedisBug.bug3010) {
+            if (exception instanceof NumberFormatException) {
+                if (exception.getMessage().equals("For input string: \"inf\"")) {
                     return true;
                 }
             }

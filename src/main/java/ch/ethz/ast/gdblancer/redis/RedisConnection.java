@@ -4,9 +4,7 @@ import ch.ethz.ast.gdblancer.common.Connection;
 import ch.ethz.ast.gdblancer.common.Query;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.graph.ResultSet;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -32,9 +30,8 @@ public class RedisConnection implements Connection {
 
         try (Jedis resource = pool.getResource()) {
             try (Transaction transaction = new Transaction(resource)) {
-                Response<ResultSet> result = transaction.graphQuery("db", query.getQuery(), 2000L);
+                transaction.graphQuery("db", query.getQuery());
                 transaction.exec();
-                System.out.println(result.toString());
             }
         }
 
