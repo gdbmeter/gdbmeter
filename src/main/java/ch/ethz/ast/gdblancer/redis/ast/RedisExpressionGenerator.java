@@ -112,7 +112,17 @@ public class RedisExpressionGenerator {
                 Neo4JExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
                 Neo4JExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
 
-                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
+                ArithmeticOperator binaryOperator;
+                if (RedisBugs.bug2375) {
+                    binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
+                            ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION,
+                            ArithmeticOperator.DIVISION, ArithmeticOperator.EXPONENTIATION
+                    );
+                } else {
+                    binaryOperator = ArithmeticOperator.getRandomIntegerOperator();
+                }
+
+                return new Neo4JBinaryArithmeticOperation(left, right, binaryOperator);
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.INTEGER);
             default:
@@ -128,11 +138,11 @@ public class RedisExpressionGenerator {
         switch (Randomization.fromOptions(FloatExpression.values())) {
             case UNARY_OPERATION:
                 Neo4JExpression intExpression = generateExpression(depth + 1, Neo4JType.FLOAT);
-                Neo4JPrefixOperation.PrefixOperator operator = Randomization.getBoolean()
+                Neo4JPrefixOperation.PrefixOperator unaryOperator = Randomization.getBoolean()
                         ? Neo4JPrefixOperation.PrefixOperator.UNARY_PLUS
                         : Neo4JPrefixOperation.PrefixOperator.UNARY_MINUS;
 
-                return new Neo4JPrefixOperation(intExpression, operator);
+                return new Neo4JPrefixOperation(intExpression, unaryOperator);
             case BINARY_ARITHMETIC_EXPRESSION:
                 Neo4JExpression left;
                 Neo4JExpression right;
@@ -151,7 +161,18 @@ public class RedisExpressionGenerator {
                     }
                 }
 
-                return new Neo4JBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
+                ArithmeticOperator binaryOperator;
+
+                if (RedisBugs.bug2375) {
+                    binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
+                            ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION,
+                            ArithmeticOperator.DIVISION, ArithmeticOperator.EXPONENTIATION
+                    );
+                } else {
+                    binaryOperator = ArithmeticOperator.getRandomFloatOperator();
+                }
+
+                return new Neo4JBinaryArithmeticOperation(left, right, binaryOperator);
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.FLOAT);
             default:
