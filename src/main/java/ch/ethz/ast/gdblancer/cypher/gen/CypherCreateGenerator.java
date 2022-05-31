@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.neo4j.gen;
+package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;

@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.CypherPropertyGenerator;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpression;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;

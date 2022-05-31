@@ -12,7 +12,6 @@ public class RedisPointConstant extends Neo4JConstant {
         this.latitude = latitude;
     }
 
-
     @Override
     public String getTextRepresentation() {
         return String.format("point({ longitude: %f, latitude: %f })", longitude, latitude);

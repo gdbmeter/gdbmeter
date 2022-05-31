@@ -1,5 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateGenerator;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;

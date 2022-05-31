@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.ast;
+package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
 

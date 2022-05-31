@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.neo4j.gen;
+package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpression;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JVisitor;
