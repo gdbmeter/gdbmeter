@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.redis;
 
-public class RedisBug {
+public class RedisBugs {
 
     // https://github.com/RedisGraph/RedisGraph/issues/2374
     public static final boolean bug2374 = true;

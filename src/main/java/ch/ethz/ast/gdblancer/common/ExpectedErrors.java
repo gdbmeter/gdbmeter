@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.common;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
-import ch.ethz.ast.gdblancer.redis.RedisBug;
+import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import org.neo4j.graphdb.QueryExecutionException;
 
 import java.util.HashSet;
@@ -68,7 +68,7 @@ public class ExpectedErrors {
             }
         }
 
-        if (RedisBug.bug3010) {
+        if (RedisBugs.bug3010) {
             if (exception instanceof NumberFormatException) {
                 if (exception.getMessage().equals("For input string: \"inf\"")) {
                     return true;

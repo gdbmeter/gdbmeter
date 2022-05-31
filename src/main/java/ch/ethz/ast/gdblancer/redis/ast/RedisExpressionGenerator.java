@@ -4,7 +4,7 @@ import ch.ethz.ast.gdblancer.neo4j.gen.ast.*;
 import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JBinaryArithmeticOperation.ArithmeticOperator;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
-import ch.ethz.ast.gdblancer.redis.RedisBug;
+import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -253,11 +253,11 @@ public class RedisExpressionGenerator {
                 .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());
 
-        if (RedisBug.bug2374) {
+        if (RedisBugs.bug2374) {
             functions.remove(RedisFunction.SUBSTRING);
         }
 
-        if (RedisBug.bug2375) {
+        if (RedisBugs.bug2375) {
             functions.remove(RedisFunction.RIGHT);
         }
 
