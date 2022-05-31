@@ -51,7 +51,7 @@ public class ExpectedErrors {
                 }
             }
         }
-        
+
         if (Neo4JBugs.bug12879) {
             if (exception instanceof UnsupportedOperationException) {
                 if (exception.getMessage().equals("TEXT index has no value capability")) {
@@ -70,7 +70,9 @@ public class ExpectedErrors {
 
         if (RedisBugs.bug3010) {
             if (exception instanceof NumberFormatException) {
-                if (exception.getMessage().equals("For input string: \"inf\"")) {
+                if (exception.getMessage().equals("For input string: \"inf\"") ||
+                        exception.getMessage().equals("For input string: \"-nan\"") ||
+                        exception.getMessage().equals("For input string: \"-inf\"")) {
                     return true;
                 }
             }
