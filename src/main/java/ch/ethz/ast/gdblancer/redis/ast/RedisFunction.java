@@ -164,17 +164,6 @@ public enum RedisFunction implements CypherFunctionDescription {
             return new Neo4JType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
         }
     },
-    TO_STRING_OR_NULL("toStringOrNull", 1) {
-        @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
-        }
-
-        @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
-        }
-    },
     CEIL("ceil", 1) {
         @Override
         public boolean supportReturnType(Neo4JType returnType) {
