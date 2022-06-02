@@ -4,13 +4,12 @@ import ch.ethz.ast.gdblancer.common.Connection;
 import ch.ethz.ast.gdblancer.common.Query;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.graph.ResultSet;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RedisConnection implements Connection {
 
@@ -30,8 +29,10 @@ public class RedisConnection implements Connection {
 
         try (Jedis resource = pool.getResource()) {
             try (Transaction transaction = new Transaction(resource)) {
-                transaction.graphQuery("db", query.getQuery());
+                Response<ResultSet> r = transaction.graphQuery("db", query.getQuery());
                 transaction.exec();
+                ResultSet records = r.get();
+                System.out.println(records);
             }
         }
 
@@ -43,12 +44,9 @@ public class RedisConnection implements Connection {
         pool.close();
     }
 
+    // RedisGraph does not support names indices
     public Set<String> getIndexNames() {
-        Set<String> indices = new HashSet<>();
-
-        // TODO: Use SHOW INDEXES
-
-        return indices;
+        return Collections.emptySet();
     }
 
 }
