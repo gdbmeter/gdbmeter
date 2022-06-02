@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
+import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateGenerator;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
@@ -23,12 +24,13 @@ public class Neo4JCreateGenerator extends CypherCreateGenerator {
     public static Neo4JQuery createEntities(Neo4JDBSchema schema) {
         Neo4JCreateGenerator generator = new Neo4JCreateGenerator(schema);
 
-        Neo4JDBUtil.addRegexErrors(generator.errors);
-        Neo4JDBUtil.addArithmeticErrors(generator.errors);
-        Neo4JDBUtil.addFunctionErrors(generator.errors);
+        ExpectedErrors errors = new ExpectedErrors();
+        Neo4JDBUtil.addRegexErrors(errors);
+        Neo4JDBUtil.addArithmeticErrors(errors);
+        Neo4JDBUtil.addFunctionErrors(errors);
 
         generator.generateCreate();
-        return new Neo4JQuery(generator.query.toString(), generator.errors);
+        return new Neo4JQuery(generator.query.toString(), errors);
     }
 
 }

@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
+import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateGenerator;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
@@ -22,7 +23,7 @@ public class RedisCreateGenerator extends CypherCreateGenerator {
     public static RedisQuery createEntities(Neo4JDBSchema schema) {
         RedisCreateGenerator generator = new RedisCreateGenerator(schema);
         generator.generateCreate();
-        return new RedisQuery(generator.query.toString(), generator.errors);
+        return new RedisQuery(generator.query.toString(), new ExpectedErrors());
     }
 
 }

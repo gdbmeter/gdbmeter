@@ -1,6 +1,5 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
-import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
@@ -17,7 +16,6 @@ public abstract class CypherCreateGenerator {
 
     private final Neo4JDBSchema schema;
     protected final StringBuilder query = new StringBuilder();
-    protected final ExpectedErrors errors = new ExpectedErrors();
 
     private final Map<String, Neo4JDBEntity> nodeVariables = new HashMap<>();
     private final Map<String, Neo4JDBEntity> relationshipVariables = new HashMap<>();
