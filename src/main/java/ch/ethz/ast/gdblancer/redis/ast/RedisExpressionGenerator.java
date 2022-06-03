@@ -283,6 +283,11 @@ public class RedisExpressionGenerator {
             functions.remove(RedisFunction.RIGHT);
         }
 
+        if (RedisBugs.bug2382) {
+            functions.remove(RedisFunction.RIGHT);
+            functions.remove(RedisFunction.LEFT);
+        }
+
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
         }
