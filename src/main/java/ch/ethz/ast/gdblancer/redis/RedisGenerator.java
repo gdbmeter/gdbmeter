@@ -3,6 +3,7 @@ package ch.ethz.ast.gdblancer.redis;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
 import ch.ethz.ast.gdblancer.redis.gen.RedisCreateGenerator;
+import ch.ethz.ast.gdblancer.redis.gen.RedisCreateIndexGenerator;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -13,7 +14,8 @@ import java.util.function.Function;
 public class RedisGenerator {
 
     enum Action {
-        CREATE(RedisCreateGenerator::createEntities);
+        CREATE(RedisCreateGenerator::createEntities),
+        CREATE_INDEX(RedisCreateIndexGenerator::createIndex);
 
         private final Function<Neo4JDBSchema, RedisQuery> generator;
 
@@ -28,6 +30,9 @@ public class RedisGenerator {
         switch (action) {
             case CREATE:
                 selectedNumber = Randomization.nextInt(50, 70);
+                break;
+            case CREATE_INDEX:
+                selectedNumber = Randomization.nextInt(3,  10);
                 break;
             default:
                 throw new AssertionError(action);
