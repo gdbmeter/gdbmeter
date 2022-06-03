@@ -26,7 +26,7 @@ public class Neo4JBinaryArithmeticOperation
         }
 
         public static ArithmeticOperator getRandomIntegerOperator() {
-            return Randomization.fromOptions(ADDITION, SUBTRACTION, MODULO, DIVISION, MODULO);
+            return Randomization.fromOptions(ADDITION, SUBTRACTION, MULTIPLICATION, MODULO, DIVISION);
         }
 
         public static ArithmeticOperator getRandomIntegerOperatorNaNSafe() {
