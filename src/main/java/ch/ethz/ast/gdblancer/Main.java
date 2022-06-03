@@ -1,33 +1,98 @@
 package ch.ethz.ast.gdblancer;
 
-import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.common.Oracle;
+import ch.ethz.ast.gdblancer.common.QueryReplay;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQueryReplay;
 import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
 import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisGenerator;
-import ch.ethz.ast.gdblancer.redis.RedisQuery;
+import ch.ethz.ast.gdblancer.redis.RedisQueryReplay;
+import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
+import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class Main {
+
+    private enum Database {
+        NEO4J,
+        REDIS_GRAPH
+    }
+
+    private static Database systemUnderTest = Database.REDIS_GRAPH;
 
     public static void main(String[] args) throws IOException {
         runOracle();
     }
 
-    public static void replayQueries() throws IOException {
-        replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
+    private static void replayQueries() throws IOException {
+        QueryReplay queryReplay;
+
+        switch (systemUnderTest) {
+            case NEO4J:
+                queryReplay = new Neo4JQueryReplay();
+                break;
+            case REDIS_GRAPH:
+                queryReplay = new RedisQueryReplay();
+                break;
+            default:
+                throw new AssertionError(systemUnderTest);
+        }
+
+        queryReplay.replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
     }
 
     private static void runOracle() throws IOException {
+        switch (systemUnderTest) {
+            case NEO4J:
+                runNeo4JOracle();
+                break;
+            case REDIS_GRAPH:
+                runRedisOracle();
+                break;
+            default:
+                throw new AssertionError(systemUnderTest);
+        }
+    }
+
+    private static void runNeo4JOracle() throws IOException {
+        GlobalState<Neo4JConnection> state = new GlobalState<>();
+
+        while (true) {
+            try (Neo4JConnection connection = new Neo4JConnection()) {
+                connection.connect();
+                state.setConnection(connection);
+
+                Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
+                Oracle oracle = new Neo4JPartitionOracle(state, schema);
+                oracle.onGenerate();
+
+                new Neo4JGenerator(schema).generate(state);
+                state.getLogger().info("Running oracle");
+
+                try {
+                    oracle.onStart();
+
+                    for (int i = 0; i < 100; i++) {
+                        try {
+                            oracle.check();
+                        } catch (IgnoreMeException ignored) {}
+                    }
+                } finally {
+                    oracle.onComplete();
+                }
+            } finally {
+                state.getLogger().info("Finished iteration, closing database");
+            }
+        }
+    }
+
+    private static void runRedisOracle() throws IOException {
         GlobalState<RedisConnection> state = new GlobalState<>();
 
         while (true) {
@@ -35,8 +100,7 @@ public class Main {
                 connection.connect();
                 state.setConnection(connection);
 
-                // TODO: Make this configurable
-                Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema(new Neo4JType[]{Neo4JType.INTEGER, Neo4JType.BOOLEAN, Neo4JType.FLOAT, Neo4JType.STRING, Neo4JType.POINT});
+                Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema(RedisExpressionGenerator.supportedTypes);
                 new RedisGenerator(schema).generate(state);
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
@@ -44,42 +108,5 @@ public class Main {
         }
     }
 
-    public static void executeQuery(String query) {
-        executeQueries(Collections.singletonList(query));
-    }
-
-    private static void executeQueries(List<String> queries) {
-        GlobalState<RedisConnection> state = new GlobalState<>();
-        ExpectedErrors errors = new ExpectedErrors();
-        // TODO: Add logic for error handling depending on SuT
-        // Neo4JDBUtil.addFunctionErrors(errors);
-        // Neo4JDBUtil.addArithmeticErrors(errors);
-        // Neo4JDBUtil.addRegexErrors(errors);
-
-        try (RedisConnection connection = new RedisConnection()) {
-            connection.connect();
-            state.setConnection(connection);
-
-            for (String query : queries) {
-                new RedisQuery(query, errors).execute(state);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void replayFromFile(File file) throws IOException {
-        List<String> lines = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        }
-
-        executeQueries(lines);
-    }
 
 }
