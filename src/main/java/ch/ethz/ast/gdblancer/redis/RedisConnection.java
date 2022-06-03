@@ -20,7 +20,10 @@ public class RedisConnection implements Connection {
         pool = new JedisPool("localhost", 6379);
 
         try (Jedis resource = pool.getResource()) {
-            resource.flushAll();
+            try (Transaction transaction = new Transaction(resource)) {
+                transaction.graphDelete("db");
+                transaction.exec();
+            }
         }
     }
 
