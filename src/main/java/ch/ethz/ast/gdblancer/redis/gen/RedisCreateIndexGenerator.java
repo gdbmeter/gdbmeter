@@ -11,8 +11,8 @@ public class RedisCreateIndexGenerator {
 
     enum INDEX_TYPES {
         NODE_INDEX,
-        RELATIONSHIP_INDEX
-        // TEXT_INDEX
+        RELATIONSHIP_INDEX,
+        TEXT_INDEX
     }
 
     private RedisCreateIndexGenerator(Neo4JDBSchema schema) {
@@ -34,6 +34,9 @@ public class RedisCreateIndexGenerator {
             case RELATIONSHIP_INDEX:
                 generateRelationshipIndex();
                 break;
+            case TEXT_INDEX:
+                generateFulltextIndex();
+                break;
             default:
                 throw new AssertionError();
         }
@@ -53,6 +56,12 @@ public class RedisCreateIndexGenerator {
         query.append(String.format("CREATE INDEX FOR ()-[n:%s]-()", index.getLabel()));
 
         generateOnClause(index.getPropertyNames());
+    }
+
+    // TODO: Support multi-property fulltext search
+    private void generateFulltextIndex() {
+        Neo4JDBIndex index = schema.generateRandomTextIndex();
+        query.append(String.format("CALL db.idx.fulltext.createNodeIndex('%s', '%s')", index.getLabel(), index.getPropertyNames().toArray()[0]));
     }
 
     private void generateOnClause(Set<String> properties) {
