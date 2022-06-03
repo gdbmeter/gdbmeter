@@ -11,7 +11,7 @@ public class RedisCreateIndexGenerator {
 
     enum INDEX_TYPES {
         NODE_INDEX,
-        // RELATIONSHIP_INDEX,
+        RELATIONSHIP_INDEX
         // TEXT_INDEX
     }
 
@@ -31,6 +31,11 @@ public class RedisCreateIndexGenerator {
             case NODE_INDEX:
                 generateNodeIndex();
                 break;
+            case RELATIONSHIP_INDEX:
+                generateRelationshipIndex();
+                break;
+            default:
+                throw new AssertionError();
         }
 
         return new RedisQuery(query.toString());
@@ -39,6 +44,13 @@ public class RedisCreateIndexGenerator {
     private void generateNodeIndex() {
         Neo4JDBIndex index = schema.generateRandomNodeIndex();
         query.append(String.format("CREATE INDEX FOR (n:%s) ", index.getLabel()));
+
+        generateOnClause(index.getPropertyNames());
+    }
+
+    private void generateRelationshipIndex() {
+        Neo4JDBIndex index = schema.generateRandomRelationshipIndex();
+        query.append(String.format("CREATE INDEX FOR ()-[n:%s]-()", index.getLabel()));
 
         generateOnClause(index.getPropertyNames());
     }
