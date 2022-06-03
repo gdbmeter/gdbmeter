@@ -41,7 +41,9 @@ public class RedisExpressionGenerator {
             case STRING:
                 return new Neo4JConstant.StringConstant(Randomization.getString());
             case POINT:
-                return new RedisPointConstant(Randomization.getDouble(), Randomization.getDouble());
+                return new RedisPointConstant(
+                        Randomization.nextDouble(-180, 180),
+                        Randomization.nextDouble(-90, 90));
             default:
                 throw new AssertionError(type);
         }
@@ -76,7 +78,7 @@ public class RedisExpressionGenerator {
                 return new Neo4JPostfixOperation(generateExpression(depth + 1),
                         Neo4JPostfixOperation.PostfixOperator.getRandom());
             case BINARY_COMPARISON:
-                return generateComparison(depth, Randomization.fromOptions(supportedTypes));
+                return generateComparison(depth, Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.BOOLEAN, Neo4JType.FLOAT, Neo4JType.STRING));
             case BINARY_STRING_OPERATOR:
                 return new Neo4JBinaryStringOperation(generateExpression(depth + 1, Neo4JType.STRING),
                         generateExpression(depth + 1, Neo4JType.STRING),
@@ -116,8 +118,7 @@ public class RedisExpressionGenerator {
                 if (RedisBugs.bug2375) {
                     binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
                             ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION,
-                            ArithmeticOperator.DIVISION, ArithmeticOperator.EXPONENTIATION
-                    );
+                            ArithmeticOperator.DIVISION);
                 } else {
                     binaryOperator = ArithmeticOperator.getRandomIntegerOperator();
                 }

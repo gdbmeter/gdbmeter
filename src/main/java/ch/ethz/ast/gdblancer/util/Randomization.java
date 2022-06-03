@@ -28,6 +28,10 @@ public class Randomization {
         return random.nextDouble();
     }
 
+    public static double nextDouble(double lower, double upper) {
+        return random.nextDouble(lower, upper);
+    }
+
     public static int smallNumber() {
         return (int) (Math.abs(random.nextGaussian()) * 2);
     }
