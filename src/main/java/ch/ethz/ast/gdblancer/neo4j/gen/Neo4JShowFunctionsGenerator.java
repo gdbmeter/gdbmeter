@@ -1,21 +1,21 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JShowFunctionsGenerator {
 
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
     private final StringBuilder query = new StringBuilder();
 
-    public Neo4JShowFunctionsGenerator(Neo4JDBSchema schema) {
+    public Neo4JShowFunctionsGenerator(CypherSchema schema) {
         this.schema = schema;
     }
 
-    public static Neo4JQuery showFunctions(Neo4JDBSchema schema) {
+    public static Neo4JQuery showFunctions(CypherSchema schema) {
         return new Neo4JShowFunctionsGenerator(schema).generateShowFunctions();
     }
 

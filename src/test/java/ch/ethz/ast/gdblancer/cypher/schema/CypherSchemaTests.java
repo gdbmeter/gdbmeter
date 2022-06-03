@@ -1,14 +1,14 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.schema;
+package ch.ethz.ast.gdblancer.cypher.schema;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Neo4JDBSchemaTests {
+public class CypherSchemaTests {
 
     @Test
     void testGenerateRandomSchema() {
-        Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
+        CypherSchema schema = CypherSchema.generateRandomSchema();
         String label = schema.getRandomLabel();
         String type = schema.getRandomType();
 
@@ -23,7 +23,7 @@ public class Neo4JDBSchemaTests {
 
     @Test
     void testGenerateIndexName() {
-        Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
+        CypherSchema schema = CypherSchema.generateRandomSchema();
         assertNotEquals(schema.generateRandomNodeIndex(), schema.generateRandomNodeIndex());
     }
 

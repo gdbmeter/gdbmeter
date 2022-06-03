@@ -6,13 +6,13 @@ import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpression;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JPrefixOperation;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JVisitor;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherPrefixOperation;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
@@ -22,9 +22,9 @@ import java.util.Map;
 public class Neo4JPartitionOracle implements Oracle {
 
     private final GlobalState<Neo4JConnection> state;
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
 
-    public Neo4JPartitionOracle(GlobalState<Neo4JConnection> state, Neo4JDBSchema schema) {
+    public Neo4JPartitionOracle(GlobalState<Neo4JConnection> state, CypherSchema schema) {
         this.state = state;
         this.schema = schema;
     }
@@ -39,7 +39,7 @@ public class Neo4JPartitionOracle implements Oracle {
         Neo4JDBUtil.addFunctionErrors(errors);
 
         String label = schema.getRandomLabel();
-        Neo4JDBEntity entity = schema.getEntityByLabel(label);
+        CypherEntity entity = schema.getEntityByLabel(label);
 
         Neo4JQuery initialQuery = new Neo4JQuery(String.format("MATCH (n:%s) RETURN COUNT(n)", label));
         List<Map<String, Object>> result = initialQuery.executeAndGet(state);
@@ -55,8 +55,8 @@ public class Neo4JPartitionOracle implements Oracle {
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");
 
-        Neo4JExpression whereCondition = Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN);
-        query.append(Neo4JVisitor.asString(whereCondition));
+        CypherExpression whereCondition = Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN);
+        query.append(CypherVisitor.asString(whereCondition));
         query.append(" RETURN COUNT(n)");
 
         Neo4JQuery firstQuery = new Neo4JQuery(query.toString(), errors);
@@ -73,7 +73,7 @@ public class Neo4JPartitionOracle implements Oracle {
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");
 
-        query.append(Neo4JVisitor.asString(new Neo4JPrefixOperation(whereCondition, Neo4JPrefixOperation.PrefixOperator.NOT)));
+        query.append(CypherVisitor.asString(new CypherPrefixOperation(whereCondition, CypherPrefixOperation.PrefixOperator.NOT)));
         query.append(" RETURN COUNT(n)");
 
         Neo4JQuery secondQuery = new Neo4JQuery(query.toString(), errors);
@@ -90,7 +90,7 @@ public class Neo4JPartitionOracle implements Oracle {
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE (");
 
-        query.append(Neo4JVisitor.asString(whereCondition));
+        query.append(CypherVisitor.asString(whereCondition));
         query.append(") IS NULL RETURN COUNT(n)");
 
         Neo4JQuery thirdQuery = new Neo4JQuery(query.toString(), errors);

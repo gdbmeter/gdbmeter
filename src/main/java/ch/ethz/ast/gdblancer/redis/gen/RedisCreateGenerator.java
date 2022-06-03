@@ -3,24 +3,24 @@ package ch.ethz.ast.gdblancer.redis.gen;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateGenerator;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
 
 import java.util.Map;
 
 public class RedisCreateGenerator extends CypherCreateGenerator {
 
-    public RedisCreateGenerator(Neo4JDBSchema schema) {
+    public RedisCreateGenerator(CypherSchema schema) {
         super(schema);
     }
 
     @Override
-    protected CypherPropertyGenerator getPropertyGenerator(Neo4JDBEntity entity, Map<String, Neo4JDBEntity> variables) {
+    protected CypherPropertyGenerator getPropertyGenerator(CypherEntity entity, Map<String, CypherEntity> variables) {
         return new RedisPropertyGenerator(entity, variables);
     }
 
-    public static RedisQuery createEntities(Neo4JDBSchema schema) {
+    public static RedisQuery createEntities(CypherSchema schema) {
         RedisCreateGenerator generator = new RedisCreateGenerator(schema);
         generator.generateCreate();
         return new RedisQuery(generator.query.toString(), new ExpectedErrors());

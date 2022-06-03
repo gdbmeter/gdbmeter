@@ -1,14 +1,14 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JShowTransactionsGenerator {
 
     private final StringBuilder query = new StringBuilder();
 
-    public static Neo4JQuery showTransactions(Neo4JDBSchema ignored) {
+    public static Neo4JQuery showTransactions(CypherSchema ignored) {
         return new Neo4JShowTransactionsGenerator().generateShowTransactions();
     }
 

@@ -2,11 +2,11 @@ package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JVisitor;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -14,15 +14,15 @@ import java.util.Map;
 
 public class Neo4JDeleteGenerator {
 
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
     private final StringBuilder query = new StringBuilder();
     private final ExpectedErrors errors = new ExpectedErrors();
 
-    public Neo4JDeleteGenerator(Neo4JDBSchema schema) {
+    public Neo4JDeleteGenerator(CypherSchema schema) {
         this.schema = schema;
     }
 
-    public static Neo4JQuery deleteNodes(Neo4JDBSchema schema) {
+    public static Neo4JQuery deleteNodes(CypherSchema schema) {
         return new Neo4JDeleteGenerator(schema).generateDelete();
     }
 
@@ -35,11 +35,11 @@ public class Neo4JDeleteGenerator {
         Neo4JDBUtil.addFunctionErrors(errors);
 
         String label = schema.getRandomLabel();
-        Neo4JDBEntity entity = schema.getEntityByLabel(label);
+        CypherEntity entity = schema.getEntityByLabel(label);
 
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");
-        query.append(Neo4JVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN)));
+        query.append(CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN)));
 
         if (Randomization.getBoolean()) {
             query.append(" DETACH");

@@ -1,10 +1,10 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.ast;
+package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-public class Neo4JBinaryComparisonOperation
-        extends BinaryOperatorNode<Neo4JExpression, Neo4JBinaryComparisonOperation.BinaryComparisonOperator>
-        implements Neo4JExpression {
+public class CypherBinaryComparisonOperation
+        extends BinaryOperatorNode<CypherExpression, CypherBinaryComparisonOperation.BinaryComparisonOperator>
+        implements CypherExpression {
 
     public enum BinaryComparisonOperator implements Operator {
         EQUALS("="),
@@ -31,7 +31,7 @@ public class Neo4JBinaryComparisonOperation
 
     }
 
-    public Neo4JBinaryComparisonOperation(Neo4JExpression left, Neo4JExpression right, BinaryComparisonOperator operator) {
+    public CypherBinaryComparisonOperation(CypherExpression left, CypherExpression right, BinaryComparisonOperator operator) {
         super(left, right, operator);
     }
 

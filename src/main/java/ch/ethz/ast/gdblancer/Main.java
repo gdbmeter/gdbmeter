@@ -6,7 +6,7 @@ import ch.ethz.ast.gdblancer.common.QueryReplay;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQueryReplay;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
 import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisGenerator;
@@ -24,7 +24,7 @@ public class Main {
         REDIS_GRAPH
     }
 
-    private static Database systemUnderTest = Database.REDIS_GRAPH;
+    private static Database systemUnderTest = Database.NEO4J;
 
     public static void main(String[] args) throws IOException {
         runOracle();
@@ -68,7 +68,7 @@ public class Main {
                 connection.connect();
                 state.setConnection(connection);
 
-                Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
+                CypherSchema schema = CypherSchema.generateRandomSchema();
                 Oracle oracle = new Neo4JPartitionOracle(state, schema);
                 oracle.onGenerate();
 
@@ -100,7 +100,7 @@ public class Main {
                 connection.connect();
                 state.setConnection(connection);
 
-                Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema(RedisExpressionGenerator.supportedTypes);
+                CypherSchema schema = CypherSchema.generateRandomSchema(RedisExpressionGenerator.supportedTypes);
                 new RedisGenerator(schema).generate(state);
             } finally {
                 state.getLogger().info("Finished iteration, closing database");

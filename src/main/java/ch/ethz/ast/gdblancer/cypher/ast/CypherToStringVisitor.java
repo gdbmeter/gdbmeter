@@ -1,11 +1,11 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.ast;
+package ch.ethz.ast.gdblancer.cypher.ast;
 
-public class Neo4JToStringVisitor implements Neo4JVisitor {
+public class CypherToStringVisitor implements CypherVisitor {
 
     private final StringBuilder sb = new StringBuilder();
 
     @Override
-    public void visit(BinaryOperatorNode<Neo4JExpression, ?> operation) {
+    public void visit(BinaryOperatorNode<CypherExpression, ?> operation) {
         sb.append("(");
         visit(operation.getLeft());
         sb.append(")");
@@ -18,20 +18,20 @@ public class Neo4JToStringVisitor implements Neo4JVisitor {
     }
 
     @Override
-    public void visit(Neo4JRegularExpression expression) {
+    public void visit(CypherRegularExpression expression) {
         visit(expression.getString());
         sb.append("=~");
         visit(expression.getRegex());
     }
 
     @Override
-    public void visit(Neo4JFunctionCall functionCall) {
+    public void visit(CypherFunctionCall functionCall) {
         sb.append(functionCall.getFunctionName());
         sb.append("(");
 
         String delimiter = "";
 
-        for (Neo4JExpression argument : functionCall.getArguments()) {
+        for (CypherExpression argument : functionCall.getArguments()) {
             sb.append(delimiter);
             visit(argument);
             delimiter = ",";
@@ -41,17 +41,17 @@ public class Neo4JToStringVisitor implements Neo4JVisitor {
     }
 
     @Override
-    public void visit(Neo4JVariablePropertyAccess propertyAccess) {
+    public void visit(CypherVariablePropertyAccess propertyAccess) {
         sb.append(propertyAccess.getVariableName());
     }
 
     @Override
-    public void visit(Neo4JConstant constant) {
+    public void visit(CypherConstant constant) {
         sb.append(constant.getTextRepresentation());
     }
 
     @Override
-    public void visit(Neo4JPrefixOperation operation) {
+    public void visit(CypherPrefixOperation operation) {
         sb.append(operation.getOperator().getTextRepresentation());
         sb.append("(");
         visit(operation.getExpression());
@@ -59,7 +59,7 @@ public class Neo4JToStringVisitor implements Neo4JVisitor {
     }
 
     @Override
-    public void visit(Neo4JPostfixOperation operation) {
+    public void visit(CypherPostfixOperation operation) {
         sb.append("(");
         visit(operation.getExpression());
         sb.append(") ");

@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBIndex;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherIndex;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Set;
@@ -14,10 +14,10 @@ public abstract class CypherCreateIndexGenerator {
         TEXT_INDEX
     }
 
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
     protected final StringBuilder query = new StringBuilder();
 
-    public CypherCreateIndexGenerator(Neo4JDBSchema schema) {
+    public CypherCreateIndexGenerator(CypherSchema schema) {
         this.schema = schema;
     }
 
@@ -39,7 +39,7 @@ public abstract class CypherCreateIndexGenerator {
     private void generateNodeTextIndex() {
         query.append("CREATE TEXT INDEX ");
 
-        Neo4JDBIndex index = schema.generateRandomTextIndex();
+        CypherIndex index = schema.generateRandomTextIndex();
 
         query.append(schema.generateRandomIndexName());
         query.append(" ");
@@ -62,7 +62,7 @@ public abstract class CypherCreateIndexGenerator {
         query.append("INDEX ");
 
         // TODO: Maybe add support for unnamed indices
-        Neo4JDBIndex index = schema.generateRandomNodeIndex();
+        CypherIndex index = schema.generateRandomNodeIndex();
 
         query.append(schema.generateRandomIndexName());
         query.append(" ");
@@ -86,7 +86,7 @@ public abstract class CypherCreateIndexGenerator {
         query.append("INDEX ");
 
         // TODO: Maybe add support for unnamed indices
-        Neo4JDBIndex index = schema.generateRandomRelationshipIndex();
+        CypherIndex index = schema.generateRandomRelationshipIndex();
 
         query.append(schema.generateRandomIndexName());
         query.append(" ");

@@ -1,9 +1,9 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpression;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JVisitor;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashMap;
@@ -12,22 +12,22 @@ import java.util.Set;
 
 public abstract class CypherPropertyGenerator {
 
-    private final Neo4JDBEntity entity;
-    private final Map<String, Neo4JDBEntity> variables;
+    private final CypherEntity entity;
+    private final Map<String, CypherEntity> variables;
     private final StringBuilder query = new StringBuilder();
 
-    protected CypherPropertyGenerator(Neo4JDBEntity entity) {
+    protected CypherPropertyGenerator(CypherEntity entity) {
         this.entity = entity;
         this.variables = new HashMap<>();
     }
 
-    protected CypherPropertyGenerator(Neo4JDBEntity entity, Map<String, Neo4JDBEntity> variables) {
+    protected CypherPropertyGenerator(CypherEntity entity, Map<String, CypherEntity> variables) {
         this.entity = entity;
         this.variables = variables;
     }
 
     public String generateProperties() {
-        Map<String, Neo4JType> availableProperties = entity.getAvailableProperties();
+        Map<String, CypherType> availableProperties = entity.getAvailableProperties();
         Set<String> selectedProperties = Randomization.nonEmptySubset(availableProperties.keySet());
 
         if (selectedProperties.isEmpty()) {
@@ -48,10 +48,10 @@ public abstract class CypherPropertyGenerator {
         return query.toString();
     }
 
-    private void generateProperty(String name, Neo4JType type) {
+    private void generateProperty(String name, CypherType type) {
         query.append(String.format("%s:", name));
 
-        Neo4JExpression expression;
+        CypherExpression expression;
 
         if (Randomization.getBoolean()) {
             expression = generateConstant(type);
@@ -59,10 +59,10 @@ public abstract class CypherPropertyGenerator {
             expression = generateExpression(variables, type);
         }
 
-        query.append(Neo4JVisitor.asString(expression));
+        query.append(CypherVisitor.asString(expression));
     }
 
-    protected abstract Neo4JExpression generateConstant(Neo4JType type);
-    protected abstract Neo4JExpression generateExpression(Map<String, Neo4JDBEntity> variables, Neo4JType type);
+    protected abstract CypherExpression generateConstant(CypherType type);
+    protected abstract CypherExpression generateExpression(Map<String, CypherEntity> variables, CypherType type);
 
 }

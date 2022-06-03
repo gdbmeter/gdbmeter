@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.redis;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.gen.RedisCreateGenerator;
 import ch.ethz.ast.gdblancer.redis.gen.RedisCreateIndexGenerator;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -17,9 +17,9 @@ public class RedisGenerator {
         CREATE(RedisCreateGenerator::createEntities),
         CREATE_INDEX(RedisCreateIndexGenerator::createIndex);
 
-        private final Function<Neo4JDBSchema, RedisQuery> generator;
+        private final Function<CypherSchema, RedisQuery> generator;
 
-        Action(Function<Neo4JDBSchema, RedisQuery> generator) {
+        Action(Function<CypherSchema, RedisQuery> generator) {
             this.generator = generator;
         }
     }
@@ -41,14 +41,14 @@ public class RedisGenerator {
         return selectedNumber;
     }
 
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
 
-    public RedisGenerator(Neo4JDBSchema schema) {
+    public RedisGenerator(CypherSchema schema) {
         this.schema = schema;
     }
 
     public void generate(GlobalState<RedisConnection> globalState) {
-        List<Function<Neo4JDBSchema, RedisQuery>> queries = new ArrayList<>();
+        List<Function<CypherSchema, RedisQuery>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -61,7 +61,7 @@ public class RedisGenerator {
 
         Randomization.shuffleList(queries);
 
-        for (Function<Neo4JDBSchema, RedisQuery> queryGenerator : queries) {
+        for (Function<CypherSchema, RedisQuery> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;

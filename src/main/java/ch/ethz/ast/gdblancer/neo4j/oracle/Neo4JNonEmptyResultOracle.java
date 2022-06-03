@@ -5,12 +5,12 @@ import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpression;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JVisitor;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -23,21 +23,21 @@ import java.util.Set;
 public class Neo4JNonEmptyResultOracle implements Oracle {
 
     private final GlobalState<Neo4JConnection> state;
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
 
-    public Neo4JNonEmptyResultOracle(GlobalState<Neo4JConnection> state, Neo4JDBSchema schema) {
+    public Neo4JNonEmptyResultOracle(GlobalState<Neo4JConnection> state, CypherSchema schema) {
         this.state = state;
         this.schema = schema;
     }
 
     private String randomMatch(String label) {
-        Neo4JDBEntity entity = schema.getEntityByLabel(label);
+        CypherEntity entity = schema.getEntityByLabel(label);
 
         StringBuilder query = new StringBuilder();
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");
-        Neo4JExpression matchingExpression = Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN);
-        query.append(Neo4JVisitor.asString(matchingExpression));
+        CypherExpression matchingExpression = Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN);
+        query.append(CypherVisitor.asString(matchingExpression));
 
         return query.toString();
     }

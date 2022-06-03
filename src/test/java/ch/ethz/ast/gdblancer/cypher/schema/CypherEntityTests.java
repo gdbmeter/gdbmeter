@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.schema;
+package ch.ethz.ast.gdblancer.cypher.schema;
 
 import org.junit.jupiter.api.Test;
 
@@ -6,12 +6,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Neo4JDBEntityTests {
+public class CypherEntityTests {
 
     @Test
     void testGenerateRandomEntity() {
-        Neo4JDBEntity entity = Neo4JDBEntity.generateRandomEntity(Neo4JType.values());
-        Map<String, Neo4JType> availableProperties = entity.getAvailableProperties();
+        CypherEntity entity = CypherEntity.generateRandomEntity(CypherType.values());
+        Map<String, CypherType> availableProperties = entity.getAvailableProperties();
 
         assertNotNull(entity);
         assertNotNull(availableProperties);

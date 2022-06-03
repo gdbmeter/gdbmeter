@@ -1,12 +1,12 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 
 public interface CypherFunctionDescription {
 
     int getArity();
     String getName();
-    boolean supportReturnType(Neo4JType returnType);
-    Neo4JType[] getArgumentTypes(Neo4JType returnType);
+    boolean supportReturnType(CypherType returnType);
+    CypherType[] getArgumentTypes(CypherType returnType);
 
 }

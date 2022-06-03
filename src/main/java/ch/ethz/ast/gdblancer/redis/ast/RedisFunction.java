@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.redis.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherFunctionDescription;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JType;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 // See: https://redis.io/commands/graph.query/#functions
@@ -9,192 +9,192 @@ public enum RedisFunction implements CypherFunctionDescription {
 
     ABS("abs", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.INTEGER || returnType == Neo4JType.FLOAT;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.INTEGER || returnType == CypherType.FLOAT;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            assert returnType == Neo4JType.INTEGER || returnType == Neo4JType.FLOAT;
-            return new Neo4JType[] { returnType };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            assert returnType == CypherType.INTEGER || returnType == CypherType.FLOAT;
+            return new CypherType[] { returnType };
         }
     },
     SIGN("sign", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.INTEGER;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.INTEGER;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
         }
     },
     TO_INTEGER("toInteger", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.INTEGER;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.INTEGER;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            Neo4JType chosenType = Randomization.fromOptions(Neo4JType.STRING, Neo4JType.INTEGER, Neo4JType.FLOAT);
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            CypherType chosenType = Randomization.fromOptions(CypherType.STRING, CypherType.INTEGER, CypherType.FLOAT);
 
-            return new Neo4JType[] { chosenType };
+            return new CypherType[] { chosenType };
         }
     },
     LEFT("left", 2) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING, Neo4JType.INTEGER };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING, CypherType.INTEGER };
         }
     },
     RIGHT("right", 2) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING, Neo4JType.INTEGER };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING, CypherType.INTEGER };
         }
     },
     LTRIM("lTrim", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING };
         }
     },
     RTRIM("rTrim", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING };
         }
     },
     TRIM("trim", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING };
         }
     },
     TO_LOWER("toLower", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING };
         }
     },
     TO_UPPER("toUpper", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING };
         }
     },
     REVERSE("reverse", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING };
         }
     },
     REPLACE("replace", 3) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING, Neo4JType.STRING, Neo4JType.STRING };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING, CypherType.STRING, CypherType.STRING };
         }
     },
     SUBSTRING("substring", 3) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.STRING, Neo4JType.INTEGER, Neo4JType.INTEGER };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.STRING, CypherType.INTEGER, CypherType.INTEGER };
         }
     },
     TO_STRING("toString", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.STRING;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
         }
     },
     CEIL("ceil", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.FLOAT;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
         }
     },
     FLOOR("floor", 1) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.FLOAT;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
         }
     },
     POINT_DISTANCE("distance", 2) {
         @Override
-        public boolean supportReturnType(Neo4JType returnType) {
-            return returnType == Neo4JType.FLOAT;
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
         }
 
         @Override
-        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[] { Neo4JType.POINT, Neo4JType.POINT };
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.POINT, CypherType.POINT };
         }
     };
 

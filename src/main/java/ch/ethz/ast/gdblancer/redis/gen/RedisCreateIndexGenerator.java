@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBIndex;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherIndex;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -15,14 +15,14 @@ public class RedisCreateIndexGenerator {
         TEXT_INDEX
     }
 
-    private RedisCreateIndexGenerator(Neo4JDBSchema schema) {
+    private RedisCreateIndexGenerator(CypherSchema schema) {
         this.schema = schema;
     }
 
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
     private final StringBuilder query = new StringBuilder();
 
-    public static RedisQuery createIndex(Neo4JDBSchema schema) {
+    public static RedisQuery createIndex(CypherSchema schema) {
         return new RedisCreateIndexGenerator(schema).generateCreateIndex();
     }
 
@@ -45,14 +45,14 @@ public class RedisCreateIndexGenerator {
     }
 
     private void generateNodeIndex() {
-        Neo4JDBIndex index = schema.generateRandomNodeIndex();
+        CypherIndex index = schema.generateRandomNodeIndex();
         query.append(String.format("CREATE INDEX FOR (n:%s) ", index.getLabel()));
 
         generateOnClause(index.getPropertyNames());
     }
 
     private void generateRelationshipIndex() {
-        Neo4JDBIndex index = schema.generateRandomRelationshipIndex();
+        CypherIndex index = schema.generateRandomRelationshipIndex();
         query.append(String.format("CREATE INDEX FOR ()-[n:%s]-()", index.getLabel()));
 
         generateOnClause(index.getPropertyNames());
@@ -60,7 +60,7 @@ public class RedisCreateIndexGenerator {
 
     // TODO: Support multi-property fulltext search
     private void generateFulltextIndex() {
-        Neo4JDBIndex index = schema.generateRandomTextIndex();
+        CypherIndex index = schema.generateRandomTextIndex();
         query.append(String.format("CALL db.idx.fulltext.createNodeIndex('%s', '%s')", index.getLabel(), index.getPropertyNames().toArray()[0]));
     }
 

@@ -4,24 +4,24 @@ import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateGenerator;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBEntity;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 
 import java.util.Map;
 
 public class Neo4JCreateGenerator extends CypherCreateGenerator {
 
-    public Neo4JCreateGenerator(Neo4JDBSchema schema) {
+    public Neo4JCreateGenerator(CypherSchema schema) {
         super(schema);
     }
 
     @Override
-    protected CypherPropertyGenerator getPropertyGenerator(Neo4JDBEntity entity, Map<String, Neo4JDBEntity> variables) {
+    protected CypherPropertyGenerator getPropertyGenerator(CypherEntity entity, Map<String, CypherEntity> variables) {
         return new Neo4JPropertyGenerator(entity, variables);
     }
 
-    public static Neo4JQuery createEntities(Neo4JDBSchema schema) {
+    public static Neo4JQuery createEntities(CypherSchema schema) {
         Neo4JCreateGenerator generator = new Neo4JCreateGenerator(schema);
 
         ExpectedErrors errors = new ExpectedErrors();

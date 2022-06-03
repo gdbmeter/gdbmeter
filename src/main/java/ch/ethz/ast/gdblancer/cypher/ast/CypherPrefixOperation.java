@@ -1,8 +1,8 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.ast;
+package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-public class Neo4JPrefixOperation implements Neo4JExpression {
+public class CypherPrefixOperation implements CypherExpression {
 
     public enum PrefixOperator implements Operator {
 
@@ -27,15 +27,15 @@ public class Neo4JPrefixOperation implements Neo4JExpression {
 
     }
 
-    private final Neo4JExpression expression;
+    private final CypherExpression expression;
     private final PrefixOperator operator;
 
-    public Neo4JPrefixOperation(Neo4JExpression expression, PrefixOperator operator) {
+    public CypherPrefixOperation(CypherExpression expression, PrefixOperator operator) {
         this.expression = expression;
         this.operator = operator;
     }
 
-    public Neo4JExpression getExpression() {
+    public CypherExpression getExpression() {
         return expression;
     }
 

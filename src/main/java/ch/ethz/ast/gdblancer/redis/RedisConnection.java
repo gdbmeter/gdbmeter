@@ -29,9 +29,9 @@ public class RedisConnection implements Connection {
 
         try (Jedis resource = pool.getResource()) {
             try (Transaction transaction = new Transaction(resource)) {
-                Response<ResultSet> r = transaction.graphQuery("db", query.getQuery());
+                Response<ResultSet> response = transaction.graphQuery("db", query.getQuery());
                 transaction.exec();
-                ResultSet records = r.get();
+                ResultSet records = response.get();
                 System.out.println(records);
             }
         }

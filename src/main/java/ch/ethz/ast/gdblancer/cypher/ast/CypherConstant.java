@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.ast;
+package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -7,11 +7,11 @@ import ch.ethz.ast.gdblancer.util.Randomization;
 import java.time.Year;
 import java.util.Map;
 
-public abstract class Neo4JConstant implements Neo4JExpression {
+public abstract class CypherConstant implements CypherExpression {
 
     public abstract String getTextRepresentation();
 
-    public static class BooleanConstant extends Neo4JConstant {
+    public static class BooleanConstant extends CypherConstant {
 
         private final boolean value;
 
@@ -25,14 +25,14 @@ public abstract class Neo4JConstant implements Neo4JExpression {
         }
     }
 
-    public static class NullConstant extends Neo4JConstant {
+    public static class NullConstant extends CypherConstant {
         @Override
         public String getTextRepresentation() {
             return "null";
         }
     }
 
-    public static class IntegerConstant extends Neo4JConstant {
+    public static class IntegerConstant extends CypherConstant {
 
         protected final long value;
 
@@ -105,7 +105,7 @@ public abstract class Neo4JConstant implements Neo4JExpression {
         }
     }
 
-    public static class StringConstant extends Neo4JConstant {
+    public static class StringConstant extends CypherConstant {
         private final String value;
 
         public StringConstant(String value) {
@@ -119,7 +119,7 @@ public abstract class Neo4JConstant implements Neo4JExpression {
     }
 
     // TODO: Should float actually store a double?
-    public static class FloatConstant extends Neo4JConstant {
+    public static class FloatConstant extends CypherConstant {
 
         private final double value;
 
@@ -133,7 +133,7 @@ public abstract class Neo4JConstant implements Neo4JExpression {
         }
     }
 
-    public static class DurationConstant extends Neo4JConstant {
+    public static class DurationConstant extends CypherConstant {
 
         private String value;
         private Map<String, Long> datePart;
@@ -180,7 +180,7 @@ public abstract class Neo4JConstant implements Neo4JExpression {
         }
     }
 
-    public static class DateConstant extends Neo4JConstant {
+    public static class DateConstant extends CypherConstant {
 
         private final boolean useSeparator;
         private final int year;
@@ -223,7 +223,7 @@ public abstract class Neo4JConstant implements Neo4JExpression {
         }
     }
 
-    public static class LocalTimeConstant extends Neo4JConstant {
+    public static class LocalTimeConstant extends CypherConstant {
 
         private final int hours;
         private final String separator;
@@ -273,7 +273,7 @@ public abstract class Neo4JConstant implements Neo4JExpression {
         }
     }
 
-    public static class PointConstant extends Neo4JConstant {
+    public static class PointConstant extends CypherConstant {
 
         private final double x;
         private final double y;

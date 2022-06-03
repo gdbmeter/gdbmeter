@@ -1,8 +1,8 @@
 package ch.ethz.ast.gdblancer.redis.ast;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.ast.Neo4JConstant;
+import ch.ethz.ast.gdblancer.cypher.ast.CypherConstant;
 
-public class RedisPointConstant extends Neo4JConstant {
+public class RedisPointConstant extends CypherConstant {
 
     private final double longitude;
     private final double latitude;

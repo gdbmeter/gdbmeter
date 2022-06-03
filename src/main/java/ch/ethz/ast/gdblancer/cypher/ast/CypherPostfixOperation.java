@@ -1,8 +1,8 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.ast;
+package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-public class Neo4JPostfixOperation implements Neo4JExpression {
+public class CypherPostfixOperation implements CypherExpression {
 
     public enum PostfixOperator implements Operator {
 
@@ -26,15 +26,15 @@ public class Neo4JPostfixOperation implements Neo4JExpression {
 
     }
 
-    private final Neo4JExpression expression;
+    private final CypherExpression expression;
     private final PostfixOperator operator;
 
-    public Neo4JPostfixOperation(Neo4JExpression expression, PostfixOperator operator) {
+    public CypherPostfixOperation(CypherExpression expression, PostfixOperator operator) {
         this.expression = expression;
         this.operator = operator;
     }
 
-    public Neo4JExpression getExpression() {
+    public CypherExpression getExpression() {
         return expression;
     }
 

@@ -1,10 +1,10 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.ast;
+package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-public class Neo4JBinaryArithmeticOperation
-        extends BinaryOperatorNode<Neo4JExpression, Neo4JBinaryArithmeticOperation.ArithmeticOperator>
-        implements Neo4JExpression {
+public class CypherBinaryArithmeticOperation
+        extends BinaryOperatorNode<CypherExpression, CypherBinaryArithmeticOperation.ArithmeticOperator>
+        implements CypherExpression {
 
     public enum ArithmeticOperator implements Operator {
         ADDITION("+"),
@@ -43,9 +43,9 @@ public class Neo4JBinaryArithmeticOperation
 
     }
 
-    public Neo4JBinaryArithmeticOperation(Neo4JExpression left,
-                                          Neo4JExpression right,
-                                          ArithmeticOperator operator) {
+    public CypherBinaryArithmeticOperation(CypherExpression left,
+                                           CypherExpression right,
+                                           ArithmeticOperator operator) {
         super(left, right, operator);
     }
 
