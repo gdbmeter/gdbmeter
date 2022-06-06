@@ -115,7 +115,7 @@ public class RedisExpressionGenerator {
                 CypherExpression right = generateExpression(depth + 1, CypherType.INTEGER);
 
                 ArithmeticOperator binaryOperator;
-                if (RedisBugs.bug2375) {
+                if (RedisBugs.bug2377) {
                     binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
                             ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION,
                             ArithmeticOperator.DIVISION);
@@ -165,7 +165,7 @@ public class RedisExpressionGenerator {
 
                 ArithmeticOperator binaryOperator;
 
-                if (RedisBugs.bug2375) {
+                if (RedisBugs.bug2377) {
                     binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
                             ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION,
                             ArithmeticOperator.DIVISION, ArithmeticOperator.EXPONENTIATION
