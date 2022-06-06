@@ -34,8 +34,7 @@ public class RedisConnection implements Connection {
             try (Transaction transaction = new Transaction(resource)) {
                 Response<ResultSet> response = transaction.graphQuery("db", query.getQuery());
                 transaction.exec();
-                ResultSet records = response.get();
-                System.out.println(records);
+                response.get();
             }
         }
 
