@@ -39,7 +39,6 @@ public enum RedisFunction implements CypherFunctionDescription {
         @Override
         public CypherType[] getArgumentTypes(CypherType returnType) {
             CypherType chosenType = Randomization.fromOptions(CypherType.STRING, CypherType.INTEGER, CypherType.FLOAT);
-
             return new CypherType[] { chosenType };
         }
     },
@@ -195,6 +194,64 @@ public enum RedisFunction implements CypherFunctionDescription {
         @Override
         public CypherType[] getArgumentTypes(CypherType returnType) {
             return new CypherType[] { CypherType.POINT, CypherType.POINT };
+        }
+    },
+    RAND("rand", 0) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { };
+        }
+    },
+    ROUND("round", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.INTEGER;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            CypherType chosenType = Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT);
+            return new CypherType[] { chosenType };
+        }
+    },
+    SQRT("sqrt", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            CypherType chosenType = Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT);
+            return new CypherType[] { chosenType };
+
+        }
+    },
+    POW("pow", 2) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.INTEGER, CypherType.INTEGER };
+        }
+    },
+    SIZE("size", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.STRING;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[] { CypherType.INTEGER };
         }
     };
 
