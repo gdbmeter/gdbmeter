@@ -289,6 +289,10 @@ public class RedisExpressionGenerator {
             functions.remove(RedisFunction.LEFT);
         }
 
+        if (RedisBugs.bug2390) {
+            functions.remove(RedisFunction.POINT_DISTANCE);
+        }
+
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
         }
