@@ -4,6 +4,7 @@ import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.gen.RedisCreateGenerator;
 import ch.ethz.ast.gdblancer.redis.gen.RedisCreateIndexGenerator;
+import ch.ethz.ast.gdblancer.redis.gen.RedisRemoveGenerator;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -15,7 +16,8 @@ public class RedisGenerator {
 
     enum Action {
         CREATE(RedisCreateGenerator::createEntities),
-        CREATE_INDEX(RedisCreateIndexGenerator::createIndex);
+        CREATE_INDEX(RedisCreateIndexGenerator::createIndex),
+        REMOVE(RedisRemoveGenerator::removeProperties);
 
         private final Function<CypherSchema, RedisQuery> generator;
 
@@ -33,6 +35,9 @@ public class RedisGenerator {
                 break;
             case CREATE_INDEX:
                 selectedNumber = Randomization.nextInt(3,  10);
+                break;
+            case REMOVE:
+                selectedNumber = Randomization.nextInt(0, 8);
                 break;
             default:
                 throw new AssertionError(action);
