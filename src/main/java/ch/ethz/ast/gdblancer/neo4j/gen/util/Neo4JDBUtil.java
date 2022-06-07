@@ -9,7 +9,7 @@ import java.util.Set;
 public class Neo4JDBUtil {
 
     private static final Set<String> NEO4J_KEYWORDS = Set.of(
-            "AND", "CONTAINS", "DISTINCT", "IN", "NOT", "OR", "XOR", "CASE", "WHERE", "FROM", "SHOW", "MATCH", "MERGE"
+            "AND", "CONTAINS", "DISTINCT", "IN", "NOT", "OR", "XOR", "CASE", "WHERE", "FROM", "SHOW", "MATCH", "MERGE", "TRUE", "FALSE"
     );
 
     /**
