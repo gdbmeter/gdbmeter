@@ -22,7 +22,7 @@ public class Neo4JDBUtil {
         do {
             candidate = Randomization.getCharacterFromAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
                     + Randomization.getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_");
-        } while (NEO4J_KEYWORDS.contains(candidate));
+        } while (NEO4J_KEYWORDS.contains(candidate.toUpperCase()));
 
         return candidate;
     }
