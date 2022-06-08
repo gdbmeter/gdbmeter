@@ -2,10 +2,7 @@ package ch.ethz.ast.gdblancer.redis;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.redis.gen.RedisCreateGenerator;
-import ch.ethz.ast.gdblancer.redis.gen.RedisCreateIndexGenerator;
-import ch.ethz.ast.gdblancer.redis.gen.RedisDropIndexGenerator;
-import ch.ethz.ast.gdblancer.redis.gen.RedisRemoveGenerator;
+import ch.ethz.ast.gdblancer.redis.gen.*;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -19,7 +16,8 @@ public class RedisGenerator {
         CREATE(RedisCreateGenerator::createEntities),
         CREATE_INDEX(RedisCreateIndexGenerator::createIndex),
         REMOVE(RedisRemoveGenerator::removeProperties),
-        DROP_INDEX(RedisDropIndexGenerator::dropIndex);
+        DROP_INDEX(RedisDropIndexGenerator::dropIndex),
+        DELETE(RedisDeleteGenerator::deleteNodes);
 
         private final Function<CypherSchema, RedisQuery> generator;
 
@@ -39,6 +37,7 @@ public class RedisGenerator {
                 selectedNumber = Randomization.nextInt(3,  10);
                 break;
             case REMOVE:
+            case DELETE:
                 selectedNumber = Randomization.nextInt(0, 8);
                 break;
             case DROP_INDEX:
