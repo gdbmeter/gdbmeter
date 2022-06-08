@@ -24,7 +24,7 @@ public class Main {
         REDIS_GRAPH
     }
 
-    private static Database systemUnderTest = Database.NEO4J;
+    private static Database systemUnderTest = Database.REDIS_GRAPH;
 
     public static void main(String[] args) throws IOException {
         runOracle();

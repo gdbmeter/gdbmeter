@@ -9,12 +9,6 @@ import java.util.Set;
 
 public class RedisCreateIndexGenerator {
 
-    enum INDEX_TYPES {
-        NODE_INDEX,
-        RELATIONSHIP_INDEX,
-        TEXT_INDEX
-    }
-
     private RedisCreateIndexGenerator(CypherSchema schema) {
         this.schema = schema;
     }
@@ -27,7 +21,7 @@ public class RedisCreateIndexGenerator {
     }
 
     private RedisQuery generateCreateIndex() {
-        switch (Randomization.fromOptions(INDEX_TYPES.values())) {
+        switch (Randomization.fromOptions(RedisIndexTypes.values())) {
             case NODE_INDEX:
                 generateNodeIndex();
                 break;
