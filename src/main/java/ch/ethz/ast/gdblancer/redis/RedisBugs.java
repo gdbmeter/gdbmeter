@@ -26,4 +26,7 @@ public class RedisBugs {
     // https://github.com/RedisGraph/RedisGraph/issues/bug2390
     public static final boolean bug2390 = true;
 
+    // https://github.com/RedisGraph/RedisGraph/issues/bug2393
+    public static final boolean bug2393 = true;
+
 }

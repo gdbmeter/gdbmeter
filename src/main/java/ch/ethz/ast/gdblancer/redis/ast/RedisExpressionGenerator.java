@@ -293,6 +293,10 @@ public class RedisExpressionGenerator {
             functions.remove(RedisFunction.POINT_DISTANCE);
         }
 
+        if (RedisBugs.bug2393) {
+            functions.remove(RedisFunction.TO_INTEGER);
+        }
+
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
         }
