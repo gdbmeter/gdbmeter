@@ -12,13 +12,16 @@ public class RedisQueryReplay extends QueryReplay {
     @Override
     protected void executeQueries(List<String> queries) {
         GlobalState<RedisConnection> state = new GlobalState<>();
+        ExpectedErrors errors = new ExpectedErrors();
+
+        errors.addRegex("ERR Unable to drop index on (.*) no such index.");
 
         try (RedisConnection connection = new RedisConnection()) {
             connection.connect();
             state.setConnection(connection);
 
             for (String query : queries) {
-                new RedisQuery(query, new ExpectedErrors()).execute(state);
+                new RedisQuery(query, errors).execute(state);
             }
 
         } catch (IOException e) {
