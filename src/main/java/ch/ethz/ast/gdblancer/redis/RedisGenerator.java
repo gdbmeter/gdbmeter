@@ -17,6 +17,7 @@ public class RedisGenerator {
         CREATE_INDEX(RedisCreateIndexGenerator::createIndex),
         REMOVE(RedisRemoveGenerator::removeProperties),
         DROP_INDEX(RedisDropIndexGenerator::dropIndex),
+        SET(RedisSetGenerator::setProperties),
         DELETE(RedisDeleteGenerator::deleteNodes);
 
         private final Function<CypherSchema, RedisQuery> generator;
@@ -37,6 +38,7 @@ public class RedisGenerator {
                 selectedNumber = Randomization.nextInt(3,  10);
                 break;
             case REMOVE:
+            case SET:
             case DELETE:
                 selectedNumber = Randomization.nextInt(0, 8);
                 break;
