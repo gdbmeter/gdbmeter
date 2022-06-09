@@ -23,11 +23,9 @@ public class RedisQueryReplay extends QueryReplay {
             for (String query : queries) {
                 new RedisQuery(query, errors).execute(state);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }
