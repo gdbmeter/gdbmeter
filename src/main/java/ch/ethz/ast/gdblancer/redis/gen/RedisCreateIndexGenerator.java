@@ -47,7 +47,7 @@ public class RedisCreateIndexGenerator {
 
     private void generateRelationshipIndex() {
         CypherIndex index = schema.generateRandomRelationshipIndex();
-        query.append(String.format("CREATE INDEX FOR ()-[n:%s]-()", index.getLabel()));
+        query.append(String.format("CREATE INDEX FOR ()-[n:%s]-() ", index.getLabel()));
 
         generateOnClause(index.getPropertyNames());
     }
