@@ -295,6 +295,7 @@ public class RedisExpressionGenerator {
 
         if (RedisBugs.bug2393) {
             functions.remove(RedisFunction.TO_INTEGER);
+            functions.remove(RedisFunction.RAND);
         }
 
         if (functions.isEmpty()) {
