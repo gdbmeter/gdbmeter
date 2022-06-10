@@ -3,15 +3,16 @@ package ch.ethz.ast.gdblancer;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.common.QueryReplay;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQueryReplay;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
 import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisGenerator;
 import ch.ethz.ast.gdblancer.redis.RedisQueryReplay;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
+import ch.ethz.ast.gdblancer.redis.oracle.RedisEmptyResultOracle;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.io.IOException;
@@ -101,7 +102,23 @@ public class Main {
                 state.setConnection(connection);
 
                 CypherSchema schema = CypherSchema.generateRandomSchema(RedisExpressionGenerator.supportedTypes);
+                Oracle oracle = new RedisEmptyResultOracle(state, schema);
+                oracle.onGenerate();
+
                 new RedisGenerator(schema).generate(state);
+                state.getLogger().info("Running oracle");
+
+                try {
+                    oracle.onStart();
+
+                    for (int i = 0; i < 100; i++) {
+                        try {
+                            oracle.check();
+                        } catch (IgnoreMeException ignored) {}
+                    }
+                } finally {
+                    oracle.onComplete();
+                }
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
             }
