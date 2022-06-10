@@ -20,7 +20,13 @@ public class RedisConnection implements Connection {
     @Override
     public void connect() throws IOException {
         jedis = new Jedis("localhost", 6379);
-        System.out.println(jedis.flushAll());
+
+        // This should prevent #2394
+        try (Transaction transaction = jedis.multi()) {
+            Response<String> response = transaction.graphDelete("db");
+            transaction.exec();
+            System.out.println(response.get());
+        }
     }
 
     public List<Map<String, Object>> execute(Query<RedisConnection> query) {
