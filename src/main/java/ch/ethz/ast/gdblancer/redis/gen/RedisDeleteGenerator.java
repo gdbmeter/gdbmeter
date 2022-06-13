@@ -6,6 +6,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
+import ch.ethz.ast.gdblancer.redis.RedisUtil;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -31,6 +32,8 @@ public class RedisDeleteGenerator {
     private RedisQuery generateDelete() {
         String label = schema.getRandomLabel();
         CypherEntity entity = schema.getEntityByLabel(label);
+
+        RedisUtil.addFunctionErrors(errors);
 
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");

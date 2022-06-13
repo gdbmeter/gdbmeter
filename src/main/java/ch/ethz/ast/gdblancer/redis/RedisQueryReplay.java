@@ -16,19 +16,16 @@ public class RedisQueryReplay extends QueryReplay {
 
         errors.addRegex("ERR Unable to drop index on (.*) no such index.");
 
-        while (true) {
-            try (RedisConnection connection = new RedisConnection()) {
-                connection.connect();
-                state.setConnection(connection);
+        try (RedisConnection connection = new RedisConnection()) {
+            connection.connect();
+            state.setConnection(connection);
 
-                for (String query : queries) {
-                    new RedisQuery(query, errors).execute(state);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            for (String query : queries) {
+                new RedisQuery(query, errors).execute(state);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
 
 }

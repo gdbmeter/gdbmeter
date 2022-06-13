@@ -116,11 +116,9 @@ public class RedisExpressionGenerator {
 
                 ArithmeticOperator binaryOperator;
                 if (RedisBugs.bug2377) {
-                    binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
-                            ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION,
-                            ArithmeticOperator.DIVISION);
+                    binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION, ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION);
                 } else {
-                    // TODO: DO not allow division -> float ?
+                    // TODO: Don't allow division since it can result in floats
                     binaryOperator = ArithmeticOperator.getRandomIntegerOperator();
                 }
 
@@ -295,7 +293,6 @@ public class RedisExpressionGenerator {
 
         if (RedisBugs.bug2393) {
             functions.remove(RedisFunction.TO_INTEGER);
-            functions.remove(RedisFunction.RAND);
         }
 
         if (functions.isEmpty()) {

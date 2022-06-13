@@ -6,6 +6,7 @@ import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
+import ch.ethz.ast.gdblancer.redis.RedisUtil;
 
 import java.util.Map;
 
@@ -23,7 +24,11 @@ public class RedisCreateGenerator extends CypherCreateGenerator {
     public static RedisQuery createEntities(CypherSchema schema) {
         RedisCreateGenerator generator = new RedisCreateGenerator(schema);
         generator.generateCreate();
-        return new RedisQuery(generator.query.toString(), new ExpectedErrors());
+
+        ExpectedErrors errors = new ExpectedErrors();
+        RedisUtil.addFunctionErrors(errors);
+
+        return new RedisQuery(generator.query.toString(), errors);
     }
 
 }

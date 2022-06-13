@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.redis.oracle;
 
+import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
@@ -8,6 +9,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
+import ch.ethz.ast.gdblancer.redis.RedisUtil;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -29,6 +31,9 @@ public class RedisEmptyResultOracle implements Oracle {
 
     @Override
     public void check() {
+        ExpectedErrors errors = new ExpectedErrors();
+        RedisUtil.addFunctionErrors(errors);
+
         Set<Long> allIds = new HashSet<>();
         List<Map<String, Object>> idResult = new RedisQuery("MATCH (n) RETURN id(n)").executeAndGet(state);
 
@@ -48,7 +53,7 @@ public class RedisEmptyResultOracle implements Oracle {
                 CypherVisitor.asString(RedisExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN)) +
                 " RETURN n";
 
-        RedisQuery initialQuery = new RedisQuery(query);
+        RedisQuery initialQuery = new RedisQuery(query, errors);
         List<Map<String, Object>> initialResult = initialQuery.executeAndGet(state);
 
         if (initialResult == null) {

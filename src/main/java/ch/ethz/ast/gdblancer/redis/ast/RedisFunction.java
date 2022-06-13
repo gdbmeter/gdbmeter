@@ -197,21 +197,10 @@ public enum RedisFunction implements CypherFunctionDescription {
             return new CypherType[] { CypherType.POINT, CypherType.POINT };
         }
     },
-    RAND("rand", 0) {
-        @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.FLOAT;
-        }
-
-        @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { };
-        }
-    },
     ROUND("round", 1) {
         @Override
         public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.INTEGER;
+            return returnType == CypherType.FLOAT;
         }
 
         @Override
@@ -247,12 +236,12 @@ public enum RedisFunction implements CypherFunctionDescription {
     SIZE("size", 1) {
         @Override
         public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+            return returnType == CypherType.INTEGER;
         }
 
         @Override
         public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.INTEGER };
+            return new CypherType[] { CypherType.STRING };
         }
     },
     TO_JSON("toJSON", 1) {
