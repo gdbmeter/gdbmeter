@@ -274,25 +274,8 @@ public class RedisExpressionGenerator {
                 .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());
 
-        if (RedisBugs.bug2374) {
-            functions.remove(RedisFunction.SUBSTRING);
-        }
-
-        if (RedisBugs.bug2375) {
-            functions.remove(RedisFunction.RIGHT);
-        }
-
-        if (RedisBugs.bug2382) {
-            functions.remove(RedisFunction.RIGHT);
-            functions.remove(RedisFunction.LEFT);
-        }
-
         if (RedisBugs.bug2390) {
             functions.remove(RedisFunction.POINT_DISTANCE);
-        }
-
-        if (RedisBugs.bug2393) {
-            functions.remove(RedisFunction.TO_INTEGER);
         }
 
         if (functions.isEmpty()) {

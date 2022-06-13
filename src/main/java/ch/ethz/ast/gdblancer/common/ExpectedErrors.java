@@ -3,8 +3,6 @@ package ch.ethz.ast.gdblancer.common;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import org.neo4j.graphdb.QueryExecutionException;
-import org.neo4j.logging.shaded.log4j.core.pattern.AbstractStyleNameConverter;
-import redis.clients.jedis.exceptions.JedisDataException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,14 +73,6 @@ public class ExpectedErrors {
                 if (message.equals("For input string: \"inf\"") ||
                         message.equals("For input string: \"-nan\"") ||
                         message.equals("For input string: \"-inf\"")) {
-                    return true;
-                }
-            }
-        }
-
-        if (RedisBugs.bug2383) {
-            if (exception instanceof JedisDataException) {
-                if (message.matches("Type mismatch: expected (Integer|Boolean|String|Float|Null) but was (Integer|Boolean|String|Float|Null)")) {
                     return true;
                 }
             }
