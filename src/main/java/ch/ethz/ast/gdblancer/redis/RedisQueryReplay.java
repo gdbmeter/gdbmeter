@@ -15,6 +15,7 @@ public class RedisQueryReplay extends QueryReplay {
         ExpectedErrors errors = new ExpectedErrors();
 
         errors.addRegex("ERR Unable to drop index on (.*) no such index.");
+        RedisUtil.addFunctionErrors(errors);
 
         try (RedisConnection connection = new RedisConnection()) {
             connection.connect();
