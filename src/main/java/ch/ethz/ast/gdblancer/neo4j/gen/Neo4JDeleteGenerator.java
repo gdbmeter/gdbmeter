@@ -7,7 +7,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
@@ -30,9 +30,9 @@ public class Neo4JDeleteGenerator {
     // TODO: Support DELETE of nodes of different labels
     // TODO: Add RETURN clause
     private Neo4JQuery generateDelete() {
-        Neo4JDBUtil.addRegexErrors(errors);
-        Neo4JDBUtil.addArithmeticErrors(errors);
-        Neo4JDBUtil.addFunctionErrors(errors);
+        Neo4JUtil.addRegexErrors(errors);
+        Neo4JUtil.addArithmeticErrors(errors);
+        Neo4JUtil.addFunctionErrors(errors);
 
         String label = schema.getRandomLabel();
         CypherEntity entity = schema.getEntityByLabel(label);

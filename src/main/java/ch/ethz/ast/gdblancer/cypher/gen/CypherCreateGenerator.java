@@ -2,7 +2,7 @@ package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashMap;
@@ -203,7 +203,7 @@ public abstract class CypherCreateGenerator {
         String name;
 
         do {
-            name = Neo4JDBUtil.generateValidName();
+            name = Neo4JUtil.generateValidName();
         } while (nodeVariables.containsKey(name)
                 || relationshipVariables.containsKey(name)
                 || aliasVariables.contains(name));

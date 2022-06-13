@@ -11,7 +11,7 @@ import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -46,9 +46,9 @@ public class Neo4JNonEmptyResultOracle implements Oracle {
     public void check() {
         ExpectedErrors errors = new ExpectedErrors();
 
-        Neo4JDBUtil.addRegexErrors(errors);
-        Neo4JDBUtil.addArithmeticErrors(errors);
-        Neo4JDBUtil.addFunctionErrors(errors);
+        Neo4JUtil.addRegexErrors(errors);
+        Neo4JUtil.addArithmeticErrors(errors);
+        Neo4JUtil.addFunctionErrors(errors);
 
         Set<Long> allIds = new HashSet<>();
         List<Map<String, Object>> idResult = new Neo4JQuery("MATCH (n) RETURN id(n)").executeAndGet(state);

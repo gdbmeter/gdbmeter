@@ -365,19 +365,19 @@ public class Neo4JExpressionGenerator {
     }
 
     private CypherFunctionCall generateFunction(int depth, CypherType returnType) {
-        List<CypherFunctionCall.Neo4JFunction> functions = Stream.of(CypherFunctionCall.Neo4JFunction.values())
+        List<Neo4JFunction> functions = Stream.of(Neo4JFunction.values())
                 .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());
 
         if (Neo4JBugs.PartitionOracleSpecific.bug12887) {
-            functions.remove(CypherFunctionCall.Neo4JFunction.LTRIM);
+            functions.remove(Neo4JFunction.LTRIM);
         }
 
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
         }
 
-        CypherFunctionCall.Neo4JFunction chosenFunction = Randomization.fromList(functions);
+        Neo4JFunction chosenFunction = Randomization.fromList(functions);
         int arity = chosenFunction.getArity();
         CypherType[] argumentTypes = chosenFunction.getArgumentTypes(returnType);
         CypherExpression[] arguments = new CypherExpression[arity];

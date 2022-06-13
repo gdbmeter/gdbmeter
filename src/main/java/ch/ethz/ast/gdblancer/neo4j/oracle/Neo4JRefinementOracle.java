@@ -10,7 +10,7 @@ import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.neo4j.values.storable.DurationValue;
 import org.neo4j.values.storable.PointValue;
@@ -40,9 +40,9 @@ public class Neo4JRefinementOracle implements Oracle {
 
         ExpectedErrors errors = new ExpectedErrors();
 
-        Neo4JDBUtil.addRegexErrors(errors);
-        Neo4JDBUtil.addArithmeticErrors(errors);
-        Neo4JDBUtil.addFunctionErrors(errors);
+        Neo4JUtil.addRegexErrors(errors);
+        Neo4JUtil.addArithmeticErrors(errors);
+        Neo4JUtil.addFunctionErrors(errors);
 
         for (int i = 0; i < amount; i++) {
             labels.add(schema.getRandomLabel());
@@ -160,9 +160,9 @@ public class Neo4JRefinementOracle implements Oracle {
     private boolean verify(List<String> labels, List<Long> expectedIds, CypherExpression whereCondition) {
         ExpectedErrors errors = new ExpectedErrors();
 
-        Neo4JDBUtil.addRegexErrors(errors);
-        Neo4JDBUtil.addArithmeticErrors(errors);
-        Neo4JDBUtil.addFunctionErrors(errors);
+        Neo4JUtil.addRegexErrors(errors);
+        Neo4JUtil.addArithmeticErrors(errors);
+        Neo4JUtil.addFunctionErrors(errors);
 
         StringBuilder refinedQuery = new StringBuilder("MATCH ");
         String separator = "";

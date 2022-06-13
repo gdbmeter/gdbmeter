@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen.util;
 
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,7 +9,7 @@ public class Neo4JDBUtilTests {
 
     @Test
     void testGenerateValidName() {
-        String name = Neo4JDBUtil.generateValidName();
+        String name = Neo4JUtil.generateValidName();
 
         assertNotNull(name);
         assertFalse(name.isEmpty());

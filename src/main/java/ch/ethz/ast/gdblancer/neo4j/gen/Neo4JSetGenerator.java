@@ -8,7 +8,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
@@ -33,9 +33,9 @@ public class Neo4JSetGenerator {
     // TODO: Support SET of multiple properties
     // TODO: Add RETURN clause
     private Neo4JQuery generateSet() {
-        Neo4JDBUtil.addRegexErrors(errors);
-        Neo4JDBUtil.addArithmeticErrors(errors);
-        Neo4JDBUtil.addFunctionErrors(errors);
+        Neo4JUtil.addRegexErrors(errors);
+        Neo4JUtil.addArithmeticErrors(errors);
+        Neo4JUtil.addFunctionErrors(errors);
 
         String label = schema.getRandomLabel();
         CypherEntity entity = schema.getEntityByLabel(label);

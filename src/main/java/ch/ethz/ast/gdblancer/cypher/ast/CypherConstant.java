@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -114,7 +114,7 @@ public abstract class CypherConstant implements CypherExpression {
 
         @Override
         public String getTextRepresentation() {
-            return Neo4JDBUtil.escape(value);
+            return Neo4JUtil.escape(value);
         }
     }
 

@@ -6,7 +6,7 @@ import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 
 import java.util.Map;
 
@@ -25,9 +25,9 @@ public class Neo4JCreateGenerator extends CypherCreateGenerator {
         Neo4JCreateGenerator generator = new Neo4JCreateGenerator(schema);
 
         ExpectedErrors errors = new ExpectedErrors();
-        Neo4JDBUtil.addRegexErrors(errors);
-        Neo4JDBUtil.addArithmeticErrors(errors);
-        Neo4JDBUtil.addFunctionErrors(errors);
+        Neo4JUtil.addRegexErrors(errors);
+        Neo4JUtil.addArithmeticErrors(errors);
+        Neo4JUtil.addFunctionErrors(errors);
 
         generator.generateCreate();
         return new Neo4JQuery(generator.query.toString(), errors);

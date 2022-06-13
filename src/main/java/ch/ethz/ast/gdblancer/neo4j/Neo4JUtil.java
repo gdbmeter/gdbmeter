@@ -1,12 +1,11 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.util;
+package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Set;
 
-public class Neo4JDBUtil {
+public class Neo4JUtil {
 
     private static final Set<String> NEO4J_KEYWORDS = Set.of(
             "AND", "CONTAINS", "DISTINCT", "IN", "NOT", "OR", "XOR", "CASE", "WHERE", "FROM", "SHOW", "MATCH", "MERGE", "TRUE", "FALSE"
