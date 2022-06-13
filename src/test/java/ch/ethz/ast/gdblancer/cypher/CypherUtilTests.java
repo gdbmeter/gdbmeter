@@ -1,15 +1,14 @@
-package ch.ethz.ast.gdblancer.neo4j.gen.util;
+package ch.ethz.ast.gdblancer.cypher;
 
-import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Neo4JDBUtilTests {
+public class CypherUtilTests {
 
     @Test
     void testGenerateValidName() {
-        String name = Neo4JUtil.generateValidName();
+        String name = CypherUtil.generateValidName();
 
         assertNotNull(name);
         assertFalse(name.isEmpty());

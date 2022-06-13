@@ -1,8 +1,8 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
+import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -22,7 +22,7 @@ public class Neo4JDropIndexGenerator {
     private Neo4JQuery generateDropIndex() {
         // Drop a non-existing index
         if (Randomization.smallBiasProbability()) {
-            query.append(String.format("DROP INDEX %s IF EXISTS", Neo4JUtil.generateValidName()));
+            query.append(String.format("DROP INDEX %s IF EXISTS", CypherUtil.generateValidName()));
             return new Neo4JQuery(query.toString());
         }
 

@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.cypher.schema;
 
-import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
+import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -26,11 +26,11 @@ public class CypherSchema {
         Map<String, CypherEntity> relationshipSchema = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(3, 10); i++) {
-            nodeSchema.put(Neo4JUtil.generateValidName(), CypherEntity.generateRandomEntity(availableTypes));
+            nodeSchema.put(CypherUtil.generateValidName(), CypherEntity.generateRandomEntity(availableTypes));
         }
 
         for (int i = 0; i < Randomization.nextInt(3, 4); i++) {
-            relationshipSchema.put(Neo4JUtil.generateValidName(), CypherEntity.generateRandomEntity(availableTypes));
+            relationshipSchema.put(CypherUtil.generateValidName(), CypherEntity.generateRandomEntity(availableTypes));
         }
 
         return new CypherSchema(nodeSchema, relationshipSchema);
@@ -99,7 +99,7 @@ public class CypherSchema {
         String name;
 
         do {
-            name = Neo4JUtil.generateValidName();
+            name = CypherUtil.generateValidName();
         } while (indices.contains(name));
 
         return name;
