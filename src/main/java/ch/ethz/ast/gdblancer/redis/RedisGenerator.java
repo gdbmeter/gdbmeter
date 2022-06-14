@@ -14,7 +14,6 @@ public class RedisGenerator {
 
     enum Action {
         CREATE(RedisCreateGenerator::createEntities),
-        CREATE_INDEX(RedisCreateIndexGenerator::createIndex),
         REMOVE(RedisRemoveGenerator::removeProperties),
         DROP_INDEX(RedisDropIndexGenerator::dropIndex),
         SET(RedisSetGenerator::setProperties),
@@ -33,9 +32,6 @@ public class RedisGenerator {
         switch (action) {
             case CREATE:
                 selectedNumber = Randomization.nextInt(50, 70);
-                break;
-            case CREATE_INDEX:
-                selectedNumber = Randomization.nextInt(3,  10);
                 break;
             case REMOVE:
             case SET:
