@@ -17,6 +17,8 @@ import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.time.Duration;
+import java.time.LocalTime;
 
 public class Main {
 
@@ -25,7 +27,7 @@ public class Main {
         REDIS_GRAPH
     }
 
-    private static Database systemUnderTest = Database.REDIS_GRAPH;
+    private static Database systemUnderTest = Database.NEO4J;
 
     public static void main(String[] args) throws IOException {
         runOracle();
@@ -73,6 +75,7 @@ public class Main {
                 Oracle oracle = new Neo4JPartitionOracle(state, schema);
                 oracle.onGenerate();
 
+                state.setStartTime();
                 new Neo4JGenerator(schema).generate(state);
                 state.getLogger().info("Running oracle");
 
@@ -89,6 +92,9 @@ public class Main {
                 }
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
+                long seconds = Duration.between(state.getStartTime(), LocalTime.now()).getSeconds();
+                int executedQueries = state.getExecutedQueries();
+                state.getLogger().info(String.format("%d queries / second", executedQueries / seconds));
             }
         }
     }

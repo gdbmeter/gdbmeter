@@ -4,13 +4,14 @@ import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.cypher.ast.*;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JFunction;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.neo4j.values.storable.DurationValue;
 import org.neo4j.values.storable.PointValue;
@@ -118,6 +119,32 @@ public class Neo4JRefinementOracle implements Oracle {
                             break;
                         case FLOAT:
                             expectedConstant = new CypherConstant.FloatConstant((Double) value);
+
+                            Double refinedFloat = (Double) value;
+
+                            // Handle special cases such as Infinity and NaN which aren't supported in Neo4J directly
+                            if (refinedFloat.isInfinite()) {
+                                if (refinedFloat > 0) {
+                                    expectedConstant = new CypherBinaryArithmeticOperation(new CypherConstant.FloatConstant(1.0D),
+                                            new CypherConstant.FloatConstant(0.0D),
+                                            CypherBinaryArithmeticOperation.ArithmeticOperator.DIVISION);
+                                } else {
+                                    expectedConstant = new CypherBinaryArithmeticOperation(new CypherConstant.FloatConstant(-1.0D),
+                                            new CypherConstant.FloatConstant(0.0D),
+                                            CypherBinaryArithmeticOperation.ArithmeticOperator.DIVISION);
+                                }
+                            } else if (refinedFloat.isNaN()) {
+                                // NaN == NaN is always false
+                                // Therefore we use toString(n.p) == "NaN" which should work
+                                CypherExpression toString = new CypherFunctionCall(Neo4JFunction.TO_STRING, new CypherVariablePropertyAccess[]{new CypherVariablePropertyAccess(String.format("n%d.%s", current, key))});
+                                CypherExpression expectedString = new CypherConstant.StringConstant("NaN");
+                                CypherExpression branch = new CypherBinaryComparisonOperation(toString, expectedString, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
+                                refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);
+                                continue;
+                            } else {
+                                expectedConstant = new CypherConstant.FloatConstant(refinedFloat);
+                            }
+
                             break;
                         case INTEGER:
                             expectedConstant = new CypherConstant.IntegerConstant((Long) value);
