@@ -2,7 +2,6 @@ package ch.ethz.ast.gdblancer.redis.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherFunctionDescription;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
-import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 // See: https://redis.io/commands/graph.query/#functions
@@ -252,12 +251,7 @@ public enum RedisFunction implements CypherFunctionDescription {
 
         @Override
         public CypherType[] getArgumentTypes(CypherType returnType) {
-            if (RedisBugs.bug2387) {
-                return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.BOOLEAN, CypherType.FLOAT, CypherType.STRING) };
-
-            } else {
-                return new CypherType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
-            }
+            return new CypherType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
         }
     };
 
