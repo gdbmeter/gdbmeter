@@ -278,10 +278,6 @@ public class RedisExpressionGenerator {
             functions.remove(RedisFunction.POINT_DISTANCE);
         }
 
-        if (RedisBugs.bug2406) {
-            functions.remove(RedisFunction.SUBSTRING);
-        }
-
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
         }
