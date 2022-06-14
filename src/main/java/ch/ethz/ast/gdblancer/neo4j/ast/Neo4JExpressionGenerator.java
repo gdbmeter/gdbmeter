@@ -373,6 +373,13 @@ public class Neo4JExpressionGenerator {
             functions.remove(Neo4JFunction.LTRIM);
         }
 
+        if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
+            functions.remove(Neo4JFunction.SQRT);
+            functions.remove(Neo4JFunction.LOG);
+            functions.remove(Neo4JFunction.LOG_10);
+            functions.remove(Neo4JFunction.EXP); // removed so that no infinity is generated
+        }
+
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
         }

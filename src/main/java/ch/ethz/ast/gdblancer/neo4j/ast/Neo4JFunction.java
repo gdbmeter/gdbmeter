@@ -314,6 +314,94 @@ public enum Neo4JFunction implements CypherFunctionDescription {
         public CypherType[] getArgumentTypes(CypherType returnType) {
             return new CypherType[]{CypherType.POINT, CypherType.POINT};
         }
+    },
+    IS_EMPTY("isEmpty", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.BOOLEAN;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{CypherType.STRING};
+        }
+    },
+    SIZE("size", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.INTEGER;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{CypherType.STRING};
+        }
+    },
+    ROUND("round", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{CypherType.FLOAT};
+        }
+    },
+    E("e", 0) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{};
+        }
+    },
+    EXP("exp", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{ CypherType.FLOAT };
+        }
+    },
+    LOG("log", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{ CypherType.FLOAT };
+        }
+    },
+    LOG_10("log10", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{ CypherType.FLOAT };
+        }
+    },
+    SQRT("sqrt", 1) {
+        @Override
+        public boolean supportReturnType(CypherType returnType) {
+            return returnType == CypherType.FLOAT;
+        }
+
+        @Override
+        public CypherType[] getArgumentTypes(CypherType returnType) {
+            return new CypherType[]{ CypherType.FLOAT };
+        }
     };
 
     private final String name;
