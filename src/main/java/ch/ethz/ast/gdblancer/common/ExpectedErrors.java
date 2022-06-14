@@ -44,25 +44,9 @@ public class ExpectedErrors {
             }
         }
 
-        if (Neo4JBugs.bug12880) {
-            if (exception instanceof IllegalArgumentException) {
-                if (message.equals("Comparison method violates its general contract!")) {
-                    return true;
-                }
-            }
-        }
-
         if (Neo4JBugs.bug12879) {
             if (exception instanceof UnsupportedOperationException) {
                 if (message.equals("TEXT index has no value capability")) {
-                    return true;
-                }
-            }
-        }
-
-        if (Neo4JBugs.bug12881) {
-            if (exception instanceof IllegalStateException) {
-                if (message.startsWith("Did not find any type information for expression")) {
                     return true;
                 }
             }

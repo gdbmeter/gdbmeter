@@ -18,16 +18,13 @@ public class Neo4JUtil {
         errors.add("Invalid Regex: \\k is not followed by '<' for named capturing group");
         errors.add("Invalid Regex: Unclosed hexadecimal escape sequence");      // RETURN (""=~"\x{a")
         errors.add("Invalid Regex: capturing group name does not start with a Latin letter");
-
-        if (Neo4JBugs.bug12866) {
-            errors.add("Invalid Regex: Unexpected internal error");
-            errors.add("Invalid Regex: Unknown character property name");           // RETURN (""=~"5\\P")
-            errors.add("Invalid Regex: Illegal octal escape sequence");             // RETURN (""=~"\\0q")
-            errors.add("Invalid Regex: Illegal hexadecimal escape sequence");       // RETURN (""=~"\\xp")
-            errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
-            errors.add("Invalid Regex: Illegal Unicode escape sequence");           // RETURN ""=~("\\uA")
-            errors.add("Invalid Regex: Illegal control escape sequence");           // RETURN ""=~("\\c")
-        }
+        errors.add("Invalid Regex: Unexpected internal error");
+        errors.add("Invalid Regex: Unknown character property name");           // RETURN (""=~"5\\P")
+        errors.add("Invalid Regex: Illegal octal escape sequence");             // RETURN (""=~"\\0q")
+        errors.add("Invalid Regex: Illegal hexadecimal escape sequence");       // RETURN (""=~"\\xp")
+        errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
+        errors.add("Invalid Regex: Illegal Unicode escape sequence");           // RETURN ""=~("\\uA")
+        errors.add("Invalid Regex: Illegal control escape sequence");           // RETURN ""=~("\\c")
     }
 
     public static void addArithmeticErrors(ExpectedErrors errors) {
