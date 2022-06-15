@@ -45,7 +45,6 @@ public class CypherUtil {
             switch (c) {
                 case '\\':
                 case '"':
-                case '/':
                     sb.append('\\');
                     sb.append(c);
                     break;
