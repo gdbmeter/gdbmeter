@@ -12,7 +12,6 @@ public class CypherIndex {
         this.propertyNames = propertyNames;
     }
 
-
     public String getLabel() {
         return label;
     }

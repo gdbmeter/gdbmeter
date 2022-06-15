@@ -25,7 +25,10 @@ public class CypherUtil {
         return candidate;
     }
 
-    // Adapted from: https://stackoverflow.com/questions/3020094/how-should-i-escape-strings-in-json
+    /**
+     * Escapes a string for JSON usage.
+     * The implementation is adapted from https://stackoverflow.com/questions/3020094/how-should-i-escape-strings-in-json
+     */
     public static String escape(String original) {
         if (original == null || original.length() == 0) {
             return "\"\"";

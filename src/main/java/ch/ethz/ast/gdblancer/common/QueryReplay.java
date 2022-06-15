@@ -7,8 +7,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Allows replaying queries from a file.
+ */
 public abstract class QueryReplay {
 
+    /**
+     * Executes all queries from file.
+     * @param file  The file to read from.
+     */
     public void replayFromFile(File file) throws IOException {
         List<String> lines = new ArrayList<>();
 

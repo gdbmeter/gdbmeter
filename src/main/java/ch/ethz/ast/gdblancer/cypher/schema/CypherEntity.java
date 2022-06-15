@@ -6,6 +6,10 @@ import ch.ethz.ast.gdblancer.util.Randomization;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Describes an entity of a cypher database.
+ * This could be either a node or an edge.
+ */
 public class CypherEntity {
 
     private final Map<String, CypherType> availableProperties;
@@ -14,6 +18,9 @@ public class CypherEntity {
         this.availableProperties = availableProperties;
     }
 
+    /**
+     * Generates a cypher entity based on a set of available types.
+     */
     public static CypherEntity generateRandomEntity(CypherType[] availableTypes) {
         Map<String, CypherType> availableProperties = new HashMap<>();
 

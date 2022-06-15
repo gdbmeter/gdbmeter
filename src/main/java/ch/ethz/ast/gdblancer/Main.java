@@ -7,7 +7,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQueryReplay;
-import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JEmptyResultOracle;
 import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisGenerator;
 import ch.ethz.ast.gdblancer.redis.RedisQueryReplay;
@@ -27,7 +27,7 @@ public class Main {
         REDIS_GRAPH
     }
 
-    private static Database systemUnderTest = Database.NEO4J;
+    private static Database systemUnderTest = Database.REDIS_GRAPH;
 
     public static void main(String[] args) throws IOException {
         runOracle();
@@ -72,7 +72,7 @@ public class Main {
                 state.setConnection(connection);
 
                 CypherSchema schema = CypherSchema.generateRandomSchema();
-                Oracle oracle = new Neo4JPartitionOracle(state, schema);
+                Oracle oracle = new Neo4JEmptyResultOracle(state, schema);
                 oracle.onGenerate();
 
                 state.setStartTime();

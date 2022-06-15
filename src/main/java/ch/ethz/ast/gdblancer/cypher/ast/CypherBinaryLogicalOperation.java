@@ -25,7 +25,6 @@ public class CypherBinaryLogicalOperation
                 return Randomization.fromOptions(values());
             }
         }
-
     }
 
     public CypherBinaryLogicalOperation(CypherExpression left, CypherExpression right, BinaryLogicalOperator operator) {

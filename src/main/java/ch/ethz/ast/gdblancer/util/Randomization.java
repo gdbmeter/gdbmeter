@@ -101,10 +101,6 @@ public class Randomization {
         return selectedColumns;
     }
 
-    private static final String ALPHANUMERIC_SPECIALCHAR_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\";
-    private static final String ALPHANUMERIC_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static final String NUMERIC_ALPHABET = "0123456789";
-
     private static int getStringLength() {
         int chars;
 
@@ -133,7 +129,7 @@ public class Randomization {
     }
 
     public static String getString() {
-        return getStringOfAlphabet(ALPHANUMERIC_SPECIALCHAR_ALPHABET);
+        return getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\");
     }
 
 }

@@ -166,7 +166,7 @@ public abstract class CypherConstant implements CypherExpression {
                 representation.append(String.format("%d%s", datePart.get(current), current));
             }
 
-            // Only 'T' is not valid
+            // Only 'T' alone is not considered valid
             if (!timePart.isEmpty()) {
                 representation.append("T");
 

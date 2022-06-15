@@ -35,7 +35,7 @@ public class Neo4JGenerator {
 
         switch (action) {
             case CREATE:
-                selectedNumber = Randomization.nextInt(50, 70);
+                selectedNumber = Randomization.nextInt(20, 30);
                 break;
             case DELETE:
             case SET:
