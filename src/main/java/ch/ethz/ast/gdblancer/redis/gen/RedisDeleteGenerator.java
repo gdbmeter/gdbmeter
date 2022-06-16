@@ -34,6 +34,7 @@ public class RedisDeleteGenerator {
         CypherEntity entity = schema.getEntityByLabel(label);
 
         RedisUtil.addFunctionErrors(errors);
+        RedisUtil.addArithmeticErrors(errors);
 
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");

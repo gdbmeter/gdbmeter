@@ -27,6 +27,7 @@ public class RedisCreateGenerator extends CypherCreateGenerator {
 
         ExpectedErrors errors = new ExpectedErrors();
         RedisUtil.addFunctionErrors(errors);
+        RedisUtil.addArithmeticErrors(errors);
 
         return new RedisQuery(generator.query.toString(), errors);
     }

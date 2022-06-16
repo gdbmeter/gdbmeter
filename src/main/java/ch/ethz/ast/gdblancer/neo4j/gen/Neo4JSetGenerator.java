@@ -55,7 +55,7 @@ public class Neo4JSetGenerator {
             if (Randomization.getBoolean()) {
                 expression = Neo4JExpressionGenerator.generateConstant(type);
             } else {
-                expression = Neo4JExpressionGenerator.generateExpression(type);
+                expression = Neo4JExpressionGenerator.generateExpression(type); // TODO: Add variable n
             }
 
             query.append(String.format(" SET n.%s = %s", property, CypherVisitor.asString(expression)));

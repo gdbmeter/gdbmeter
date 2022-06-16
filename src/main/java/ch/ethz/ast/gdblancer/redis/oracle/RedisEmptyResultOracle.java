@@ -33,6 +33,7 @@ public class RedisEmptyResultOracle implements Oracle {
     public void check() {
         ExpectedErrors errors = new ExpectedErrors();
         RedisUtil.addFunctionErrors(errors);
+        RedisUtil.addArithmeticErrors(errors);
 
         Set<Long> allIds = new HashSet<>();
         List<Map<String, Object>> idResult = new RedisQuery("MATCH (n) RETURN id(n)").executeAndGet(state);

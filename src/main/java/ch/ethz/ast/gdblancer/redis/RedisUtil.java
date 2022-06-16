@@ -10,4 +10,8 @@ public class RedisUtil {
         errors.add("Type mismatch: expected Integer but was Null");
     }
 
+    public static void addArithmeticErrors(ExpectedErrors errors) {
+        errors.add("Division by zero");
+    }
+
 }
