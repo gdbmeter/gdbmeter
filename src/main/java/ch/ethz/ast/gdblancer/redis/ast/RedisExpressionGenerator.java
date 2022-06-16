@@ -4,7 +4,6 @@ import ch.ethz.ast.gdblancer.cypher.ast.*;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherBinaryArithmeticOperation.ArithmeticOperator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
-import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -113,16 +112,7 @@ public class RedisExpressionGenerator {
             case BINARY_ARITHMETIC_EXPRESSION:
                 CypherExpression left = generateExpression(depth + 1, CypherType.INTEGER);
                 CypherExpression right = generateExpression(depth + 1, CypherType.INTEGER);
-
-                ArithmeticOperator binaryOperator;
-                if (RedisBugs.bug2377) {
-                    binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION, ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION);
-                } else {
-                    // TODO: Don't allow division since it can result in floats
-                    binaryOperator = ArithmeticOperator.getRandomIntegerOperator();
-                }
-
-                return new CypherBinaryArithmeticOperation(left, right, binaryOperator);
+                return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
             case FUNCTION:
                 return generateFunction(depth + 1, CypherType.INTEGER);
             default:
@@ -161,18 +151,7 @@ public class RedisExpressionGenerator {
                     }
                 }
 
-                ArithmeticOperator binaryOperator;
-
-                if (RedisBugs.bug2377) {
-                    binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
-                            ArithmeticOperator.SUBTRACTION, ArithmeticOperator.MULTIPLICATION,
-                            ArithmeticOperator.DIVISION, ArithmeticOperator.EXPONENTIATION
-                    );
-                } else {
-                    binaryOperator = ArithmeticOperator.getRandomFloatOperator();
-                }
-
-                return new CypherBinaryArithmeticOperation(left, right, binaryOperator);
+                return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
             case FUNCTION:
                 return generateFunction(depth + 1, CypherType.FLOAT);
             default:
@@ -273,10 +252,6 @@ public class RedisExpressionGenerator {
         List<RedisFunction> functions = Stream.of(RedisFunction.values())
                 .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
                 .collect(Collectors.toList());
-
-        if (RedisBugs.bug2390) {
-            functions.remove(RedisFunction.POINT_DISTANCE);
-        }
 
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
