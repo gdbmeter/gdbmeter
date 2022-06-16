@@ -38,7 +38,7 @@ public class RedisGenerator {
                 if (!RedisBugs.bug2394) {
                     selectedNumber = Randomization.nextInt(3,  10);
                 }
-                
+
                 break;
             case REMOVE:
             case SET:

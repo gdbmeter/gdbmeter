@@ -104,15 +104,21 @@ public class RedisExpressionGenerator {
         switch (Randomization.fromOptions(IntExpression.values())) {
             case UNARY_OPERATION:
                 CypherExpression intExpression = generateExpression(depth + 1, CypherType.INTEGER);
-                CypherPrefixOperation.PrefixOperator operator = Randomization.getBoolean()
+                CypherPrefixOperation.PrefixOperator unaryOperator = Randomization.getBoolean()
                         ? CypherPrefixOperation.PrefixOperator.UNARY_PLUS
                         : CypherPrefixOperation.PrefixOperator.UNARY_MINUS;
 
-                return new CypherPrefixOperation(intExpression, operator);
+                return new CypherPrefixOperation(intExpression, unaryOperator);
             case BINARY_ARITHMETIC_EXPRESSION:
                 CypherExpression left = generateExpression(depth + 1, CypherType.INTEGER);
                 CypherExpression right = generateExpression(depth + 1, CypherType.INTEGER);
-                return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
+
+                // Note that division is not supported since it generates a float value in RedisGraph!
+                ArithmeticOperator binaryOperator = Randomization.fromOptions(ArithmeticOperator.ADDITION,
+                        ArithmeticOperator.SUBTRACTION,
+                        ArithmeticOperator.MULTIPLICATION,
+                        ArithmeticOperator.MODULO);
+                return new CypherBinaryArithmeticOperation(left, right, binaryOperator);
             case FUNCTION:
                 return generateFunction(depth + 1, CypherType.INTEGER);
             default:
