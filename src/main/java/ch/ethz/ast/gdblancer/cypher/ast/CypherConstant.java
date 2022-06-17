@@ -133,6 +133,7 @@ public abstract class CypherConstant implements CypherExpression {
         }
     }
 
+    // TODO: Move to Neo4J package
     public static class DurationConstant extends CypherConstant {
 
         private String value;
@@ -180,6 +181,7 @@ public abstract class CypherConstant implements CypherExpression {
         }
     }
 
+    // TODO: Move to Neo4J package
     public static class DateConstant extends CypherConstant {
 
         private final boolean useSeparator;
@@ -223,6 +225,7 @@ public abstract class CypherConstant implements CypherExpression {
         }
     }
 
+    // TODO: Move to Neo4J package
     public static class LocalTimeConstant extends CypherConstant {
 
         private final int hours;
@@ -273,6 +276,7 @@ public abstract class CypherConstant implements CypherExpression {
         }
     }
 
+    // TODO: Move to Neo4J package
     public static class PointConstant extends CypherConstant {
 
         private final double x;
