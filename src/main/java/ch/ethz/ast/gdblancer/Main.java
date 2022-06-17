@@ -1,39 +1,69 @@
 package ch.ethz.ast.gdblancer;
 
-import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
+import ch.ethz.ast.gdblancer.common.QueryReplay;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
-import ch.ethz.ast.gdblancer.neo4j.gen.util.Neo4JDBUtil;
-import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQueryReplay;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JEmptyResultOracle;
+import ch.ethz.ast.gdblancer.redis.RedisConnection;
+import ch.ethz.ast.gdblancer.redis.RedisGenerator;
+import ch.ethz.ast.gdblancer.redis.RedisQueryReplay;
+import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
+import ch.ethz.ast.gdblancer.redis.oracle.RedisEmptyResultOracle;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 public class Main {
+
+    private enum Database {
+        NEO4J,
+        REDIS_GRAPH
+    }
+
+    private static Database systemUnderTest = Database.REDIS_GRAPH;
 
     public static void main(String[] args) throws IOException {
         runOracle();
     }
 
-    public static void replayQueries() throws IOException {
-        replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
+    private static void replayQueries() throws IOException {
+        QueryReplay queryReplay;
+
+        switch (systemUnderTest) {
+            case NEO4J:
+                queryReplay = new Neo4JQueryReplay();
+                break;
+            case REDIS_GRAPH:
+                queryReplay = new RedisQueryReplay();
+                break;
+            default:
+                throw new AssertionError(systemUnderTest);
+        }
+
+        queryReplay.replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
     }
 
-    public static void runOracle() throws IOException {
+    private static void runOracle() throws IOException {
+        switch (systemUnderTest) {
+            case NEO4J:
+                runNeo4JOracle();
+                break;
+            case REDIS_GRAPH:
+                runRedisOracle();
+                break;
+            default:
+                throw new AssertionError(systemUnderTest);
+        }
+    }
+
+    private static void runNeo4JOracle() throws IOException {
         GlobalState<Neo4JConnection> state = new GlobalState<>();
 
         while (true) {
@@ -41,8 +71,8 @@ public class Main {
                 connection.connect();
                 state.setConnection(connection);
 
-                Neo4JDBSchema schema = Neo4JDBSchema.generateRandomSchema();
-                Oracle oracle = new Neo4JPartitionOracle(state, schema);
+                CypherSchema schema = CypherSchema.generateRandomSchema();
+                Oracle oracle = new Neo4JEmptyResultOracle(state, schema);
                 oracle.onGenerate();
 
                 state.setStartTime();
@@ -55,8 +85,7 @@ public class Main {
                     for (int i = 0; i < 100; i++) {
                         try {
                             oracle.check();
-                        } catch (IgnoreMeException ignored) {
-                        }
+                        } catch (IgnoreMeException ignored) {}
                     }
                 } finally {
                     oracle.onComplete();
@@ -70,44 +99,36 @@ public class Main {
         }
     }
 
-    public static void executeQuery(String query) {
-        executeQueries(Collections.singletonList(query));
-    }
+    private static void runRedisOracle() throws IOException {
+        GlobalState<RedisConnection> state = new GlobalState<>();
 
-    public static void executeQueries(List<String> queries) {
-        GlobalState<Neo4JConnection> state = new GlobalState<>();
+        while (true) {
+            try (RedisConnection connection = new RedisConnection()) {
+                connection.connect();
+                state.setConnection(connection);
 
-        ExpectedErrors errors = new ExpectedErrors();
-        Neo4JDBUtil.addFunctionErrors(errors);
-        Neo4JDBUtil.addArithmeticErrors(errors);
-        Neo4JDBUtil.addRegexErrors(errors);
-        Neo4JDBUtil.addDeletionErrors(errors);
+                CypherSchema schema = CypherSchema.generateRandomSchema(RedisExpressionGenerator.supportedTypes);
+                Oracle oracle = new RedisEmptyResultOracle(state, schema);
+                oracle.onGenerate();
 
-        try (Neo4JConnection connection = new Neo4JConnection()) {
-            connection.connect();
-            state.setConnection(connection);
+                new RedisGenerator(schema).generate(state);
+                state.getLogger().info("Running oracle");
 
-            for (String query : queries) {
-                List<Map<String, Object>> result = new Neo4JQuery(query, errors).executeAndGet(state);
-                System.out.println(result);
-            }
+                try {
+                    oracle.onStart();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void replayFromFile(File file) throws IOException {
-        List<String> lines = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
+                    for (int i = 0; i < 100; i++) {
+                        try {
+                            oracle.check();
+                        } catch (IgnoreMeException ignored) {}
+                    }
+                } finally {
+                    oracle.onComplete();
+                }
+            } finally {
+                state.getLogger().info("Finished iteration, closing database");
             }
         }
-
-        executeQueries(lines);
     }
 
 }

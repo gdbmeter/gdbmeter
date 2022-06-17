@@ -2,7 +2,7 @@ package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.neo4j.gen.*;
-import ch.ethz.ast.gdblancer.neo4j.gen.schema.Neo4JDBSchema;
+import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -23,9 +23,9 @@ public class Neo4JGenerator {
         SET(Neo4JSetGenerator::setProperties),
         REMOVE(Neo4JRemoveGenerator::removeProperties);
 
-        private final Function<Neo4JDBSchema, Neo4JQuery> generator;
+        private final Function<CypherSchema, Neo4JQuery> generator;
 
-        Action(Function<Neo4JDBSchema, Neo4JQuery> generator) {
+        Action(Function<CypherSchema, Neo4JQuery> generator) {
             this.generator = generator;
         }
     }
@@ -35,7 +35,7 @@ public class Neo4JGenerator {
 
         switch (action) {
             case CREATE:
-                selectedNumber = Randomization.nextInt(50, 70);
+                selectedNumber = Randomization.nextInt(20, 30);
                 break;
             case DELETE:
             case SET:
@@ -58,14 +58,14 @@ public class Neo4JGenerator {
         return selectedNumber;
     }
 
-    private final Neo4JDBSchema schema;
+    private final CypherSchema schema;
 
-    public Neo4JGenerator(Neo4JDBSchema schema) {
+    public Neo4JGenerator(CypherSchema schema) {
         this.schema = schema;
     }
 
     public void generate(GlobalState<Neo4JConnection> globalState) {
-        List<Function<Neo4JDBSchema, Neo4JQuery>> queries = new ArrayList<>();
+        List<Function<CypherSchema, Neo4JQuery>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -78,7 +78,7 @@ public class Neo4JGenerator {
 
         Randomization.shuffleList(queries);
 
-        for (Function<Neo4JDBSchema, Neo4JQuery> queryGenerator : queries) {
+        for (Function<CypherSchema, Neo4JQuery> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;

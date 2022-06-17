@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.common;
 
 import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
+import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import org.neo4j.graphdb.QueryExecutionException;
 
 import java.util.HashSet;
@@ -20,6 +21,15 @@ public class ExpectedErrors {
         regexErrors.add(error);
     }
 
+    /**
+     * Checks if an exception is expected or not.
+     * An exception is considered expected if:
+     * - It can occur because of semantics of the query which cannot be avoided
+     * - It is a known bug that has not been fixed yet.
+     *
+     * @param exception The exception to check.
+     * @return          Whether the exception is expected.
+     */
     public boolean isExpected(Exception exception) {
         String message = exception.getMessage();
 
@@ -30,38 +40,32 @@ public class ExpectedErrors {
         if (exception instanceof QueryExecutionException) {
             if (Neo4JBugs.bug12877) {
                 if (((QueryExecutionException) exception).getStatusCode().equals("Neo.DatabaseError.Statement.ExecutionFailed")) {
-                    if (exception.getMessage().startsWith("Expected \nRegularSinglePlannerQuery(QueryGraph {Nodes: ['n'],")) {
+                    if (message.startsWith("Expected \nRegularSinglePlannerQuery(QueryGraph {Nodes: ['n'],")) {
                         return true;
                     }
                 }
             }
 
             if (Neo4JBugs.bug12878) {
-                if (exception.getMessage().startsWith("Node with id") && exception.getMessage().endsWith("has been deleted in this transaction")) {
+                if (message.startsWith("Node with id") && message.endsWith("has been deleted in this transaction")) {
                     return true;
                 }
             }
         }
 
-        if (Neo4JBugs.bug12880) {
-            if (exception instanceof IllegalArgumentException) {
-                if (exception.getMessage().equals("Comparison method violates its general contract!")) {
-                    return true;
-                }
-            }
-        }
-        
         if (Neo4JBugs.bug12879) {
             if (exception instanceof UnsupportedOperationException) {
-                if (exception.getMessage().equals("TEXT index has no value capability")) {
+                if (message.equals("TEXT index has no value capability")) {
                     return true;
                 }
             }
         }
 
-        if (Neo4JBugs.bug12881) {
-            if (exception instanceof IllegalStateException) {
-                if (exception.getMessage().startsWith("Did not find any type information for expression")) {
+        if (RedisBugs.bug3010) {
+            if (exception instanceof NumberFormatException) {
+                if (message.equals("For input string: \"inf\"") ||
+                        message.equals("For input string: \"-nan\"") ||
+                        message.equals("For input string: \"-inf\"")) {
                     return true;
                 }
             }
@@ -84,16 +88,6 @@ public class ExpectedErrors {
         }
 
         return false;
-    }
-
-    public static ExpectedErrors from(String... errors) {
-        ExpectedErrors expectedErrors = new ExpectedErrors();
-
-        for (String error : errors) {
-            expectedErrors.add(error);
-        }
-
-        return expectedErrors;
     }
 
 }
