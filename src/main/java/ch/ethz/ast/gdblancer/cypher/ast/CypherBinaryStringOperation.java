@@ -18,7 +18,6 @@ public class CypherBinaryStringOperation
             this.representation = representation;
         }
 
-
         @Override
         public String getTextRepresentation() {
             return representation;

@@ -128,14 +128,6 @@ public class RedisRefinementOracle implements Oracle {
                         case STRING:
                             expectedConstant = new CypherConstant.StringConstant((String) value);
                             break;
-                        case DATE:
-                            LocalDate refinedDate = (LocalDate) value;
-                            expectedConstant = new CypherConstant.DateConstant(false, refinedDate.getYear(), refinedDate.getMonthValue(), refinedDate.getDayOfMonth());
-                            break;
-                        case LOCAL_TIME:
-                            OffsetTime refinedTime = (OffsetTime) value;
-                            expectedConstant = new CypherConstant.LocalTimeConstant(refinedTime.getHour(), "", refinedTime.getMinute(), refinedTime.getSecond(), ",", refinedTime.getNano());
-                            break;
                         case POINT:
                             Point point = (Point) value;
                             expectedConstant = new RedisPointConstant(point.getLongitude(), point.getLatitude());
