@@ -20,11 +20,10 @@ public class RedisConnection implements Connection {
     public void connect() throws IOException {
         jedis = new Jedis("localhost", 6379);
 
-        // This should prevent #2394
         try (Transaction transaction = jedis.multi()) {
             Response<String> response = transaction.graphDelete("db");
             transaction.exec();
-            System.out.println(response.get());
+            response.get();
         } catch (JedisDataException exception) {
             if (!exception.getMessage().equalsIgnoreCase("ERR Invalid graph operation on empty key")) {
                 throw exception;
