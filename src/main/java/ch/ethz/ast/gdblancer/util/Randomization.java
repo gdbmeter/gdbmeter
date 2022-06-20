@@ -39,10 +39,6 @@ public class Randomization {
         return random.nextInt(100) == 1;
     }
 
-    public static boolean getBooleanWithRatherLowProbability() {
-        return random.nextInt(10) == 1;
-    }
-
     public static long getInteger() {
         if (smallBiasProbability()) {
             return Randomization.fromOptions(-1L, Long.MAX_VALUE, Long.MIN_VALUE, 1L, 0L);
