@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Neo4JRemoveGeneratorTests {
 
     @Test
-    void testDeleteNodes() {
+    void testRemoveProperties() {
         while (true) {
             try {
                 Query<?> query = Neo4JRemoveGenerator.removeProperties(CypherSchema.generateRandomSchema());

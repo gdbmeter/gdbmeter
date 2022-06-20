@@ -1,21 +1,22 @@
-package ch.ethz.ast.gdblancer.neo4j.gen;
+package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Neo4JPropertyGeneratorTests {
+public class RedisPropertyGeneratorTests {
 
     @Test
     void testGenerateProperties() {
         while (true) {
             try {
-                CypherEntity entity = CypherEntity.generateRandomEntity(CypherType.values());
+                CypherEntity entity = CypherEntity.generateRandomEntity(RedisExpressionGenerator.supportedTypes);
 
-                String query = new Neo4JPropertyGenerator(entity).generateProperties();
+                String query = new RedisPropertyGenerator(entity).generateProperties();
                 assertNotNull(query);
 
                 if (!query.isEmpty()) {

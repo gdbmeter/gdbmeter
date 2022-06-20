@@ -18,9 +18,7 @@ public class Neo4JDropIndexGeneratorTests {
                 assertNotNull(query);
                 assertTrue(query.getQuery().startsWith("DROP INDEX"));
                 break;
-            } catch (IgnoreMeException exception) {
-
-            }
+            } catch (IgnoreMeException exception) {}
         }
     }
 
