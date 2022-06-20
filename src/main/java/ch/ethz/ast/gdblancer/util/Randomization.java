@@ -7,9 +7,8 @@ public class Randomization {
 
     private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    public static <T> List<T> shuffleList(List<T> list) {
+    public static <T> void shuffleList(List<T> list) {
         Collections.shuffle(list, random);
-        return list;
     }
 
     public static int nextInt(int lower, int upper) {
@@ -101,7 +100,7 @@ public class Randomization {
         return selectedColumns;
     }
 
-    private static int getStringLength() {
+    public static String getStringOfAlphabet(String alphabet) {
         int chars;
 
         if (Randomization.getBoolean()) {
@@ -110,11 +109,6 @@ public class Randomization {
             chars = random.nextInt(0, 10);
         }
 
-        return chars;
-    }
-
-    public static String getStringOfAlphabet(String alphabet) {
-        int chars = getStringLength();
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < chars; i++) {
