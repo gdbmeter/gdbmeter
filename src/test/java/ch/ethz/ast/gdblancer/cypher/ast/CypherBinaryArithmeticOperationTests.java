@@ -1,8 +1,9 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
+import ch.ethz.ast.gdblancer.cypher.ast.CypherBinaryArithmeticOperation.ArithmeticOperator;
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import static ch.ethz.ast.gdblancer.cypher.ast.CypherBinaryArithmeticOperation.ArithmeticOperator.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,14 +12,14 @@ public class CypherBinaryArithmeticOperationTests {
 
     @Test
     void testGetRandomFloatOperatorNaNSafe() {
-        assertTrue(Stream.of(ADDITION, SUBTRACTION, MULTIPLICATION)
-                .anyMatch(arithmeticOperator -> arithmeticOperator.equals(getRandomFloatOperatorNaNSafe())));
+        ArithmeticOperator operator = getRandomFloatOperatorNaNSafe();
+        assertTrue(List.of(ADDITION, SUBTRACTION, MULTIPLICATION).contains(operator));
     }
 
     @Test
     void testGetRandomIntegerOperatorNaNSafe() {
-        assertTrue(Stream.of(ADDITION, SUBTRACTION, MULTIPLICATION)
-                .anyMatch(arithmeticOperator -> arithmeticOperator.equals(getRandomIntegerOperatorNaNSafe())));
+        ArithmeticOperator operator = getRandomIntegerOperatorNaNSafe();
+        assertTrue(List.of(ADDITION, SUBTRACTION, MULTIPLICATION).contains(operator));
     }
 
 }
