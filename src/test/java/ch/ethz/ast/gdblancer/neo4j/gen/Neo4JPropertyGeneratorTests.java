@@ -11,13 +11,20 @@ public class Neo4JPropertyGeneratorTests {
 
     @Test
     void testCreatePropertyQuery() {
-        try {
-            CypherEntity entity = CypherEntity.generateRandomEntity(CypherType.values());
+        while (true) {
+            try {
+                CypherEntity entity = CypherEntity.generateRandomEntity(CypherType.values());
 
-            String query = new Neo4JPropertyGenerator(entity).generateProperties();
-            assertNotNull(query);
-        } catch (IgnoreMeException ignored) {
+                String query = new Neo4JPropertyGenerator(entity).generateProperties();
+                assertNotNull(query);
 
+                if (!query.isEmpty()) {
+                    assertTrue(query.startsWith("{"));
+                    assertTrue(query.endsWith("}"));
+                }
+
+                break;
+            } catch (IgnoreMeException ignored) {}
         }
     }
 

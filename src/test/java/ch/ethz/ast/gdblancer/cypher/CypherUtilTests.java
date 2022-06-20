@@ -20,4 +20,12 @@ public class CypherUtilTests {
                 || (firstChar >= 97 && firstChar <= 122));
     }
 
+    @Test
+    void testEscape() {
+        assertEquals("\"normal text\"", CypherUtil.escape("normal text"));
+        assertEquals("\"te'st\"", CypherUtil.escape("te'st"));
+        assertEquals("\"te\\\"st\"", CypherUtil.escape("te\"st"));
+        assertEquals("\"te\\\\st\"", CypherUtil.escape("te\\st"));
+    }
+
 }

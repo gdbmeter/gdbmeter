@@ -12,12 +12,15 @@ public class Neo4JCreateIndexGeneratorTests {
 
     @Test
     void testCreateIndex() {
-        try {
-            Query<?> query = Neo4JCreateIndexGenerator.createIndex(CypherSchema.generateRandomSchema());
+        while (true) {
+            try {
+                Query<?> query = Neo4JCreateIndexGenerator.createIndex(CypherSchema.generateRandomSchema());
 
-            assertNotNull(query);
-            assertTrue(query.getQuery().startsWith("CREATE"));
-        } catch (IgnoreMeException ignored) {}
+                assertNotNull(query);
+                assertTrue(query.getQuery().startsWith("CREATE"));
+                break;
+            } catch (IgnoreMeException ignored) {}
+        }
     }
 
 }

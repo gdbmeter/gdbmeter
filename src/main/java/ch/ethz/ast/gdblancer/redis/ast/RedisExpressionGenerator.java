@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO: Try to extract common base class from Neo4JExpressionGenerator
 public class RedisExpressionGenerator {
 
     public static final CypherType[] supportedTypes = {CypherType.INTEGER, CypherType.BOOLEAN, CypherType.FLOAT, CypherType.STRING, CypherType.POINT};
