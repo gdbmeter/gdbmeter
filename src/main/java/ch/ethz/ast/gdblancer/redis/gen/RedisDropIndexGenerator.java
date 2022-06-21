@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherIndexTypes;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
@@ -24,7 +25,7 @@ public class RedisDropIndexGenerator {
     }
 
     private RedisQuery generateDropIndex() {
-        switch (Randomization.fromOptions(RedisIndexTypes.values())) {
+        switch (Randomization.fromOptions(CypherIndexTypes.values())) {
             case NODE_INDEX:
                 dropNodeIndex();
                 break;
@@ -71,6 +72,5 @@ public class RedisDropIndexGenerator {
 
         query.append(String.format("CALL db.idx.fulltext.drop('%s')", label));
     }
-
 
 }
