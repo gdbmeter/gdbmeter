@@ -63,14 +63,6 @@ public class CypherConstantTests {
     }
 
     @Test
-    void testPointConstants() {
-        assertEquals(new PointConstant(1D, 2D).getTextRepresentation(),
-                "point({ x: 1.000000, y: 2.000000 })");
-        assertEquals(new PointConstant(1D, 2D, 3D).getTextRepresentation(),
-                "point({ x: 1.000000, y: 2.000000, z: 3.000000 })");
-    }
-
-    @Test
     void testLocalTimeConstants() {
         assertEquals(new LocalTimeConstant(100, null, null, null, null, null).getTextRepresentation(),
                 "time('100')");

@@ -13,6 +13,7 @@ import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JDurationConstant;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JFunction;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JPointConstant;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.neo4j.values.storable.DurationValue;
 import org.neo4j.values.storable.PointValue;
@@ -169,9 +170,9 @@ public class Neo4JRefinementOracle implements Oracle {
                             PointValue refinedPoint = (PointValue) value;
 
                             if (refinedPoint.coordinate().length == 2) {
-                                expectedConstant = new CypherConstant.PointConstant(refinedPoint.coordinate()[0], refinedPoint.coordinate()[1]);
+                                expectedConstant = new Neo4JPointConstant(refinedPoint.coordinate()[0], refinedPoint.coordinate()[1]);
                             } else {
-                                expectedConstant = new CypherConstant.PointConstant(refinedPoint.coordinate()[0], refinedPoint.coordinate()[1], refinedPoint.coordinate()[2]);
+                                expectedConstant = new Neo4JPointConstant(refinedPoint.coordinate()[0], refinedPoint.coordinate()[1], refinedPoint.coordinate()[2]);
                             }
                             break;
                         default:

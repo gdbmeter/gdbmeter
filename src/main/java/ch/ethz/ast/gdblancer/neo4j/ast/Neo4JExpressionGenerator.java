@@ -55,9 +55,9 @@ public class Neo4JExpressionGenerator {
                 return new CypherConstant.StringConstant(Randomization.getString());
             case POINT:
                 if (Randomization.getBoolean()) {
-                    return new CypherConstant.PointConstant(Randomization.getDouble(), Randomization.getDouble());
+                    return new Neo4JPointConstant(Randomization.getDouble(), Randomization.getDouble());
                 } else {
-                    return new CypherConstant.PointConstant(Randomization.getDouble(), Randomization.getDouble(), Randomization.getDouble());
+                    return new Neo4JPointConstant(Randomization.getDouble(), Randomization.getDouble(), Randomization.getDouble());
                 }
             case DURATION:
                 Map<String, Long> datePart;
