@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherReturnGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
@@ -28,7 +29,6 @@ public class Neo4JRemoveGenerator {
 
     // TODO: Support REMOVE on nodes with different labels
     // TODO: Support REMOVE of multiple properties
-    // TODO: Add RETURN clause
     private Neo4JQuery generateRemove() {
         Neo4JUtil.addRegexErrors(errors);
         Neo4JUtil.addArithmeticErrors(errors);
@@ -43,6 +43,10 @@ public class Neo4JRemoveGenerator {
 
         String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
         query.append(String.format(" REMOVE n.%s ", property));
+
+        if (Randomization.getBoolean()) {
+            query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
+        }
 
         return new Neo4JQuery(query.toString(), errors);
     }

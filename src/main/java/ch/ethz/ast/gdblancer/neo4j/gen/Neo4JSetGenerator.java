@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherReturnGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
@@ -31,7 +32,6 @@ public class Neo4JSetGenerator {
     // TODO: Support SET on relationships
     // TODO: Support SET on nodes with different labels
     // TODO: Support SET of multiple properties
-    // TODO: Add RETURN clause
     private Neo4JQuery generateSet() {
         Neo4JUtil.addRegexErrors(errors);
         Neo4JUtil.addArithmeticErrors(errors);
@@ -59,7 +59,11 @@ public class Neo4JSetGenerator {
             }
 
             query.append(String.format(" SET n.%s = %s", property, CypherVisitor.asString(expression)));
+        }
 
+        if (Randomization.getBoolean()) {
+            query.append(" ");
+            query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
         }
 
         return new Neo4JQuery(query.toString(), errors);

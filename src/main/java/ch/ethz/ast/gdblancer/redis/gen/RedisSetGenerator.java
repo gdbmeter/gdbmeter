@@ -3,6 +3,7 @@ package ch.ethz.ast.gdblancer.redis.gen;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherReturnGenerator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
@@ -31,7 +32,6 @@ public class RedisSetGenerator {
     // TODO: Support SET on relationships
     // TODO: Support SET on nodes with different labels
     // TODO: Support SET of multiple properties
-    // TODO: Add RETURN clause
     private RedisQuery generateSet() {
         String label = schema.getRandomLabel();
         CypherEntity entity = schema.getEntityByLabel(label);
@@ -59,6 +59,12 @@ public class RedisSetGenerator {
 
             query.append(String.format(" SET n.%s = %s", property, CypherVisitor.asString(expression)));
         }
+
+        if (Randomization.getBoolean()) {
+            query.append(" ");
+            query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
+        }
+
 
         return new RedisQuery(query.toString(), errors);
     }

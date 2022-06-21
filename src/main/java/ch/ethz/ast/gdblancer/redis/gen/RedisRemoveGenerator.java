@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherReturnGenerator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
@@ -31,7 +32,6 @@ public class RedisRemoveGenerator {
 
     // TODO: Support REMOVE on nodes with different labels
     // TODO: Support REMOVE of multiple properties
-    // TODO: Add RETURN clause
     private RedisQuery generateRemove() {
         String label = schema.getRandomLabel();
         CypherEntity entity = schema.getEntityByLabel(label);
@@ -45,6 +45,11 @@ public class RedisRemoveGenerator {
 
         String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
         query.append(String.format(" SET n.%s = NULL", property));
+
+        if (Randomization.getBoolean()) {
+            query.append(" ");
+            query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
+        }
 
         return new RedisQuery(query.toString(), errors);
     }

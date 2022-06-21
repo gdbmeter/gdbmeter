@@ -2,12 +2,13 @@ package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherReturnGenerator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
@@ -28,7 +29,6 @@ public class Neo4JDeleteGenerator {
 
     // TODO: Support DELETE of relationships
     // TODO: Support DELETE of nodes of different labels
-    // TODO: Add RETURN clause
     private Neo4JQuery generateDelete() {
         Neo4JUtil.addRegexErrors(errors);
         Neo4JUtil.addArithmeticErrors(errors);
@@ -48,6 +48,12 @@ public class Neo4JDeleteGenerator {
         }
 
         query.append(" DELETE n");
+
+        if (Randomization.getBoolean()) {
+            query.append(" ");
+            query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
+        }
+
         return new Neo4JQuery(query.toString(), errors);
     }
 

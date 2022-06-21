@@ -7,7 +7,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQueryReplay;
-import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JEmptyResultOracle;
+import ch.ethz.ast.gdblancer.neo4j.oracle.Neo4JPartitionOracle;
 import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisGenerator;
 import ch.ethz.ast.gdblancer.redis.RedisQueryReplay;
@@ -17,8 +17,6 @@ import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.time.Duration;
-import java.time.LocalTime;
 
 public class Main {
 
@@ -72,10 +70,9 @@ public class Main {
                 state.setConnection(connection);
 
                 CypherSchema schema = CypherSchema.generateRandomSchema();
-                Oracle oracle = new Neo4JEmptyResultOracle(state, schema);
+                Oracle oracle = new Neo4JPartitionOracle(state, schema);
                 oracle.onGenerate();
 
-                state.setStartTime();
                 new Neo4JGenerator(schema).generate(state);
                 state.getLogger().info("Running oracle");
 
@@ -92,9 +89,6 @@ public class Main {
                 }
             } finally {
                 state.getLogger().info("Finished iteration, closing database");
-                long seconds = Duration.between(state.getStartTime(), LocalTime.now()).getSeconds();
-                int executedQueries = state.getExecutedQueries();
-                state.getLogger().info(String.format("%d queries / second", executedQueries / seconds));
             }
         }
     }
