@@ -10,10 +10,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JDurationConstant;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JFunction;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JPointConstant;
+import ch.ethz.ast.gdblancer.neo4j.ast.*;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.neo4j.values.storable.DurationValue;
 import org.neo4j.values.storable.PointValue;
@@ -156,7 +153,7 @@ public class Neo4JRefinementOracle implements Oracle {
                             break;
                         case DATE:
                             LocalDate refinedDate = (LocalDate) value;
-                            expectedConstant = new CypherConstant.DateConstant(false, refinedDate.getYear(), refinedDate.getMonthValue(), refinedDate.getDayOfMonth());
+                            expectedConstant = new Neo4JDateConstant(false, refinedDate.getYear(), refinedDate.getMonthValue(), refinedDate.getDayOfMonth());
                             break;
                         case LOCAL_TIME:
                             OffsetTime refinedTime = (OffsetTime) value;

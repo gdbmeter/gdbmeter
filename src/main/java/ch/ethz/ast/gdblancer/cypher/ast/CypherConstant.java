@@ -1,11 +1,7 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
-import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
-
-import java.time.Year;
-import java.util.Map;
 
 public abstract class CypherConstant implements CypherExpression {
 
@@ -129,50 +125,6 @@ public abstract class CypherConstant implements CypherExpression {
         @Override
         public String getTextRepresentation() {
             return String.valueOf(value);
-        }
-    }
-
-    // TODO: Move to Neo4J package
-    public static class DateConstant extends CypherConstant {
-
-        private final boolean useSeparator;
-        private final int year;
-        private final int month;
-        private final int day;
-
-        public DateConstant(boolean useSeparator, int year, int month, int day) {
-            this.useSeparator = useSeparator;
-            this.year = year;
-            this.month = month;
-            this.day = day;
-
-            if (month == 2 && day >= 30) {
-                throw new IgnoreMeException();
-            }
-
-            switch (month) {
-                case 4:
-                case 6:
-                case 9:
-                case 11:
-                    if (day == 31) {
-                        throw new IgnoreMeException();
-                    }
-                    break;
-            }
-
-            if (!Year.of(year).isLeap() && month == 2 && day >= 29) {
-                throw new IgnoreMeException();
-            }
-        }
-
-        @Override
-        public String getTextRepresentation() {
-            if (useSeparator) {
-                return String.format("date('%04d-%02d-%02d')", year, month, day);
-            } else {
-                return String.format("date('%04d%02d%02d')", year, month, day);
-            }
         }
     }
 

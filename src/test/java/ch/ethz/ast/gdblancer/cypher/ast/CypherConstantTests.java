@@ -1,13 +1,11 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherConstant.*;
-import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
 import static ch.ethz.ast.gdblancer.cypher.ast.CypherConstant.IntegerOctalConstant.OctalPrefix.ZERO;
 import static ch.ethz.ast.gdblancer.cypher.ast.CypherConstant.IntegerOctalConstant.OctalPrefix.ZERO_O;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CypherConstantTests {
 
@@ -42,24 +40,6 @@ public class CypherConstantTests {
         assertEquals(new StringConstant("test").getTextRepresentation(), "\"test\"");
         assertEquals(new StringConstant("\\").getTextRepresentation(), "\"\\\\\"");
         assertEquals(new StringConstant("\"").getTextRepresentation(), "\"\\\"\"");
-    }
-
-    @Test
-    void testIllegalDateConstants() {
-        assertThrows(IgnoreMeException.class, () ->
-                new DateConstant(true, 100, 2, 99999));
-        assertThrows(IgnoreMeException.class, () ->
-                new DateConstant(true, 100, 4, 31));
-        assertThrows(IgnoreMeException.class, () ->
-                new DateConstant(true, 2019, 2, 29));
-    }
-
-    @Test
-    void testLegalDateConstants() {
-        assertEquals(new DateConstant(true, 2020, 2, 28).getTextRepresentation(),
-                "date('2020-02-28')");
-        assertEquals(new DateConstant(false, 2020, 2, 28).getTextRepresentation(),
-                "date('20200228')");
     }
 
     @Test

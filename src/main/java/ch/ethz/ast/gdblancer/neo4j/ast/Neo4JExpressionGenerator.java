@@ -129,7 +129,7 @@ public class Neo4JExpressionGenerator {
                         nanoSecondSeparator,
                         nanoSeconds);
             case DATE:
-                return new CypherConstant.DateConstant(Randomization.getBoolean(),
+                return new Neo4JDateConstant(Randomization.getBoolean(),
                         Randomization.nextInt(0, 1000),
                         Randomization.nextInt(1, 13),
                         Randomization.nextInt(1, 32));

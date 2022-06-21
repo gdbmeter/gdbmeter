@@ -2,7 +2,6 @@ package ch.ethz.ast.gdblancer.neo4j.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherConstant;
 
-// TODO: Move to Neo4J package
 public class Neo4JPointConstant extends CypherConstant {
 
     private final double x;
