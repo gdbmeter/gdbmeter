@@ -23,17 +23,38 @@ public abstract class CypherCreateIndexGenerator {
 
     protected void generateCreateIndex() {
         switch (Randomization.fromOptions(INDEX_TYPES.values())) {
-            // TODO: Merge first two cases
             case NODE_INDEX:
-                generateNodeIndex();
+                generateIndex("FOR (n:%s) ", schema.generateRandomRelationshipIndex());
                 break;
             case RELATIONSHIP_INDEX:
-                generateRelationshipIndex();
+                generateIndex("FOR ()-[n:%s]-() ", schema.generateRandomRelationshipIndex());
                 break;
             case TEXT_INDEX:
                 generateNodeTextIndex();
                 break;
         }
+    }
+
+    private void generateIndex(String format, CypherIndex index) {
+        query.append("CREATE ");
+
+        if (Randomization.getBoolean()) {
+            query.append("BTREE ");
+        }
+
+        query.append("INDEX ");
+
+        // TODO: Maybe add support for unnamed indices
+        query.append(schema.generateRandomIndexName());
+        query.append(" ");
+
+        // TODO: Maybe choose same name deliberately in this case?
+        if (Randomization.getBoolean()) {
+            query.append("IF NOT EXISTS ");
+        }
+
+        query.append(String.format(format, index.getLabel()));
+        generateOnClause(index.getPropertyNames());
     }
 
     private void generateNodeTextIndex() {
@@ -50,54 +71,6 @@ public abstract class CypherCreateIndexGenerator {
         }
 
         query.append(String.format("FOR (n:%s) ON (n.%s)", index.getLabel(), index.getPropertyNames().toArray()[0]));
-    }
-
-    private void generateNodeIndex() {
-        query.append("CREATE ");
-
-        if (Randomization.getBoolean()) {
-            query.append("BTREE ");
-        }
-
-        query.append("INDEX ");
-
-        // TODO: Maybe add support for unnamed indices
-        CypherIndex index = schema.generateRandomNodeIndex();
-
-        query.append(schema.generateRandomIndexName());
-        query.append(" ");
-
-        // TODO: Maybe choose same name deliberately in this case?
-        if (Randomization.getBoolean()) {
-            query.append("IF NOT EXISTS ");
-        }
-
-        query.append(String.format("FOR (n:%s) ", index.getLabel()));
-        generateOnClause(index.getPropertyNames());
-    }
-
-    private void generateRelationshipIndex() {
-        query.append("CREATE ");
-
-        if (Randomization.getBoolean()) {
-            query.append("BTREE ");
-        }
-
-        query.append("INDEX ");
-
-        // TODO: Maybe add support for unnamed indices
-        CypherIndex index = schema.generateRandomRelationshipIndex();
-
-        query.append(schema.generateRandomIndexName());
-        query.append(" ");
-
-        // TODO: Maybe choose same name deliberately in this case?
-        if (Randomization.getBoolean()) {
-            query.append("IF NOT EXISTS ");
-        }
-
-        query.append(String.format("FOR ()-[n:%s]-() ", index.getLabel()));
-        generateOnClause(index.getPropertyNames());
     }
 
     private void generateOnClause(Set<String> properties) {
