@@ -122,7 +122,7 @@ public class Neo4JExpressionGenerator {
                     }
                 }
 
-                return new CypherConstant.LocalTimeConstant(hours,
+                return new Neo4JLocalTimeConstant(hours,
                         separator,
                         minutes,
                         seconds,

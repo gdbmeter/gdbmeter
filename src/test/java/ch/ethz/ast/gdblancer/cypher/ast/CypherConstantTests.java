@@ -42,16 +42,4 @@ public class CypherConstantTests {
         assertEquals(new StringConstant("\"").getTextRepresentation(), "\"\\\"\"");
     }
 
-    @Test
-    void testLocalTimeConstants() {
-        assertEquals(new LocalTimeConstant(100, null, null, null, null, null).getTextRepresentation(),
-                "time('100')");
-        assertEquals(new LocalTimeConstant(100, ".", 10, null, null, null).getTextRepresentation(),
-                "time('100.10')");
-        assertEquals(new LocalTimeConstant(100, ".", 10, 20, null, null).getTextRepresentation(),
-                "time('100.10.20')");
-        assertEquals(new LocalTimeConstant(100, ".", 10, 20, ",", 42).getTextRepresentation(),
-                "time('100.10.20,42')");
-    }
-
 }

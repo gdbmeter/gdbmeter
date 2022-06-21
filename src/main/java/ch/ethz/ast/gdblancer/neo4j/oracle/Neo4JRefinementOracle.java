@@ -157,7 +157,7 @@ public class Neo4JRefinementOracle implements Oracle {
                             break;
                         case LOCAL_TIME:
                             OffsetTime refinedTime = (OffsetTime) value;
-                            expectedConstant = new CypherConstant.LocalTimeConstant(refinedTime.getHour(), "", refinedTime.getMinute(), refinedTime.getSecond(), ",", refinedTime.getNano());
+                            expectedConstant = new Neo4JLocalTimeConstant(refinedTime.getHour(), "", refinedTime.getMinute(), refinedTime.getSecond(), ",", refinedTime.getNano());
                             break;
                         case DURATION:
                             DurationValue refinedDuration = (DurationValue) value;
