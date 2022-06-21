@@ -20,7 +20,7 @@ public class RedisDeleteGeneratorTests {
 
                 assertNotNull(query);
                 assertTrue(query.getQuery().startsWith("MATCH "));
-                assertTrue(query.getQuery().endsWith(" DELETE n"));
+                assertTrue(query.getQuery().contains(" DELETE n"));
                 break;
             } catch (IgnoreMeException ignored) {}
         }

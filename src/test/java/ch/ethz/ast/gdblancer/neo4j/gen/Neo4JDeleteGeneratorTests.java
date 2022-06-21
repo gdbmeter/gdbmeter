@@ -18,7 +18,7 @@ public class Neo4JDeleteGeneratorTests {
 
                 assertNotNull(query);
                 assertTrue(query.getQuery().startsWith("MATCH "));
-                assertTrue(query.getQuery().endsWith(" DELETE n"));
+                assertTrue(query.getQuery().contains(" DELETE n"));
                 break;
             } catch (IgnoreMeException ignored) {}
         }
