@@ -76,7 +76,6 @@ public class CypherReturnGenerator {
 
                 query.append(".");
                 query.append(property);
-                query.append(" ");
             }
 
             query.append(" ");
