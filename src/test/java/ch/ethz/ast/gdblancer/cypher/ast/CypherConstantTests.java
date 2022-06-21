@@ -4,9 +4,6 @@ import ch.ethz.ast.gdblancer.cypher.ast.CypherConstant.*;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.Map;
-
 import static ch.ethz.ast.gdblancer.cypher.ast.CypherConstant.IntegerOctalConstant.OctalPrefix.ZERO;
 import static ch.ethz.ast.gdblancer.cypher.ast.CypherConstant.IntegerOctalConstant.OctalPrefix.ZERO_O;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,21 +42,6 @@ public class CypherConstantTests {
         assertEquals(new StringConstant("test").getTextRepresentation(), "\"test\"");
         assertEquals(new StringConstant("\\").getTextRepresentation(), "\"\\\\\"");
         assertEquals(new StringConstant("\"").getTextRepresentation(), "\"\\\"\"");
-    }
-
-    @Test
-    void testDurationConstants() {
-        assertThrows(IllegalArgumentException.class, () -> new DurationConstant(Collections.emptyMap(), Collections.emptyMap()));
-        assertEquals(new DurationConstant("test").getTextRepresentation(), "duration('test')");
-        assertEquals(
-                new DurationConstant(Map.of("Y", 1L), Collections.emptyMap()).getTextRepresentation(),
-                "duration('P1Y')");
-        assertEquals(
-                new DurationConstant(Collections.emptyMap(), Map.of("M", 1L)).getTextRepresentation(),
-                "duration('PT1M')");
-        assertEquals(
-                new DurationConstant(Map.of("Y", 1L), Map.of("M", 1L)).getTextRepresentation(),
-                "duration('P1YT1M')");
     }
 
     @Test

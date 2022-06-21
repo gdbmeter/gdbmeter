@@ -10,6 +10,7 @@ import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JDurationConstant;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JFunction;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -162,7 +163,7 @@ public class Neo4JRefinementOracle implements Oracle {
                             break;
                         case DURATION:
                             DurationValue refinedDuration = (DurationValue) value;
-                            expectedConstant = new CypherConstant.DurationConstant(refinedDuration.toString());
+                            expectedConstant = new Neo4JDurationConstant(refinedDuration.toString());
                             break;
                         case POINT:
                             PointValue refinedPoint = (PointValue) value;

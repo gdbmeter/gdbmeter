@@ -89,7 +89,7 @@ public class Neo4JExpressionGenerator {
                     }
                 } while (datePart.isEmpty() && timePart.isEmpty());
 
-                return new CypherConstant.DurationConstant(datePart, timePart);
+                return new Neo4JDurationConstant(datePart, timePart);
             case LOCAL_TIME:
                 int hours = Randomization.nextInt(0, 24);
                 String separator;
