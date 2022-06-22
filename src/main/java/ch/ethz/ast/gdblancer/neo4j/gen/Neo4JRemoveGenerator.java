@@ -1,55 +1,43 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.cypher.gen.CypherReturnGenerator;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
+import ch.ethz.ast.gdblancer.cypher.gen.CypherRemoveGenerator;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
-import ch.ethz.ast.gdblancer.util.Randomization;
+import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
 
 import java.util.Map;
 
-public class Neo4JRemoveGenerator {
-
-    private final CypherSchema schema;
-    private final StringBuilder query = new StringBuilder();
-    private final ExpectedErrors errors = new ExpectedErrors();
+public class Neo4JRemoveGenerator extends CypherRemoveGenerator {
 
     public Neo4JRemoveGenerator(CypherSchema schema) {
-        this.schema = schema;
+        super(schema);
     }
 
     public static Neo4JQuery removeProperties(CypherSchema schema) {
-        return new Neo4JRemoveGenerator(schema).generateRemove();
-    }
+        Neo4JRemoveGenerator generator = new Neo4JRemoveGenerator(schema);
+        generator.generateRemove();
 
-    // TODO: Support REMOVE on nodes with different labels
-    // TODO: Support REMOVE of multiple properties
-    private Neo4JQuery generateRemove() {
+        ExpectedErrors errors = new ExpectedErrors();
         Neo4JUtil.addRegexErrors(errors);
         Neo4JUtil.addArithmeticErrors(errors);
         Neo4JUtil.addFunctionErrors(errors);
 
-        String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
-
-        query.append(String.format("MATCH (n:%s)", label));
-        query.append(" WHERE ");
-        query.append(CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN)));
-
-        String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
-        query.append(String.format(" REMOVE n.%s ", property));
-
-        if (Randomization.getBoolean()) {
-            query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
-        }
-
-        return new Neo4JQuery(query.toString(), errors);
+        return new Neo4JQuery(generator.query.toString(), errors);
     }
 
+    @Override
+    protected String generateWhereClause(CypherEntity entity) {
+        return CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN));
+    }
+
+    @Override
+    protected String generateRemoveClause(String property) {
+        return String.format(" REMOVE n.%s", property);
+    }
 
 }
