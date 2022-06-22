@@ -25,9 +25,28 @@ public class Main {
         REDIS_GRAPH
     }
 
-    private static Database systemUnderTest = Database.REDIS_GRAPH;
+    private static Database systemUnderTest;
 
     public static void main(String[] args) throws IOException {
+        if (args.length != 1) {
+            System.out.println("Use 0/1 as the first parameter");
+            System.exit(0);
+        }
+
+        int option = Integer.parseInt(args[0]);
+
+        switch (option) {
+            case 0:
+                systemUnderTest = Database.NEO4J;
+                break;
+            case 1:
+                systemUnderTest = Database.REDIS_GRAPH;
+                break;
+            default:
+                System.out.println("Unknown option, use 0 or 1");
+                System.exit(0);
+        }
+
         runOracle();
     }
 
