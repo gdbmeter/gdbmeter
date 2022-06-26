@@ -3,7 +3,7 @@ package ch.ethz.ast.gdblancer;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.common.QueryReplay;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQueryReplay;
@@ -50,6 +50,7 @@ public class Main {
         runOracle();
     }
 
+    // TODO: Make rest generic
     private static void replayQueries() throws IOException {
         QueryReplay queryReplay;
 

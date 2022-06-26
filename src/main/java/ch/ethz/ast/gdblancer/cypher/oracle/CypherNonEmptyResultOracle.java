@@ -4,8 +4,8 @@ import ch.ethz.ast.gdblancer.common.Connection;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.common.Query;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 

@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.redis;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.gen.*;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;

@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.redis.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherFunctionDescription;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 // See: https://redis.io/commands/graph.query/#functions

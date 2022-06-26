@@ -2,8 +2,8 @@ package ch.ethz.ast.gdblancer.redis.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.*;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherBinaryArithmeticOperation.ArithmeticOperator;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 

@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.cypher.schema;
+package ch.ethz.ast.gdblancer.common.schema;
 
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;

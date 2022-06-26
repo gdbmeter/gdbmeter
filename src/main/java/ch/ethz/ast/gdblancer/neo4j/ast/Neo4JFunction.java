@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherFunctionDescription;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public enum Neo4JFunction implements CypherFunctionDescription {

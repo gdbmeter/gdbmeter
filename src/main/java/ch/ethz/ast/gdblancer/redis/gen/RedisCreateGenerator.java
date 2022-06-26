@@ -3,8 +3,8 @@ package ch.ethz.ast.gdblancer.redis.gen;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateGenerator;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
 import ch.ethz.ast.gdblancer.redis.RedisUtil;
 

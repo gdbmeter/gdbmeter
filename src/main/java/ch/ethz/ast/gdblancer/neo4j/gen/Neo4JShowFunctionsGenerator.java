@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.util.Randomization;
 

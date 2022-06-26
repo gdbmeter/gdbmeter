@@ -1,5 +1,7 @@
-package ch.ethz.ast.gdblancer.cypher.schema;
+package ch.ethz.ast.gdblancer.common.schema;
 
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 

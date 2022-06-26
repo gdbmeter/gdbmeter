@@ -1,8 +1,8 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;

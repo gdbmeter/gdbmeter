@@ -7,8 +7,8 @@ import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherPrefixOperation;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.cypher.schema;
+package ch.ethz.ast.gdblancer.common.schema;
 
 import java.util.Set;
 

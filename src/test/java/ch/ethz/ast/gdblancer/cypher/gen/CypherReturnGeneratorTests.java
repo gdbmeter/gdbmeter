@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;

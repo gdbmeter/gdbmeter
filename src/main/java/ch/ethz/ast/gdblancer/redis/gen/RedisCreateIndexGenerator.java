@@ -1,8 +1,8 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateIndexGenerator;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherIndex;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.CypherIndex;
+import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
 
 public class RedisCreateIndexGenerator extends CypherCreateIndexGenerator {

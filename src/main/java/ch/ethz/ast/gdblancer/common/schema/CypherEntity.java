@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.cypher.schema;
+package ch.ethz.ast.gdblancer.common.schema;
 
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -6,6 +6,7 @@ import ch.ethz.ast.gdblancer.util.Randomization;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: How should we adapt the CypherType for the generic case
 /**
  * Describes an entity of a cypher database.
  * This could be either a node or an edge.

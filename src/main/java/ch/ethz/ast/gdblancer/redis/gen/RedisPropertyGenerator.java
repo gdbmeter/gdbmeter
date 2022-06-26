@@ -2,8 +2,8 @@ package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
 
 import java.util.Collections;
