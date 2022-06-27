@@ -35,10 +35,7 @@ public class RedisGenerator {
                 selectedNumber = Randomization.nextInt(50, 70);
                 break;
             case CREATE_INDEX:
-                if (!RedisBugs.bug2394) {
-                    selectedNumber = Randomization.nextInt(3,  10);
-                }
-
+                selectedNumber = Randomization.nextInt(3,  10);
                 break;
             case REMOVE:
             case SET:
