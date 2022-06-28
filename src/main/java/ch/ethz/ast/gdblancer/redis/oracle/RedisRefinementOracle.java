@@ -11,19 +11,19 @@ import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
 import ch.ethz.ast.gdblancer.redis.RedisUtil;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
+import ch.ethz.ast.gdblancer.redis.ast.RedisFunction;
 import ch.ethz.ast.gdblancer.redis.ast.RedisPointConstant;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import redis.clients.jedis.graph.entities.Node;
 import redis.clients.jedis.graph.entities.Point;
 import redis.clients.jedis.graph.entities.Property;
 
-import java.time.LocalDate;
-import java.time.OffsetTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+// TODO: Reuse code form Neo4J oracle version
 public class RedisRefinementOracle implements Oracle {
 
     private final GlobalState<RedisConnection> state;
@@ -120,8 +120,16 @@ public class RedisRefinementOracle implements Oracle {
                             expectedConstant = new CypherConstant.BooleanConstant((Boolean) value);
                             break;
                         case FLOAT:
-                            expectedConstant = new CypherConstant.FloatConstant((Double) value);
-                            break;
+                            // Floating point numbers are truncated by RedisGraph
+                            // this means we have to compare the string representation instead
+                            // See: https://github.com/RedisGraph/RedisGraph/issues/2417
+                            expectedConstant = new CypherConstant.StringConstant(String.format("%f", value));
+                            CypherVariablePropertyAccess access = new CypherVariablePropertyAccess(String.format("n%d.%s", current, key));
+                            CypherFunctionCall functionCall = new CypherFunctionCall(RedisFunction.TO_STRING, new CypherExpression[]{access});
+
+                            CypherExpression branch = new CypherBinaryComparisonOperation(functionCall, expectedConstant, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
+                            refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);
+                            continue;
                         case INTEGER:
                             expectedConstant = new CypherConstant.IntegerConstant((Long) value);
                             break;
