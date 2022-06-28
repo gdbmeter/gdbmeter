@@ -5,6 +5,7 @@ import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
 import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
@@ -47,7 +48,7 @@ public abstract class CypherSetGenerator {
             query.append(String.format(" SET n.%s = %s", property, CypherVisitor.asString(expression)));
         }
 
-        if (Randomization.getBoolean()) {
+        if (Randomization.getBoolean() && !RedisBugs.bug2424) {
             query.append(" ");
             query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
         }

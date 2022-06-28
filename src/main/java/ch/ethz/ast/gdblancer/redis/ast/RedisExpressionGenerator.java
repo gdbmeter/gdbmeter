@@ -4,6 +4,7 @@ import ch.ethz.ast.gdblancer.cypher.ast.*;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherBinaryArithmeticOperation.ArithmeticOperator;
 import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -262,6 +263,10 @@ public class RedisExpressionGenerator {
 
         if (functions.isEmpty()) {
             throw new IgnoreMeException();
+        }
+
+        if (RedisBugs.bug2433) {
+            functions.remove(RedisFunction.POINT_DISTANCE);
         }
 
         RedisFunction chosenFunction = Randomization.fromList(functions);

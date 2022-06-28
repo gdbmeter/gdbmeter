@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
 import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public abstract class CypherRemoveGenerator {
         String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
         query.append(generateRemoveClause(property));
 
-        if (Randomization.getBoolean()) {
+        if (Randomization.getBoolean() && !RedisBugs.bug2424) {
             query.append(" ");
             query.append(CypherReturnGenerator.returnEntities(Map.of("n", entity)));
         }
