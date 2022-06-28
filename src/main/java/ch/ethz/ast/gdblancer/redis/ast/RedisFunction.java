@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer.redis.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherFunctionDescription;
 import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 // See: https://redis.io/commands/graph.query/#functions
@@ -166,23 +167,51 @@ public enum RedisFunction implements CypherFunctionDescription {
     CEIL("ceil", 1) {
         @Override
         public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.FLOAT;
+            if (RedisBugs.bug2440) {
+                return returnType == CypherType.FLOAT || returnType == CypherType.INTEGER;
+            } else {
+                return returnType == CypherType.FLOAT;
+            }
         }
 
         @Override
         public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
+            if (RedisBugs.bug2440) {
+                if (returnType == CypherType.FLOAT) {
+                    return new CypherType[] { CypherType.FLOAT };
+                } else if (returnType == CypherType.INTEGER) {
+                    return new CypherType[] { CypherType.INTEGER };
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } else {
+                return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
+            }
         }
     },
     FLOOR("floor", 1) {
         @Override
         public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.FLOAT;
+            if (RedisBugs.bug2440) {
+                return returnType == CypherType.FLOAT || returnType == CypherType.INTEGER;
+            } else {
+                return returnType == CypherType.FLOAT;
+            }
         }
 
         @Override
         public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
+            if (RedisBugs.bug2440) {
+                if (returnType == CypherType.FLOAT) {
+                    return new CypherType[] { CypherType.FLOAT };
+                } else if (returnType == CypherType.INTEGER) {
+                    return new CypherType[] { CypherType.INTEGER };
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } else {
+                return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
+            }
         }
     },
     POINT_DISTANCE("distance", 2) {
