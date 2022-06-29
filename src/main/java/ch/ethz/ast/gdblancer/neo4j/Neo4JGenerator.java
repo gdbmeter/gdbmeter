@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.neo4j;
 
+import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.neo4j.gen.*;
 import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class Neo4JGenerator {
+public class Neo4JGenerator implements Generator<Neo4JConnection> {
 
     enum Action {
         CREATE(Neo4JCreateGenerator::createEntities),

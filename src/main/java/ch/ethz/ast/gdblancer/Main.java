@@ -1,8 +1,6 @@
 package ch.ethz.ast.gdblancer;
 
-import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.Oracle;
-import ch.ethz.ast.gdblancer.common.QueryReplay;
+import ch.ethz.ast.gdblancer.common.*;
 import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JGenerator;
@@ -14,8 +12,10 @@ import ch.ethz.ast.gdblancer.redis.RedisQueryReplay;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
 import ch.ethz.ast.gdblancer.redis.oracle.RedisEmptyResultOracle;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
+import org.neo4j.cypher.internal.parser.javacc.Cypher;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.FileSystems;
 
 public class Main {
@@ -71,7 +71,7 @@ public class Main {
     private static void runOracle() throws IOException {
         switch (systemUnderTest) {
             case NEO4J:
-                runNeo4JOracle();
+                Main.<Neo4JConnection>run(Neo4JConnection.class, new GlobalState<>(), Neo4JPartitionOracle.class, Neo4JGenerator.class);
                 break;
             case REDIS_GRAPH:
                 runRedisOracle();
@@ -81,11 +81,45 @@ public class Main {
         }
     }
 
+    private static <C extends Connection> void run(Class<C> connectionClass,
+                                                    GlobalState<C> state,
+                                                    Class<Oracle> oracleClass,
+                                                    Class<Generator<C>> generatorClass) throws Exception {
+        while (true) {
+            try (C connection = connectionClass.getDeclaredConstructor().newInstance()) {
+                connection.connect();
+                state.setConnection(connection);
+
+                CypherSchema schema = CypherSchema.generateRandomSchema();
+
+                Oracle oracle = oracleClass.getDeclaredConstructor(state.getClass(), CypherSchema.class).newInstance(state, schema);
+                oracle.onGenerate();
+
+                generatorClass.getDeclaredConstructor(CypherSchema.class).newInstance(schema).generate(state);
+                state.getLogger().info("Running oracle");
+
+                try {
+                    oracle.onStart();
+
+                    for (int i = 0; i < 100; i++) {
+                        try {
+                            oracle.check();
+                        } catch (IgnoreMeException ignored) {}
+                    }
+                } finally {
+                    oracle.onComplete();
+                }
+            } finally {
+                state.getLogger().info("Finished iteration, closing database");
+            }
+        }
+    }
+
     private static void runNeo4JOracle() throws IOException {
-        GlobalState<Neo4JConnection> state = new GlobalState<>();
+        GlobalState<Connection> state = new GlobalState<>();
 
         while (true) {
-            try (Neo4JConnection connection = new Neo4JConnection()) {
+            try (Connection connection = new Neo4JConnection()) {
                 connection.connect();
                 state.setConnection(connection);
 
