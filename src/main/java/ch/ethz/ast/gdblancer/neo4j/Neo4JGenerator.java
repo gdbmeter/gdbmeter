@@ -91,7 +91,6 @@ public class Neo4JGenerator implements Generator<Neo4JConnection> {
                 } while (!success && tries++ < 1000);
 
                 if (success && query.couldAffectSchema()) {
-                    // TODO: Move to global state later
                     schema.setIndices(globalState.getConnection().getIndexNames());
                 }
             } catch (IgnoreMeException ignored) {}

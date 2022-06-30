@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.redis;
 
+import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.redis.gen.*;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class RedisGenerator {
+public class RedisGenerator implements Generator<RedisConnection> {
 
     enum Action {
         CREATE(RedisCreateGenerator::createEntities),
@@ -58,6 +59,7 @@ public class RedisGenerator {
         this.schema = schema;
     }
 
+    @Override
     public void generate(GlobalState<RedisConnection> globalState) {
         List<Function<CypherSchema, RedisQuery>> queries = new ArrayList<>();
 
@@ -84,7 +86,6 @@ public class RedisGenerator {
                 } while (!success && tries++ < 1000);
 
                 if (success && query.couldAffectSchema()) {
-                    // TODO: Move to global state later
                     schema.setIndices(globalState.getConnection().getIndexNames());
                 }
             } catch (IgnoreMeException ignored) {}
