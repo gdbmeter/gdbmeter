@@ -7,7 +7,6 @@ public class GlobalState<C extends Connection> {
 
     private C connection;
     private final Logger LOGGER = LoggerFactory.getLogger(GlobalState.class);
-    private int executedQueries;
 
     public Logger getLogger() {
         return LOGGER;
