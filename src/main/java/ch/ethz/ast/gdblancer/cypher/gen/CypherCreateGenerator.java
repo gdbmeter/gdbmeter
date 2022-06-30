@@ -1,8 +1,8 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashMap;
@@ -12,19 +12,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class CypherCreateGenerator {
+public abstract class CypherCreateGenerator<T> {
 
-    private final CypherSchema schema;
+    private final Schema<T> schema;
     protected final StringBuilder query = new StringBuilder();
 
-    private final Map<String, CypherEntity> nodeVariables = new HashMap<>();
-    private final Map<String, CypherEntity> relationshipVariables = new HashMap<>();
+    private final Map<String, Entity<T>> nodeVariables = new HashMap<>();
+    private final Map<String, Entity<T>> relationshipVariables = new HashMap<>();
     private final Set<String> aliasVariables = new HashSet<>();
 
     private boolean usesDistinctReturn = false;
     private final Set<String> distinctReturnedExpression = new HashSet<>();
 
-    public CypherCreateGenerator(CypherSchema schema) {
+    public CypherCreateGenerator(Schema<T> schema) {
         this.schema = schema;
     }
 
@@ -75,7 +75,7 @@ public abstract class CypherCreateGenerator {
             usesDistinctReturn = true;
         }
 
-        Map<String, CypherEntity> allVariables = getAllVariables();
+        Map<String, Entity<T>> allVariables = getAllVariables();
         Set<String> variables = Randomization.nonEmptySubset(allVariables.keySet());
         String separator = "";
 
@@ -84,7 +84,7 @@ public abstract class CypherCreateGenerator {
             query.append(variable);
 
             if (Randomization.getBoolean()) {
-                CypherEntity entity = allVariables.get(variable);
+                Entity<T> entity = allVariables.get(variable);
                 String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
                 query.append(".");
@@ -138,7 +138,7 @@ public abstract class CypherCreateGenerator {
             return;
         }
 
-        Map<String, CypherEntity> allVariables = getAllVariables();
+        Map<String, Entity<T>> allVariables = getAllVariables();
         Set<String> variables = Randomization.nonEmptySubset(allVariables.keySet());
         String separator = "";
 
@@ -147,7 +147,7 @@ public abstract class CypherCreateGenerator {
             query.append(variable);
 
             if (Randomization.getBoolean()) {
-                CypherEntity entity = allVariables.get(variable);
+                Entity<T> entity = allVariables.get(variable);
                 String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
                 query.append(".");
@@ -174,7 +174,7 @@ public abstract class CypherCreateGenerator {
 
     private void generateRelationship(String from, String to) {
         String type = schema.getRandomType();
-        CypherEntity relationshipSchema = schema.getEntityByType(type);
+        Entity<T> relationshipSchema = schema.getEntityByType(type);
         String name = getUniqueVariableName();
 
         query.append(String.format("(%s)-[%s:%s ", from, name, type));
@@ -188,7 +188,7 @@ public abstract class CypherCreateGenerator {
     // TODO: Support multiple labels
     private void generateNode() {
         String label = schema.getRandomLabel();
-        CypherEntity nodeSchema = schema.getEntityByLabel(label);
+        Entity<T> nodeSchema = schema.getEntityByLabel(label);
         String name = getUniqueVariableName();
 
         query.append(String.format("(%s:%s ", name, label));
@@ -211,12 +211,12 @@ public abstract class CypherCreateGenerator {
         return name;
     }
 
-    private Map<String, CypherEntity> getAllVariables() {
+    private Map<String, Entity<T>> getAllVariables() {
         return Stream.of(nodeVariables, relationshipVariables)
                 .flatMap(m -> m.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    protected abstract CypherPropertyGenerator getPropertyGenerator(CypherEntity entity, Map<String, CypherEntity> variables);
+    protected abstract CypherPropertyGenerator getPropertyGenerator(Entity<T> entity, Map<String, Entity<T>> variables);
 
 }

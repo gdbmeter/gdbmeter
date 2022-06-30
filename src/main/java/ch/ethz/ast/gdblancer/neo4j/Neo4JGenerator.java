@@ -3,7 +3,8 @@ package ch.ethz.ast.gdblancer.neo4j;
 import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.neo4j.gen.*;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -24,15 +25,15 @@ public class Neo4JGenerator implements Generator<Neo4JConnection> {
         SET(Neo4JSetGenerator::setProperties),
         REMOVE(Neo4JRemoveGenerator::removeProperties);
 
-        private final Function<CypherSchema, Neo4JQuery> generator;
+        private final Function<Schema<Neo4JType>, Neo4JQuery> generator;
 
-        Action(Function<CypherSchema, Neo4JQuery> generator) {
+        Action(Function<Schema<Neo4JType>, Neo4JQuery> generator) {
             this.generator = generator;
         }
     }
     
     private static int mapAction(Action action) {
-        int selectedNumber = 0;
+        int selectedNumber;
 
         switch (action) {
             case CREATE:
@@ -59,14 +60,14 @@ public class Neo4JGenerator implements Generator<Neo4JConnection> {
         return selectedNumber;
     }
 
-    private final CypherSchema schema;
+    private final Schema<Neo4JType> schema;
 
-    public Neo4JGenerator(CypherSchema schema) {
+    public Neo4JGenerator(Schema<Neo4JType> schema) {
         this.schema = schema;
     }
 
     public void generate(GlobalState<Neo4JConnection> globalState) {
-        List<Function<CypherSchema, Neo4JQuery>> queries = new ArrayList<>();
+        List<Function<Schema<Neo4JType>, Neo4JQuery>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -79,7 +80,7 @@ public class Neo4JGenerator implements Generator<Neo4JConnection> {
 
         Randomization.shuffleList(queries);
 
-        for (Function<CypherSchema, Neo4JQuery> queryGenerator : queries) {
+        for (Function<Schema<Neo4JType>, Neo4JQuery> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;

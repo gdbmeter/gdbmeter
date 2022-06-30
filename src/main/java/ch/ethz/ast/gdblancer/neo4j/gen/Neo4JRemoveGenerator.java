@@ -1,24 +1,24 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherRemoveGenerator;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 
 import java.util.Map;
 
-public class Neo4JRemoveGenerator extends CypherRemoveGenerator {
+public class Neo4JRemoveGenerator extends CypherRemoveGenerator<Neo4JType> {
 
-    public Neo4JRemoveGenerator(CypherSchema schema) {
+    public Neo4JRemoveGenerator(Schema<Neo4JType> schema) {
         super(schema);
     }
 
-    public static Neo4JQuery removeProperties(CypherSchema schema) {
+    public static Neo4JQuery removeProperties(Schema<Neo4JType> schema) {
         Neo4JRemoveGenerator generator = new Neo4JRemoveGenerator(schema);
         generator.generateRemove();
 
@@ -31,8 +31,8 @@ public class Neo4JRemoveGenerator extends CypherRemoveGenerator {
     }
 
     @Override
-    protected String generateWhereClause(CypherEntity entity) {
-        return CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN));
+    protected String generateWhereClause(Entity<Neo4JType> entity) {
+        return CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN));
     }
 
     @Override

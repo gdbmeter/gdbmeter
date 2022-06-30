@@ -4,15 +4,15 @@ import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.cypher.ast.*;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.RedisConnection;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
 import ch.ethz.ast.gdblancer.redis.RedisUtil;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
 import ch.ethz.ast.gdblancer.redis.ast.RedisFunction;
 import ch.ethz.ast.gdblancer.redis.ast.RedisPointConstant;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import redis.clients.jedis.graph.entities.Node;
 import redis.clients.jedis.graph.entities.Point;
@@ -27,9 +27,9 @@ import java.util.Objects;
 public class RedisRefinementOracle implements Oracle {
 
     private final GlobalState<RedisConnection> state;
-    private final CypherSchema schema;
+    private final Schema<RedisType> schema;
 
-    public RedisRefinementOracle(GlobalState<RedisConnection> state, CypherSchema schema) {
+    public RedisRefinementOracle(GlobalState<RedisConnection> state, Schema<RedisType> schema) {
         this.state = state;
         this.schema = schema;
     }
@@ -55,12 +55,12 @@ public class RedisRefinementOracle implements Oracle {
 
         for (int i = 0; i < amount; i++) {
             String label = labels.get(i);
-            CypherEntity entity = schema.getEntityByLabel(label);
+            Entity entity = schema.getEntityByLabel(label);
 
             query.append(separator);
             query.append(String.format("(n%d:%s)", i, label));
             separator = ", ";
-            CypherExpression expression = RedisExpressionGenerator.generateExpression(Map.of(String.format("n%d", i), entity), CypherType.BOOLEAN);
+            CypherExpression expression = RedisExpressionGenerator.generateExpression(Map.of(String.format("n%d", i), entity), RedisType.BOOLEAN);
             whereExpression = new CypherBinaryLogicalOperation(whereExpression, expression, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);
         }
 
@@ -102,9 +102,9 @@ public class RedisRefinementOracle implements Oracle {
                 // refine current
                 Node node = (Node) pivotResult.get(String.format("n%d", current));
                 String label = labels.get(current);
-                CypherEntity entity = schema.getEntityByLabel(label);
+                Entity<RedisType> entity = schema.getEntityByLabel(label);
                 String key = Randomization.fromSet(entity.getAvailableProperties().keySet());
-                CypherType type = entity.getAvailableProperties().get(key);
+                RedisType type = entity.getAvailableProperties().get(key);
 
                 Property<?> property = node.getProperty(key);
                 CypherExpression expectedConstant;

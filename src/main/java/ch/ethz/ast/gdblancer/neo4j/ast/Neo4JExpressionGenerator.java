@@ -3,8 +3,8 @@ package ch.ethz.ast.gdblancer.neo4j.ast;
 import ch.ethz.ast.gdblancer.cypher.ast.*;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherBinaryArithmeticOperation.ArithmeticOperator;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -16,9 +16,9 @@ public class Neo4JExpressionGenerator {
 
     private static final int MAX_DEPTH = 3;
 
-    private final Map<String, CypherEntity> variables;
+    private final Map<String, Entity<Neo4JType>> variables;
 
-    public Neo4JExpressionGenerator(Map<String, CypherEntity> variables) {
+    public Neo4JExpressionGenerator(Map<String, Entity<Neo4JType>> variables) {
         this.variables = variables;
     }
 
@@ -32,7 +32,7 @@ public class Neo4JExpressionGenerator {
         OCTAL_INTEGER
     }
 
-    public static CypherExpression generateConstant(CypherType type) {
+    public static CypherExpression generateConstant(Neo4JType type) {
         if (Randomization.smallBiasProbability()) {
             return new CypherConstant.NullConstant();
         }
@@ -150,46 +150,46 @@ public class Neo4JExpressionGenerator {
 
         switch (option) {
             case BINARY_LOGICAL_OPERATOR:
-                CypherExpression first = generateExpression(depth + 1, CypherType.BOOLEAN);
+                CypherExpression first = generateExpression(depth + 1, Neo4JType.BOOLEAN);
                 int nr = Randomization.smallNumber() + 1;
 
                 for (int i = 0; i < nr; i++) {
                     first = new CypherBinaryLogicalOperation(first,
-                            generateExpression(depth + 1, CypherType.BOOLEAN),
+                            generateExpression(depth + 1, Neo4JType.BOOLEAN),
                             CypherBinaryLogicalOperation.BinaryLogicalOperator.getRandom());
                 }
 
                 return first;
             case NOT:
-                return new CypherPrefixOperation(generateExpression(depth + 1, CypherType.BOOLEAN),
+                return new CypherPrefixOperation(generateExpression(depth + 1, Neo4JType.BOOLEAN),
                         CypherPrefixOperation.PrefixOperator.NOT);
             case POSTFIX_OPERATOR:
                 return new CypherPostfixOperation(generateExpression(depth + 1),
                         CypherPostfixOperation.PostfixOperator.getRandom());
             case BINARY_COMPARISON:
                 if (Neo4JBugs.PartitionOracleSpecific.bug12884) {
-                    return generateComparison(depth, Randomization.fromOptions(CypherType.INTEGER,
-                            CypherType.FLOAT, CypherType.STRING, CypherType.BOOLEAN, CypherType.DATE,
-                            CypherType.LOCAL_TIME, CypherType.POINT));
+                    return generateComparison(depth, Randomization.fromOptions(Neo4JType.INTEGER,
+                            Neo4JType.FLOAT, Neo4JType.STRING, Neo4JType.BOOLEAN, Neo4JType.DATE,
+                            Neo4JType.LOCAL_TIME, Neo4JType.POINT));
                 } else {
-                    return generateComparison(depth, Randomization.fromOptions(CypherType.values()));
+                    return generateComparison(depth, Randomization.fromOptions(Neo4JType.values()));
                 }
 
             case BINARY_STRING_OPERATOR:
-                return new CypherBinaryStringOperation(generateExpression(depth + 1, CypherType.STRING),
-                        generateExpression(depth + 1, CypherType.STRING),
+                return new CypherBinaryStringOperation(generateExpression(depth + 1, Neo4JType.STRING),
+                        generateExpression(depth + 1, Neo4JType.STRING),
                         CypherBinaryStringOperation.BinaryStringOperation.getRandom());
             case REGEX:
-                return new CypherRegularExpression(generateExpression(depth + 1, CypherType.STRING),
-                        generateExpression(depth + 1, CypherType.STRING));
+                return new CypherRegularExpression(generateExpression(depth + 1, Neo4JType.STRING),
+                        generateExpression(depth + 1, Neo4JType.STRING));
             case FUNCTION:
-                return generateFunction(depth + 1, CypherType.BOOLEAN);
+                return generateFunction(depth + 1, Neo4JType.BOOLEAN);
             default:
                 throw new AssertionError(option);
         }
     }
 
-    private CypherExpression generateComparison(int depth, CypherType type) {
+    private CypherExpression generateComparison(int depth, Neo4JType type) {
         CypherExpression left = generateExpression(depth + 1, type);
         CypherExpression right = generateExpression(depth + 1, type);
         return new CypherBinaryComparisonOperation(left, right,
@@ -203,15 +203,15 @@ public class Neo4JExpressionGenerator {
     private CypherExpression generateIntegerExpression(int depth) {
         switch (Randomization.fromOptions(IntExpression.values())) {
             case UNARY_OPERATION:
-                CypherExpression intExpression = generateExpression(depth + 1, CypherType.INTEGER);
+                CypherExpression intExpression = generateExpression(depth + 1, Neo4JType.INTEGER);
                 CypherPrefixOperation.PrefixOperator operator = Randomization.getBoolean()
                         ? CypherPrefixOperation.PrefixOperator.UNARY_PLUS
                         : CypherPrefixOperation.PrefixOperator.UNARY_MINUS;
 
                 return new CypherPrefixOperation(intExpression, operator);
             case BINARY_ARITHMETIC_EXPRESSION:
-                CypherExpression left = generateExpression(depth + 1, CypherType.INTEGER);
-                CypherExpression right = generateExpression(depth + 1, CypherType.INTEGER);
+                CypherExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
+                CypherExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
 
                 if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
                     return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperatorNaNSafe());
@@ -219,7 +219,7 @@ public class Neo4JExpressionGenerator {
                     return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
                 }
             case FUNCTION:
-                return generateFunction(depth + 1, CypherType.INTEGER);
+                return generateFunction(depth + 1, Neo4JType.INTEGER);
             default:
                 throw new AssertionError();
         }
@@ -232,7 +232,7 @@ public class Neo4JExpressionGenerator {
     private CypherExpression generateFloatExpression(int depth) {
         switch (Randomization.fromOptions(FloatExpression.values())) {
             case UNARY_OPERATION:
-                CypherExpression intExpression = generateExpression(depth + 1, CypherType.FLOAT);
+                CypherExpression intExpression = generateExpression(depth + 1, Neo4JType.FLOAT);
                 CypherPrefixOperation.PrefixOperator operator = Randomization.getBoolean()
                         ? CypherPrefixOperation.PrefixOperator.UNARY_PLUS
                         : CypherPrefixOperation.PrefixOperator.UNARY_MINUS;
@@ -244,15 +244,15 @@ public class Neo4JExpressionGenerator {
 
                 // At least one of the two expressions has to be a float
                 if (Randomization.getBoolean()) {
-                    left = generateExpression(depth + 1, CypherType.FLOAT);
-                    right = generateExpression(depth + 1, CypherType.FLOAT);
+                    left = generateExpression(depth + 1, Neo4JType.FLOAT);
+                    right = generateExpression(depth + 1, Neo4JType.FLOAT);
                 } else {
                     if (Randomization.getBoolean()) {
-                        left = generateExpression(depth + 1, CypherType.INTEGER);
-                        right = generateExpression(depth + 1, CypherType.FLOAT);
+                        left = generateExpression(depth + 1, Neo4JType.INTEGER);
+                        right = generateExpression(depth + 1, Neo4JType.FLOAT);
                     } else {
-                        left = generateExpression(depth + 1, CypherType.FLOAT);
-                        right = generateExpression(depth + 1, CypherType.INTEGER);
+                        left = generateExpression(depth + 1, Neo4JType.FLOAT);
+                        right = generateExpression(depth + 1, Neo4JType.INTEGER);
                     }
                 }
 
@@ -263,7 +263,7 @@ public class Neo4JExpressionGenerator {
                 }
 
             case FUNCTION:
-                return generateFunction(depth + 1, CypherType.FLOAT);
+                return generateFunction(depth + 1, Neo4JType.FLOAT);
             default:
                 throw new AssertionError();
         }
@@ -276,33 +276,33 @@ public class Neo4JExpressionGenerator {
     private CypherExpression generateStringExpression(int depth) {
         switch (Randomization.fromOptions(StringExpression.values())) {
             case CONCAT:
-                CypherExpression left = generateExpression(depth + 1, CypherType.STRING);
-                CypherExpression right = generateExpression(depth + 1, Randomization.fromOptions(CypherType.STRING, CypherType.FLOAT, CypherType.INTEGER));
+                CypherExpression left = generateExpression(depth + 1, Neo4JType.STRING);
+                CypherExpression right = generateExpression(depth + 1, Randomization.fromOptions(Neo4JType.STRING, Neo4JType.FLOAT, Neo4JType.INTEGER));
                 return new CypherConcatOperation(left, right);
             case FUNCTION:
-                return generateFunction(depth + 1, CypherType.STRING);
+                return generateFunction(depth + 1, Neo4JType.STRING);
             default:
                 throw new AssertionError();
         }
     }
 
     private CypherExpression generateDurationExpression(int depth) {
-        return generateFunction(depth + 1, CypherType.DURATION);
+        return generateFunction(depth + 1, Neo4JType.DURATION);
     }
 
     public static CypherExpression generateExpression() {
-        return generateExpression(CypherType.getRandom());
+        return generateExpression(Neo4JType.getRandom());
     }
 
-    public static CypherExpression generateExpression(CypherType type) {
+    public static CypherExpression generateExpression(Neo4JType type) {
         return new Neo4JExpressionGenerator().generateExpression(0, type);
     }
 
     public CypherExpression generateExpression(int depth) {
-        return generateExpression(depth, CypherType.getRandom());
+        return generateExpression(depth, Neo4JType.getRandom());
     }
 
-    private CypherExpression generateExpression(int depth, CypherType type) {
+    private CypherExpression generateExpression(int depth, Neo4JType type) {
         if (!filterVariables(type).isEmpty() && Randomization.getBoolean()) {
             return getVariableExpression(type);
         }
@@ -310,27 +310,27 @@ public class Neo4JExpressionGenerator {
         return generateExpressionInternal(depth, type);
     }
 
-    public static CypherExpression generateExpression(Map<String, CypherEntity> variables, CypherType type) {
+    public static CypherExpression generateExpression(Map<String, Entity<Neo4JType>> variables, Neo4JType type) {
         return new Neo4JExpressionGenerator(variables).generateExpression(0, type);
     }
 
-    public static CypherExpression generateExpression(Map<String, CypherEntity> variables) {
-        return generateExpression(variables, CypherType.getRandom());
+    public static CypherExpression generateExpression(Map<String, Entity<Neo4JType>> variables) {
+        return generateExpression(variables, Neo4JType.getRandom());
     }
 
-    private CypherExpression getVariableExpression(CypherType type) {
+    private CypherExpression getVariableExpression(Neo4JType type) {
         List<String> variables = filterVariables(type);
         return new CypherVariablePropertyAccess(Randomization.fromList(variables));
     }
 
-    private List<String> filterVariables(CypherType type) {
+    private List<String> filterVariables(Neo4JType type) {
         if (variables == null) {
             return Collections.emptyList();
         } else {
             List<String> filteredVariables = new ArrayList<>();
 
             for (String variable : variables.keySet()) {
-                Map<String, CypherType> properties = variables.get(variable).getAvailableProperties();
+                Map<String, Neo4JType> properties = variables.get(variable).getAvailableProperties();
 
                 for (String property : properties.keySet()) {
                     if (properties.get(property) == type) {
@@ -343,7 +343,7 @@ public class Neo4JExpressionGenerator {
         }
     }
 
-    private CypherExpression generateExpressionInternal(int depth, CypherType type) {
+    private CypherExpression generateExpressionInternal(int depth, Neo4JType type) {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
@@ -364,9 +364,9 @@ public class Neo4JExpressionGenerator {
         }
     }
 
-    private CypherFunctionCall generateFunction(int depth, CypherType returnType) {
+    private CypherFunctionCall generateFunction(int depth, Neo4JType returnType) {
         List<Neo4JFunction> functions = Stream.of(Neo4JFunction.values())
-                .filter(neo4JFunction -> neo4JFunction.supportReturnType(returnType))
+                .filter(function -> function.supportReturnType(returnType))
                 .collect(Collectors.toList());
 
         if (Neo4JBugs.PartitionOracleSpecific.bug12887) {
@@ -386,7 +386,7 @@ public class Neo4JExpressionGenerator {
 
         Neo4JFunction chosenFunction = Randomization.fromList(functions);
         int arity = chosenFunction.getArity();
-        CypherType[] argumentTypes = chosenFunction.getArgumentTypes(returnType);
+        Neo4JType[] argumentTypes = chosenFunction.getArgumentTypes(returnType);
         CypherExpression[] arguments = new CypherExpression[arity];
 
         for (int i = 0; i < arity; i++) {

@@ -2,21 +2,20 @@ package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
 import java.util.Set;
 
-public abstract class CypherSetGenerator {
+public abstract class CypherSetGenerator<T> {
 
-    private final CypherSchema schema;
+    private final Schema<T> schema;
     protected final StringBuilder query = new StringBuilder();
 
-    public CypherSetGenerator(CypherSchema schema) {
+    public CypherSetGenerator(Schema<T> schema) {
         this.schema = schema;
     }
 
@@ -25,7 +24,7 @@ public abstract class CypherSetGenerator {
     // TODO: Support SET of multiple properties
     protected void generateSet() {
         String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
+        Entity<T> entity = schema.getEntityByLabel(label);
 
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");
@@ -36,7 +35,7 @@ public abstract class CypherSetGenerator {
         } else {
             Set<String> properties = entity.getAvailableProperties().keySet();
             String property = Randomization.fromSet(properties);
-            CypherType type = entity.getAvailableProperties().get(property);
+            T type = entity.getAvailableProperties().get(property);
             CypherExpression expression;
 
             if (Randomization.getBoolean()) {
@@ -54,9 +53,9 @@ public abstract class CypherSetGenerator {
         }
     }
 
-    protected abstract String generateWhereClause(CypherEntity entity);
-    protected abstract CypherExpression generateConstant(CypherType type);
-    protected abstract CypherExpression generateExpression(CypherType type);
+    protected abstract String generateWhereClause(Entity<T> entity);
+    protected abstract CypherExpression generateConstant(T type);
+    protected abstract CypherExpression generateExpression(T type);
 
 
 }

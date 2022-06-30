@@ -4,22 +4,22 @@ import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherSetGenerator;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
 import ch.ethz.ast.gdblancer.redis.RedisUtil;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 
 import java.util.Map;
 
-public class RedisSetGenerator extends CypherSetGenerator {
+public class RedisSetGenerator extends CypherSetGenerator<RedisType> {
 
-    public RedisSetGenerator(CypherSchema schema) {
+    public RedisSetGenerator(Schema<RedisType> schema) {
         super(schema);
     }
 
-    public static RedisQuery setProperties(CypherSchema schema) {
+    public static RedisQuery setProperties(Schema<RedisType> schema) {
         ExpectedErrors errors = new ExpectedErrors();
 
         RedisUtil.addFunctionErrors(errors);
@@ -32,17 +32,17 @@ public class RedisSetGenerator extends CypherSetGenerator {
     }
 
     @Override
-    protected String generateWhereClause(CypherEntity entity) {
-        return CypherVisitor.asString(RedisExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN));
+    protected String generateWhereClause(Entity<RedisType> entity) {
+        return CypherVisitor.asString(RedisExpressionGenerator.generateExpression(Map.of("n", entity), RedisType.BOOLEAN));
     }
 
     @Override
-    protected CypherExpression generateConstant(CypherType type) {
+    protected CypherExpression generateConstant(RedisType type) {
         return RedisExpressionGenerator.generateConstant(type);
     }
 
     @Override
-    protected CypherExpression generateExpression(CypherType type) {
+    protected CypherExpression generateExpression(RedisType type) {
         return RedisExpressionGenerator.generateExpression(type);
     }
 

@@ -1,12 +1,13 @@
 package ch.ethz.ast.gdblancer.common;
 
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 
-public interface Provider<C extends Connection> {
+public interface Provider<C extends Connection, T> {
 
     C getConnection();
-    Generator<C> getGenerator(CypherSchema schema);
-    OracleFactory<C> getOracleFactory();
+    Schema<T> getSchema();
+    Generator<C> getGenerator(Schema<T> schema);
+    OracleFactory<C, T> getOracleFactory();
     QueryReplay getQueryReplay();
 
 }

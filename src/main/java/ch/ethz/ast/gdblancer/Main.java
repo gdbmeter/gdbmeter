@@ -1,7 +1,7 @@
 package ch.ethz.ast.gdblancer;
 
 import ch.ethz.ast.gdblancer.common.*;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JProvider;
 import ch.ethz.ast.gdblancer.redis.RedisProvider;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -18,7 +18,7 @@ public class Main {
         }
 
         int option = Integer.parseInt(args[0]);
-        Provider<?> provider;
+        Provider<?, ?> provider;
         OracleType type = OracleType.PARTITION;
 
         switch (option) {
@@ -37,20 +37,20 @@ public class Main {
         run(provider, type);
     }
 
-    private static void replayQueries(Provider<?> provider) throws IOException {
+    private static void replayQueries(Provider<?, ?> provider) throws IOException {
         provider.getQueryReplay().replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
     }
 
-    private static <C extends Connection> void run(Provider<C> provider, OracleType oracleType) throws Exception {
+    private static <C extends Connection, T> void run(Provider<C, T> provider, OracleType oracleType) throws Exception {
         GlobalState<C> state = new GlobalState<>();
-        OracleFactory<C> factory = provider.getOracleFactory();
+        OracleFactory<C, T> factory = provider.getOracleFactory();
 
         while (true) {
             try (C connection = provider.getConnection()) {
                 connection.connect();
                 state.setConnection(connection);
 
-                CypherSchema schema = CypherSchema.generateRandomSchema();
+                Schema<T> schema = provider.getSchema();
 
                 Oracle oracle = factory.createOracle(oracleType, state, schema);
                 oracle.onGenerate();

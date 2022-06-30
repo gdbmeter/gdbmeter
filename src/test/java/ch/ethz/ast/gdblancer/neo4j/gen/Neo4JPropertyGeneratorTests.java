@@ -1,19 +1,21 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Neo4JPropertyGeneratorTests {
+public class Neo4JPropertyGeneratorTests extends Neo4JSchemaGenerator {
 
     @Test
     void testGenerateProperties() {
         while (true) {
             try {
-                CypherEntity entity = CypherEntity.generateRandomEntity(CypherType.values());
+                Entity<Neo4JType> entity = Entity.generateRandomEntity(Set.of(Neo4JType.values()));
 
                 String query = new Neo4JPropertyGenerator(entity).generateProperties();
                 assertNotNull(query);

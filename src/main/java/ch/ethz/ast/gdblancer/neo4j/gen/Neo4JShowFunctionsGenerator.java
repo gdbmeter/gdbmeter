@@ -1,20 +1,16 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JShowFunctionsGenerator {
 
-    private final CypherSchema schema;
     private final StringBuilder query = new StringBuilder();
 
-    public Neo4JShowFunctionsGenerator(CypherSchema schema) {
-        this.schema = schema;
-    }
-
-    public static Neo4JQuery showFunctions(CypherSchema schema) {
-        return new Neo4JShowFunctionsGenerator(schema).generateShowFunctions();
+    public static Neo4JQuery showFunctions(Schema<Neo4JType> ignored) {
+        return new Neo4JShowFunctionsGenerator().generateShowFunctions();
     }
 
     private enum FunctionFilterType {

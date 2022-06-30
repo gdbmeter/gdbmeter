@@ -1,22 +1,22 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
 
-public class CypherReturnGenerator {
+public class CypherReturnGenerator<T> {
 
     private final StringBuilder query = new StringBuilder();
-    private final Map<String, CypherEntity> entities;
+    private final Map<String, Entity<T>> entities;
 
-    private CypherReturnGenerator(Map<String, CypherEntity> entities) {
+    private CypherReturnGenerator(Map<String, Entity<T>> entities) {
         this.entities = entities;
     }
 
-    public static String returnEntities(Map<String, CypherEntity> entities) {
-        CypherReturnGenerator generator = new CypherReturnGenerator(entities);
+    public static <E> String returnEntities(Map<String, Entity<E>> entities) {
+        CypherReturnGenerator generator = new CypherReturnGenerator<E>(entities);
         generator.generateReturn();
 
         if (Randomization.getBoolean()) {
@@ -45,7 +45,7 @@ public class CypherReturnGenerator {
             query.append(variable);
 
             if (Randomization.getBoolean()) {
-                CypherEntity entity = entities.get(variable);
+                Entity<T> entity = entities.get(variable);
                 String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
                 query.append(".");
@@ -71,7 +71,7 @@ public class CypherReturnGenerator {
             query.append(variable);
 
             if (Randomization.getBoolean()) {
-                CypherEntity entity = entities.get(variable);
+                Entity<T> entity = entities.get(variable);
                 String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
                 query.append(".");

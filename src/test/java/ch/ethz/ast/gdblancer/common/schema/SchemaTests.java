@@ -1,7 +1,5 @@
 package ch.ethz.ast.gdblancer.common.schema;
 
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
@@ -9,11 +7,11 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CypherSchemaTests {
+public class SchemaTests {
 
     @Test
     void testGenerateRandomSchema() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String label = schema.getRandomLabel();
         String type = schema.getRandomType();
 
@@ -28,7 +26,7 @@ public class CypherSchemaTests {
 
     @Test
     void testGetRandomIndex() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String name = "name";
         schema.setIndices(Set.of(name));
 
@@ -37,16 +35,16 @@ public class CypherSchemaTests {
 
     @Test
     void testGenerateRandomNodeIndex() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         assertNotEquals(schema.generateRandomNodeIndex(), schema.generateRandomNodeIndex());
     }
 
     @Test
     void testGenerateRandomTextIndex() {
         while (true) {
-            CypherSchema schema = CypherSchema.generateRandomSchema();
+            Schema<String> schema = Schema.generateRandomSchema(Set.of("type"));
             try {
-                assertNotEquals(schema.generateRandomTextIndex(), schema.generateRandomTextIndex());
+                assertNotEquals(schema.generateRandomTextIndex("type"), schema.generateRandomTextIndex("type"));
                 break;
             } catch (IgnoreMeException ignored) {}
         }
@@ -54,31 +52,31 @@ public class CypherSchemaTests {
 
     @Test
     void testGenerateRandomRelationshipIndex() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         assertNotEquals(schema.generateRandomRelationshipIndex(), schema.generateRandomRelationshipIndex());
     }
 
     @Test
     void testGetEntityByLabel() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
+        Entity entity = schema.getEntityByLabel(label);
 
         assertNotNull(entity);
     }
 
     @Test
     void testGetEntityByType() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String type = schema.getRandomType();
-        CypherEntity entity = schema.getEntityByType(type);
+        Entity entity = schema.getEntityByType(type);
 
         assertNotNull(entity);
     }
 
     @Test
     void testTwoRandomIndexNamesAreNotEqual() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         assertNotEquals(schema.generateRandomIndexName(), schema.generateRandomIndexName());
 
         String name = "forbidden";
@@ -91,7 +89,7 @@ public class CypherSchemaTests {
 
     @Test
     void testExistingIndexNameIsNotGenerated() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String name = "forbidden";
         schema.setIndices(Set.of(name));
 
@@ -102,13 +100,13 @@ public class CypherSchemaTests {
 
     @Test
     void testEmptySchemaHasNoIndices() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         assertFalse(schema.hasIndices());
     }
 
     @Test
     void testNonEmptySchemaHasIndices() {
-        CypherSchema schema = CypherSchema.generateRandomSchema();
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         schema.setIndices(Set.of("something"));
         assertTrue(schema.hasIndices());
     }

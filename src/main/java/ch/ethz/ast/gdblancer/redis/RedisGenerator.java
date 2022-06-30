@@ -2,7 +2,7 @@ package ch.ethz.ast.gdblancer.redis;
 
 import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.gen.*;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -21,9 +21,9 @@ public class RedisGenerator implements Generator<RedisConnection> {
         SET(RedisSetGenerator::setProperties),
         DELETE(RedisDeleteGenerator::deleteNodes);
 
-        private final Function<CypherSchema, RedisQuery> generator;
+        private final Function<Schema, RedisQuery> generator;
 
-        Action(Function<CypherSchema, RedisQuery> generator) {
+        Action(Function<Schema, RedisQuery> generator) {
             this.generator = generator;
         }
     }
@@ -53,15 +53,15 @@ public class RedisGenerator implements Generator<RedisConnection> {
         return selectedNumber;
     }
 
-    private final CypherSchema schema;
+    private final Schema schema;
 
-    public RedisGenerator(CypherSchema schema) {
+    public RedisGenerator(Schema schema) {
         this.schema = schema;
     }
 
     @Override
     public void generate(GlobalState<RedisConnection> globalState) {
-        List<Function<CypherSchema, RedisQuery>> queries = new ArrayList<>();
+        List<Function<Schema, RedisQuery>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -74,7 +74,7 @@ public class RedisGenerator implements Generator<RedisConnection> {
 
         Randomization.shuffleList(queries);
 
-        for (Function<CypherSchema, RedisQuery> queryGenerator : queries) {
+        for (Function<Schema, RedisQuery> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;

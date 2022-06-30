@@ -2,29 +2,29 @@ package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 
 import java.util.Map;
 
-public class Neo4JPropertyGenerator extends CypherPropertyGenerator {
+public class Neo4JPropertyGenerator extends CypherPropertyGenerator<Neo4JType>  {
 
-    protected Neo4JPropertyGenerator(CypherEntity entity) {
+    protected Neo4JPropertyGenerator(Entity<Neo4JType> entity) {
         super(entity);
     }
 
-    protected Neo4JPropertyGenerator(CypherEntity entity, Map<String, CypherEntity> variables) {
+    protected Neo4JPropertyGenerator(Entity<Neo4JType> entity, Map<String, Entity<Neo4JType>> variables) {
         super(entity, variables);
     }
 
     @Override
-    protected CypherExpression generateConstant(CypherType type) {
+    protected CypherExpression generateConstant(Neo4JType type) {
         return Neo4JExpressionGenerator.generateConstant(type);
     }
 
     @Override
-    protected CypherExpression generateExpression(Map<String, CypherEntity> variables, CypherType type) {
+    protected CypherExpression generateExpression(Map<String, Entity<Neo4JType>> variables, Neo4JType type) {
         return Neo4JExpressionGenerator.generateExpression(variables, type);
     }
 

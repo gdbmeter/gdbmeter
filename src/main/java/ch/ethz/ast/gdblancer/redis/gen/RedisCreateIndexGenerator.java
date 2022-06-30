@@ -1,17 +1,18 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateIndexGenerator;
-import ch.ethz.ast.gdblancer.common.schema.CypherIndex;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Index;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 
-public class RedisCreateIndexGenerator extends CypherCreateIndexGenerator {
+public class RedisCreateIndexGenerator extends CypherCreateIndexGenerator<RedisType> {
 
-    private RedisCreateIndexGenerator(CypherSchema schema) {
-        super(schema);
+    private RedisCreateIndexGenerator(Schema<RedisType> schema) {
+        super(schema, RedisType.STRING);
     }
 
-    public static RedisQuery createIndex(CypherSchema schema) {
+    public static RedisQuery createIndex(Schema<RedisType> schema) {
         RedisCreateIndexGenerator generator = new RedisCreateIndexGenerator(schema);
         generator.generateCreateIndex();
 
@@ -19,19 +20,19 @@ public class RedisCreateIndexGenerator extends CypherCreateIndexGenerator {
     }
 
     @Override
-    protected void generateNodeIndex(CypherIndex index) {
+    protected void generateNodeIndex(Index index) {
         query.append(String.format("CREATE INDEX FOR (n:%s) ", index.getLabel()));
         generateOnClause(index.getPropertyNames());
     }
 
     @Override
-    protected void generateRelationshipIndex(CypherIndex index) {
+    protected void generateRelationshipIndex(Index index) {
         query.append(String.format("CREATE INDEX FOR ()-[n:%s]-() ", index.getLabel()));
         generateOnClause(index.getPropertyNames());
     }
 
     @Override
-    protected void generateTextIndex(CypherIndex index) {
+    protected void generateTextIndex(Index index) {
         query.append(String.format("CALL db.idx.fulltext.createNodeIndex('%s', '%s')", index.getLabel(), index.getPropertyNames().toArray()[0]));
     }
 }

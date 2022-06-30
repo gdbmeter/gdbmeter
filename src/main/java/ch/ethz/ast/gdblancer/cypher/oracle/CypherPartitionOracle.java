@@ -7,19 +7,19 @@ import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherPrefixOperation;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 
 import java.util.List;
 import java.util.Map;
 
-public abstract class CypherPartitionOracle<T extends Connection> implements Oracle {
+public abstract class CypherPartitionOracle<C extends Connection, T> implements Oracle {
 
-    private final GlobalState<T> state;
-    private final CypherSchema schema;
+    private final GlobalState<C> state;
+    private final Schema<T> schema;
 
-    public CypherPartitionOracle(GlobalState<T> state, CypherSchema schema) {
+    public CypherPartitionOracle(GlobalState<C> state, Schema<T> schema) {
         this.state = state;
         this.schema = schema;
     }
@@ -29,9 +29,9 @@ public abstract class CypherPartitionOracle<T extends Connection> implements Ora
         int exceptions = 0;
 
         String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
+        Entity<T> entity = schema.getEntityByLabel(label);
 
-        Query<T> initialQuery = makeQuery(String.format("MATCH (n:%s) RETURN COUNT(n)", label));
+        Query<C> initialQuery = makeQuery(String.format("MATCH (n:%s) RETURN COUNT(n)", label));
         List<Map<String, Object>> result = initialQuery.executeAndGet(state);
         Long expectedTotal;
 
@@ -43,7 +43,7 @@ public abstract class CypherPartitionOracle<T extends Connection> implements Ora
 
         CypherExpression whereCondition = getWhereClause(entity);
 
-        Query<T> firstQuery = makeQuery(String.format("MATCH (n:%s) WHERE %s RETURN COUNT(n)", label, CypherVisitor.asString(whereCondition)));
+        Query<C> firstQuery = makeQuery(String.format("MATCH (n:%s) WHERE %s RETURN COUNT(n)", label, CypherVisitor.asString(whereCondition)));
         result = firstQuery.executeAndGet(state);
         Long first = 0L;
 
@@ -54,7 +54,7 @@ public abstract class CypherPartitionOracle<T extends Connection> implements Ora
         }
 
         CypherExpression negatedWhereCondition = new CypherPrefixOperation(whereCondition, CypherPrefixOperation.PrefixOperator.NOT);
-        Query<T> secondQuery = makeQuery(String.format("MATCH (n:%s) WHERE %s RETURN COUNT(n)", label, CypherVisitor.asString(negatedWhereCondition)));
+        Query<C> secondQuery = makeQuery(String.format("MATCH (n:%s) WHERE %s RETURN COUNT(n)", label, CypherVisitor.asString(negatedWhereCondition)));
 
         result = secondQuery.executeAndGet(state);
         Long second = 0L;
@@ -65,7 +65,7 @@ public abstract class CypherPartitionOracle<T extends Connection> implements Ora
             exceptions++;
         }
 
-        Query<T> thirdQuery = makeQuery(String.format("MATCH (n:%s) WHERE (%s) IS NULL RETURN COUNT(n)", label, CypherVisitor.asString(whereCondition)));
+        Query<C> thirdQuery = makeQuery(String.format("MATCH (n:%s) WHERE (%s) IS NULL RETURN COUNT(n)", label, CypherVisitor.asString(whereCondition)));
         result = thirdQuery.executeAndGet(state);
         Long third = 0L;
 
@@ -84,8 +84,8 @@ public abstract class CypherPartitionOracle<T extends Connection> implements Ora
         }
     }
 
-    protected abstract CypherExpression getWhereClause(CypherEntity entity);
+    protected abstract CypherExpression getWhereClause(Entity<T> entity);
 
-    protected abstract Query<T> makeQuery(String query);
+    protected abstract Query<C> makeQuery(String query);
 
 }

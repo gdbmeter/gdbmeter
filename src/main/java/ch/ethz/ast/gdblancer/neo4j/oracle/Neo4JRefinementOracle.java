@@ -3,14 +3,14 @@ package ch.ethz.ast.gdblancer.neo4j.oracle;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.cypher.ast.*;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.neo4j.ast.*;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.neo4j.values.storable.DurationValue;
 import org.neo4j.values.storable.PointValue;
@@ -25,9 +25,9 @@ import java.util.Objects;
 public class Neo4JRefinementOracle implements Oracle {
 
     private final GlobalState<Neo4JConnection> state;
-    private final CypherSchema schema;
+    private final Schema<Neo4JType> schema;
 
-    public Neo4JRefinementOracle(GlobalState<Neo4JConnection> state, CypherSchema schema) {
+    public Neo4JRefinementOracle(GlobalState<Neo4JConnection> state, Schema<Neo4JType> schema) {
         this.state = state;
         this.schema = schema;
     }
@@ -54,12 +54,12 @@ public class Neo4JRefinementOracle implements Oracle {
 
         for (int i = 0; i < amount; i++) {
             String label = labels.get(i);
-            CypherEntity entity = schema.getEntityByLabel(label);
+            Entity<Neo4JType> entity = schema.getEntityByLabel(label);
 
             query.append(separator);
             query.append(String.format("(n%d:%s)", i, label));
             separator = ", ";
-            CypherExpression expression = Neo4JExpressionGenerator.generateExpression(Map.of(String.format("n%d", i), entity), CypherType.BOOLEAN);
+            CypherExpression expression = Neo4JExpressionGenerator.generateExpression(Map.of(String.format("n%d", i), entity), Neo4JType.BOOLEAN);
             whereExpression = new CypherBinaryLogicalOperation(whereExpression, expression, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);
         }
 
@@ -101,9 +101,9 @@ public class Neo4JRefinementOracle implements Oracle {
                 // refine current
                 Map<String, Object> properties = (Map<String, Object>) pivotResult.get(String.format("properties(n%d)", current));
                 String label = labels.get(current);
-                CypherEntity entity = schema.getEntityByLabel(label);
+                Entity<Neo4JType> entity = schema.getEntityByLabel(label);
                 String key = Randomization.fromSet(entity.getAvailableProperties().keySet());
-                CypherType type = entity.getAvailableProperties().get(key);
+                Neo4JType type = entity.getAvailableProperties().get(key);
 
                 Object value = properties.get(key);
                 CypherExpression expectedConstant;

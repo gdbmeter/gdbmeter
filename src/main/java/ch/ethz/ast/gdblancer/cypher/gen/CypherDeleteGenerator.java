@@ -1,20 +1,20 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
 
-public abstract class CypherDeleteGenerator {
+public abstract class CypherDeleteGenerator<T> {
 
-    private final CypherSchema schema;
+    private final Schema<T> schema;
     protected final StringBuilder query = new StringBuilder();
     protected final ExpectedErrors errors = new ExpectedErrors();
 
-    public CypherDeleteGenerator(CypherSchema schema) {
+    public CypherDeleteGenerator(Schema<T> schema) {
         this.schema = schema;
     }
 
@@ -22,7 +22,7 @@ public abstract class CypherDeleteGenerator {
     // TODO: Support DELETE of nodes of different labels
     protected void generateDelete() {
         String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
+        Entity<T> entity = schema.getEntityByLabel(label);
 
         query.append(String.format("MATCH (n:%s)", label));
         query.append(" WHERE ");
@@ -42,7 +42,7 @@ public abstract class CypherDeleteGenerator {
         }
     }
 
-    protected abstract String generateWhereClause(CypherEntity entity);
+    protected abstract String generateWhereClause(Entity<T> entity);
     protected abstract void onNonDetachDelete();
 
 }

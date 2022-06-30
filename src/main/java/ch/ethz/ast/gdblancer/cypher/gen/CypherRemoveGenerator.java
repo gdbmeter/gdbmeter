@@ -1,18 +1,18 @@
 package ch.ethz.ast.gdblancer.cypher.gen;
 
-import ch.ethz.ast.gdblancer.common.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.common.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.RedisBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Map;
 
-public abstract class CypherRemoveGenerator {
+public abstract class CypherRemoveGenerator<T> {
 
-    private final CypherSchema schema;
+    private final Schema<T> schema;
     protected final StringBuilder query = new StringBuilder();
 
-    public CypherRemoveGenerator(CypherSchema schema) {
+    public CypherRemoveGenerator(Schema<T> schema) {
         this.schema = schema;
     }
 
@@ -20,7 +20,7 @@ public abstract class CypherRemoveGenerator {
     // TODO: Support REMOVE of multiple properties
     protected void generateRemove() {
         String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
+        Entity<T> entity = schema.getEntityByLabel(label);
 
         query.append(String.format("MATCH (n:%s) WHERE %s", label, generateWhereClause(entity)));
 
@@ -33,7 +33,7 @@ public abstract class CypherRemoveGenerator {
         }
     }
 
-    protected abstract String generateWhereClause(CypherEntity entity);
+    protected abstract String generateWhereClause(Entity<T> entity);
     protected abstract String generateRemoveClause(String property);
 
 }

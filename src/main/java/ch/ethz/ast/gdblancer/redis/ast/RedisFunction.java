@@ -1,286 +1,286 @@
 package ch.ethz.ast.gdblancer.redis.ast;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherFunctionDescription;
-import ch.ethz.ast.gdblancer.common.schema.CypherType;
 import ch.ethz.ast.gdblancer.redis.RedisBugs;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 // See: https://redis.io/commands/graph.query/#functions
-public enum RedisFunction implements CypherFunctionDescription {
+public enum RedisFunction implements CypherFunctionDescription<RedisType> {
 
     ABS("abs", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.INTEGER || returnType == CypherType.FLOAT;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.INTEGER || returnType == RedisType.FLOAT;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            assert returnType == CypherType.INTEGER || returnType == CypherType.FLOAT;
-            return new CypherType[] { returnType };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            assert returnType == RedisType.INTEGER || returnType == RedisType.FLOAT;
+            return new RedisType[] { returnType };
         }
     },
     SIGN("sign", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.INTEGER;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.INTEGER;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { Randomization.fromOptions(RedisType.INTEGER, RedisType.FLOAT) };
         }
     },
     TO_INTEGER("toInteger", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.INTEGER;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.INTEGER;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            CypherType chosenType = Randomization.fromOptions(CypherType.STRING, CypherType.INTEGER, CypherType.FLOAT);
-            return new CypherType[] { chosenType };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            RedisType chosenType = Randomization.fromOptions(RedisType.STRING, RedisType.INTEGER, RedisType.FLOAT);
+            return new RedisType[] { chosenType };
         }
     },
     LEFT("left", 2) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING, CypherType.INTEGER };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING, RedisType.INTEGER };
         }
     },
     RIGHT("right", 2) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING, CypherType.INTEGER };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING, RedisType.INTEGER };
         }
     },
     LTRIM("lTrim", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING };
         }
     },
     RTRIM("rTrim", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING };
         }
     },
     TRIM("trim", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING };
         }
     },
     TO_LOWER("toLower", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING };
         }
     },
     TO_UPPER("toUpper", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING };
         }
     },
     REVERSE("reverse", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING };
         }
     },
     REPLACE("replace", 3) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING, CypherType.STRING, CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING, RedisType.STRING, RedisType.STRING };
         }
     },
     SUBSTRING("substring", 3) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING, CypherType.INTEGER, CypherType.INTEGER };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING, RedisType.INTEGER, RedisType.INTEGER };
         }
     },
     TO_STRING("toString", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.getRandom() };
         }
     },
     CEIL("ceil", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
+        public boolean supportReturnType(RedisType returnType) {
             if (RedisBugs.bug2440) {
-                return returnType == CypherType.FLOAT || returnType == CypherType.INTEGER;
+                return returnType == RedisType.FLOAT || returnType == RedisType.INTEGER;
             } else {
-                return returnType == CypherType.FLOAT;
+                return returnType == RedisType.FLOAT;
             }
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
+        public RedisType[] getArgumentTypes(RedisType returnType) {
             if (RedisBugs.bug2440) {
-                if (returnType == CypherType.FLOAT) {
-                    return new CypherType[] { CypherType.FLOAT };
-                } else if (returnType == CypherType.INTEGER) {
-                    return new CypherType[] { CypherType.INTEGER };
+                if (returnType == RedisType.FLOAT) {
+                    return new RedisType[] { RedisType.FLOAT };
+                } else if (returnType == RedisType.INTEGER) {
+                    return new RedisType[] { RedisType.INTEGER };
                 } else {
                     throw new IllegalArgumentException();
                 }
             } else {
-                return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
+                return new RedisType[] { Randomization.fromOptions(RedisType.INTEGER, RedisType.FLOAT) };
             }
         }
     },
     FLOOR("floor", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
+        public boolean supportReturnType(RedisType returnType) {
             if (RedisBugs.bug2440) {
-                return returnType == CypherType.FLOAT || returnType == CypherType.INTEGER;
+                return returnType == RedisType.FLOAT || returnType == RedisType.INTEGER;
             } else {
-                return returnType == CypherType.FLOAT;
+                return returnType == RedisType.FLOAT;
             }
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
+        public RedisType[] getArgumentTypes(RedisType returnType) {
             if (RedisBugs.bug2440) {
-                if (returnType == CypherType.FLOAT) {
-                    return new CypherType[] { CypherType.FLOAT };
-                } else if (returnType == CypherType.INTEGER) {
-                    return new CypherType[] { CypherType.INTEGER };
+                if (returnType == RedisType.FLOAT) {
+                    return new RedisType[] { RedisType.FLOAT };
+                } else if (returnType == RedisType.INTEGER) {
+                    return new RedisType[] { RedisType.INTEGER };
                 } else {
                     throw new IllegalArgumentException();
                 }
             } else {
-                return new CypherType[] { Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT) };
+                return new RedisType[] { Randomization.fromOptions(RedisType.INTEGER, RedisType.FLOAT) };
             }
         }
     },
     POINT_DISTANCE("distance", 2) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.FLOAT;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.FLOAT;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.POINT, CypherType.POINT };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.POINT, RedisType.POINT };
         }
     },
     ROUND("round", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.FLOAT;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.FLOAT;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            CypherType chosenType = Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT);
-            return new CypherType[] { chosenType };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            RedisType chosenType = Randomization.fromOptions(RedisType.INTEGER, RedisType.FLOAT);
+            return new RedisType[] { chosenType };
         }
     },
     SQRT("sqrt", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.FLOAT;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.FLOAT;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            CypherType chosenType = Randomization.fromOptions(CypherType.INTEGER, CypherType.FLOAT);
-            return new CypherType[] { chosenType };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            RedisType chosenType = Randomization.fromOptions(RedisType.INTEGER, RedisType.FLOAT);
+            return new RedisType[] { chosenType };
 
         }
     },
     POW("pow", 2) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.FLOAT;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.FLOAT;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.INTEGER, CypherType.INTEGER };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.INTEGER, RedisType.INTEGER };
         }
     },
     SIZE("size", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.INTEGER;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.INTEGER;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { CypherType.STRING };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.STRING };
         }
     },
     TO_JSON("toJSON", 1) {
         @Override
-        public boolean supportReturnType(CypherType returnType) {
-            return returnType == CypherType.STRING;
+        public boolean supportReturnType(RedisType returnType) {
+            return returnType == RedisType.STRING;
         }
 
         @Override
-        public CypherType[] getArgumentTypes(CypherType returnType) {
-            return new CypherType[] { Randomization.fromOptions(RedisExpressionGenerator.supportedTypes) };
+        public RedisType[] getArgumentTypes(RedisType returnType) {
+            return new RedisType[] { RedisType.getRandom() };
         }
     };
 
