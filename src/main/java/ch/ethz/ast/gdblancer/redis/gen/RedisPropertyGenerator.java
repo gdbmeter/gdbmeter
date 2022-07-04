@@ -2,30 +2,30 @@ package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.cypher.gen.CypherPropertyGenerator;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 
 import java.util.Collections;
 import java.util.Map;
 
-public class RedisPropertyGenerator extends CypherPropertyGenerator {
+public class RedisPropertyGenerator extends CypherPropertyGenerator<RedisType> {
 
-    protected RedisPropertyGenerator(CypherEntity entity) {
+    protected RedisPropertyGenerator(Entity<RedisType> entity) {
         super(entity);
     }
 
-    protected RedisPropertyGenerator(CypherEntity entity, Map<String, CypherEntity> variables) {
+    protected RedisPropertyGenerator(Entity<RedisType> entity, Map<String, Entity<RedisType>> variables) {
         super(entity, variables);
     }
 
     @Override
-    protected CypherExpression generateConstant(CypherType type) {
+    protected CypherExpression generateConstant(RedisType type) {
         return RedisExpressionGenerator.generateConstant(type);
     }
 
     @Override
-    protected CypherExpression generateExpression(Map<String, CypherEntity> variables, CypherType type) {
+    protected CypherExpression generateExpression(Map<String, Entity<RedisType>> variables, RedisType type) {
         // Accessing properties of nodes created in the same query is not supported by redis
         // See: https://github.com/RedisGraph/RedisGraph/pull/1495
         return RedisExpressionGenerator.generateExpression(Collections.emptyMap(), type);

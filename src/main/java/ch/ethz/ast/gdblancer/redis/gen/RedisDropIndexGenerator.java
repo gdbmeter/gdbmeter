@@ -2,9 +2,10 @@ package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherIndexTypes;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.RedisQuery;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 /**
@@ -12,15 +13,15 @@ import ch.ethz.ast.gdblancer.util.Randomization;
  */
 public class RedisDropIndexGenerator {
 
-    private final CypherSchema schema;
+    private final Schema<RedisType> schema;
     private final StringBuilder query = new StringBuilder();
     private final ExpectedErrors errors = new ExpectedErrors();
 
-    public RedisDropIndexGenerator(CypherSchema schema) {
+    public RedisDropIndexGenerator(Schema<RedisType> schema) {
         this.schema = schema;
     }
 
-    public static RedisQuery dropIndex(CypherSchema schema) {
+    public static RedisQuery dropIndex(Schema<RedisType> schema) {
         return new RedisDropIndexGenerator(schema).generateDropIndex();
     }
 
@@ -47,7 +48,7 @@ public class RedisDropIndexGenerator {
 
     private void dropNodeIndex() {
         String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
+        Entity<RedisType> entity = schema.getEntityByLabel(label);
         String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
         query.append(String.format("DROP INDEX ON :%s(%s)", label, property));
@@ -55,7 +56,7 @@ public class RedisDropIndexGenerator {
 
     private void dropRelationshipIndex() {
         String type = schema.getRandomType();
-        CypherEntity entity = schema.getEntityByType(type);
+        Entity<RedisType> entity = schema.getEntityByType(type);
         String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
         query.append(String.format("DROP INDEX ON :%s(%s)", type, property));

@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.cypher.schema;
+package ch.ethz.ast.gdblancer.common.schema;
 
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -9,35 +9,31 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class CypherSchema {
+public class Schema<T> {
 
-    private final Map<String, CypherEntity> nodeSchema;
-    private final Map<String, CypherEntity> relationshipSchema;
+    private final Map<String, Entity<T>> nodeSchema;
+    private final Map<String, Entity<T>> relationshipSchema;
     private Set<String> indices;
 
-    private CypherSchema(Map<String, CypherEntity> nodeSchema, Map<String, CypherEntity> relationshipSchema) {
+    protected Schema(Map<String, Entity<T>> nodeSchema, Map<String, Entity<T>> relationshipSchema) {
         this.nodeSchema = nodeSchema;
         this.relationshipSchema = relationshipSchema;
         this.indices = new HashSet<>();
     }
 
-    public static CypherSchema generateRandomSchema(CypherType[] availableTypes) {
-        Map<String, CypherEntity> nodeSchema = new HashMap<>();
-        Map<String, CypherEntity> relationshipSchema = new HashMap<>();
+    public static <E> Schema<E> generateRandomSchema(Set<E> availableTypes) {
+        Map<String, Entity<E>> nodeSchema = new HashMap<>();
+        Map<String, Entity<E>> relationshipSchema = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(3, 10); i++) {
-            nodeSchema.put(CypherUtil.generateValidName(), CypherEntity.generateRandomEntity(availableTypes));
+            nodeSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes));
         }
 
         for (int i = 0; i < Randomization.nextInt(3, 4); i++) {
-            relationshipSchema.put(CypherUtil.generateValidName(), CypherEntity.generateRandomEntity(availableTypes));
+            relationshipSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes));
         }
 
-        return new CypherSchema(nodeSchema, relationshipSchema);
-    }
-
-    public static CypherSchema generateRandomSchema() {
-        return generateRandomSchema(CypherType.values());
+        return new Schema<E>(nodeSchema, relationshipSchema);
     }
 
     public void setIndices(Set<String> indices) {
@@ -48,7 +44,7 @@ public class CypherSchema {
         return Randomization.fromOptions(nodeSchema.keySet().toArray(new String[0]));
     }
 
-    public CypherEntity getEntityByLabel(String label) {
+    public Entity<T> getEntityByLabel(String label) {
         return nodeSchema.get(label);
     }
 
@@ -56,7 +52,7 @@ public class CypherSchema {
         return Randomization.fromOptions(relationshipSchema.keySet().toArray(new String[0]));
     }
 
-    public CypherEntity getEntityByType(String type) {
+    public Entity<T> getEntityByType(String type) {
         return relationshipSchema.get(type);
     }
 
@@ -68,22 +64,22 @@ public class CypherSchema {
         return !indices.isEmpty();
     }
 
-    public CypherIndex generateRandomNodeIndex() {
+    public Index generateRandomNodeIndex() {
         String label = getRandomLabel();
         Set<String> properties = Randomization.nonEmptySubset(nodeSchema.get(label).getAvailableProperties().keySet());
 
-        return new CypherIndex(label, properties);
+        return new Index(label, properties);
     }
 
-    public CypherIndex generateRandomRelationshipIndex() {
+    public Index generateRandomRelationshipIndex() {
         String type = getRandomType();
         Set<String> properties = Randomization.nonEmptySubset(relationshipSchema.get(type).getAvailableProperties().keySet());
 
-        return new CypherIndex(type, properties);
+        return new Index(type, properties);
     }
 
-    public CypherIndex generateRandomTextIndex() {
-        Map<String, Set<String>> stringProperties = getNodeSchemaByPropertyType(CypherType.STRING);
+    public Index generateRandomTextIndex(T textType) {
+        Map<String, Set<String>> stringProperties = getNodeSchemaByPropertyType(textType);
 
         if (stringProperties.isEmpty()) {
             throw new IgnoreMeException();
@@ -92,7 +88,7 @@ public class CypherSchema {
         String label = Randomization.fromSet(stringProperties.keySet());
         String property = Randomization.fromSet(stringProperties.get(label));
 
-        return new CypherIndex(label, Set.of(property));
+        return new Index(label, Set.of(property));
     }
 
     public String generateRandomIndexName() {
@@ -105,13 +101,13 @@ public class CypherSchema {
         return name;
     }
 
-    private Map<String, Set<String>> getNodeSchemaByPropertyType(CypherType type) {
+    private Map<String, Set<String>> getNodeSchemaByPropertyType(T type) {
         Map<String, Set<String>> schema = new HashMap<>();
 
         for (String label : nodeSchema.keySet()) {
-            Map<String, CypherType> properties = nodeSchema.get(label).getAvailableProperties();
+            Map<String, T> properties = nodeSchema.get(label).getAvailableProperties();
 
-            for (Map.Entry<String, CypherType> entry : properties.entrySet()) {
+            for (Map.Entry<String, T> entry : properties.entrySet()) {
                 if (entry.getValue() == type) {
                     Set<String> stringProperties = schema.getOrDefault(label, new HashSet<>());
                     stringProperties.add(entry.getKey());

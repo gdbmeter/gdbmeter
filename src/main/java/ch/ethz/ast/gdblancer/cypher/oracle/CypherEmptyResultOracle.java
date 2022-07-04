@@ -4,8 +4,8 @@ import ch.ethz.ast.gdblancer.common.Connection;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.common.Query;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class CypherEmptyResultOracle<T extends Connection> implements Oracle {
+public abstract class CypherEmptyResultOracle<C extends Connection, T> implements Oracle {
 
-    private final GlobalState<T> state;
-    private final CypherSchema schema;
+    private final GlobalState<C> state;
+    private final Schema<T> schema;
 
-    protected CypherEmptyResultOracle(GlobalState<T> state, CypherSchema schema) {
+    protected CypherEmptyResultOracle(GlobalState<C> state, Schema<T> schema) {
         this.state = state;
         this.schema = schema;
     }
@@ -38,9 +38,9 @@ public abstract class CypherEmptyResultOracle<T extends Connection> implements O
         }
 
         String label = schema.getRandomLabel();
-        CypherEntity entity = schema.getEntityByLabel(label);
+        Entity<T> entity = schema.getEntityByLabel(label);
 
-        Query<T> initialQuery = getInitialQuery(label, entity);
+        Query<C> initialQuery = getInitialQuery(label, entity);
         List<Map<String, Object>> initialResult = initialQuery.executeAndGet(state);
 
         if (initialResult == null) {
@@ -67,8 +67,8 @@ public abstract class CypherEmptyResultOracle<T extends Connection> implements O
         }
     }
 
-    protected abstract Query<T> getIdQuery();
-    protected abstract Query<T> getInitialQuery(String label, CypherEntity entity);
-    protected abstract Query<T> getDeleteQuery(Long id);
+    protected abstract Query<C> getIdQuery();
+    protected abstract Query<C> getInitialQuery(String label, Entity<T> entity);
+    protected abstract Query<C> getDeleteQuery(Long id);
 
 }

@@ -1,21 +1,22 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.common.Query;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RedisCreateGeneratorTests {
+public class RedisCreateGeneratorTests extends RedisSchemaGenerator {
 
     @Test
     void testCreateEntities() {
         while (true) {
             try {
-                CypherSchema schema = CypherSchema.generateRandomSchema(RedisExpressionGenerator.supportedTypes);
+                Schema<RedisType> schema = makeSchema();
                 Query<?> query = RedisCreateGenerator.createEntities(schema);
 
                 assertNotNull(query);

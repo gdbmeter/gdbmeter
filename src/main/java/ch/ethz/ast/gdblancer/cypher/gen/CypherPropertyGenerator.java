@@ -2,32 +2,31 @@ package ch.ethz.ast.gdblancer.cypher.gen;
 
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class CypherPropertyGenerator {
+public abstract class CypherPropertyGenerator<T> {
 
-    private final CypherEntity entity;
-    private final Map<String, CypherEntity> variables;
+    private final Entity<T> entity;
+    private final Map<String, Entity<T>> variables;
     private final StringBuilder query = new StringBuilder();
 
-    protected CypherPropertyGenerator(CypherEntity entity) {
+    protected CypherPropertyGenerator(Entity<T> entity) {
         this.entity = entity;
         this.variables = new HashMap<>();
     }
 
-    protected CypherPropertyGenerator(CypherEntity entity, Map<String, CypherEntity> variables) {
+    protected CypherPropertyGenerator(Entity<T> entity, Map<String, Entity<T>> variables) {
         this.entity = entity;
         this.variables = variables;
     }
 
     public String generateProperties() {
-        Map<String, CypherType> availableProperties = entity.getAvailableProperties();
+        Map<String, T> availableProperties = entity.getAvailableProperties();
         Set<String> selectedProperties = Randomization.nonEmptySubset(availableProperties.keySet());
 
         if (selectedProperties.isEmpty()) {
@@ -48,7 +47,7 @@ public abstract class CypherPropertyGenerator {
         return query.toString();
     }
 
-    private void generateProperty(String name, CypherType type) {
+    private void generateProperty(String name, T type) {
         query.append(String.format("%s:", name));
 
         CypherExpression expression;
@@ -62,7 +61,7 @@ public abstract class CypherPropertyGenerator {
         query.append(CypherVisitor.asString(expression));
     }
 
-    protected abstract CypherExpression generateConstant(CypherType type);
-    protected abstract CypherExpression generateExpression(Map<String, CypherEntity> variables, CypherType type);
+    protected abstract CypherExpression generateConstant(T type);
+    protected abstract CypherExpression generateExpression(Map<String, Entity<T>> variables, T type);
 
 }

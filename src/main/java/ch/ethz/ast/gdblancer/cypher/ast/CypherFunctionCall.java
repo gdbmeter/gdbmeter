@@ -1,8 +1,5 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
-import ch.ethz.ast.gdblancer.util.Randomization;
-
 public class CypherFunctionCall implements CypherExpression {
 
     private final CypherFunctionDescription function;

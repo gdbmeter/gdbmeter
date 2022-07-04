@@ -3,24 +3,24 @@ package ch.ethz.ast.gdblancer.neo4j.oracle;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherExpression;
 import ch.ethz.ast.gdblancer.cypher.oracle.CypherPartitionOracle;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 
 import java.util.Map;
 
-public class Neo4JPartitionOracle extends CypherPartitionOracle<Neo4JConnection> {
+public class Neo4JPartitionOracle extends CypherPartitionOracle<Neo4JConnection, Neo4JType> {
 
     private final ExpectedErrors errors = new ExpectedErrors();
 
-    public Neo4JPartitionOracle(GlobalState<Neo4JConnection> state, CypherSchema schema) {
+    public Neo4JPartitionOracle(GlobalState<Neo4JConnection> state, Schema<Neo4JType> schema) {
         super(state, schema);
 
         Neo4JUtil.addRegexErrors(errors);
@@ -29,8 +29,8 @@ public class Neo4JPartitionOracle extends CypherPartitionOracle<Neo4JConnection>
     }
 
     @Override
-    protected CypherExpression getWhereClause(CypherEntity entity) {
-        return Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN);
+    protected CypherExpression getWhereClause(Entity<Neo4JType> entity) {
+        return Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN);
     }
 
     @Override

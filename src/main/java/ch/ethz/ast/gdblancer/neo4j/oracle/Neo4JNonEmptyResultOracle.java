@@ -3,21 +3,21 @@ package ch.ethz.ast.gdblancer.neo4j.oracle;
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
 import ch.ethz.ast.gdblancer.cypher.oracle.CypherNonEmptyResultOracle;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherEntity;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherSchema;
-import ch.ethz.ast.gdblancer.cypher.schema.CypherType;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JUtil;
 import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
+import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 
 import java.util.Map;
 
-public class Neo4JNonEmptyResultOracle extends CypherNonEmptyResultOracle<Neo4JConnection> {
+public class Neo4JNonEmptyResultOracle extends CypherNonEmptyResultOracle<Neo4JConnection, Neo4JType> {
 
-    public Neo4JNonEmptyResultOracle(GlobalState<Neo4JConnection> state, CypherSchema schema) {
+    public Neo4JNonEmptyResultOracle(GlobalState<Neo4JConnection> state, Schema<Neo4JType> schema) {
         super(state, schema);
     }
 
@@ -27,7 +27,7 @@ public class Neo4JNonEmptyResultOracle extends CypherNonEmptyResultOracle<Neo4JC
     }
 
     @Override
-    protected Query<Neo4JConnection> getInitialQuery(String label, CypherEntity entity) {
+    protected Query<Neo4JConnection> getInitialQuery(String label, Entity<Neo4JType> entity) {
         ExpectedErrors errors = new ExpectedErrors();
 
         Neo4JUtil.addRegexErrors(errors);
@@ -36,7 +36,7 @@ public class Neo4JNonEmptyResultOracle extends CypherNonEmptyResultOracle<Neo4JC
 
         String query = String.format("MATCH (n:%s) WHERE %s RETURN id(n)",
                 label,
-                CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), CypherType.BOOLEAN)));
+                CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN)));
 
         return new Neo4JQuery(query, errors);
     }
