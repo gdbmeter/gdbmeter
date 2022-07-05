@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer;
 
 import ch.ethz.ast.gdblancer.common.*;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.JanusProvider;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JProvider;
 import ch.ethz.ast.gdblancer.redis.RedisProvider;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -13,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
-            System.out.println("Use 0/1 as the first parameter");
+            System.out.println("Use 0/1/2 as the first parameter");
             System.exit(0);
         }
 
@@ -27,6 +28,9 @@ public class Main {
                 break;
             case 1:
                 provider = new RedisProvider();
+                break;
+            case 2:
+                provider = new JanusProvider();
                 break;
             default:
                 System.out.println("Unknown option, use 0 or 1");
@@ -51,11 +55,15 @@ public class Main {
                 state.setConnection(connection);
 
                 Schema<T> schema = provider.getSchema();
-
-                Oracle oracle = factory.createOracle(oracleType, state, schema);
-                oracle.onGenerate();
+                Oracle oracle = null;
+                // Oracle oracle = factory.createOracle(oracleType, state, schema);
+                // oracle.onGenerate();
 
                 provider.getGenerator(schema).generate(state);
+                if (true) {
+                    continue;
+                }
+
                 state.getLogger().info("Running oracle");
 
                 try {
