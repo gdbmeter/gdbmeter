@@ -31,7 +31,7 @@ public class JanusConnection implements Connection {
         bindings.putIfAbsent("g", traversal);
 
         executor = GremlinExecutor.build()
-                .evaluationTimeout(2000L)
+                .evaluationTimeout(3000L)
                 .globalBindings(bindings)
                 .create();
     }
