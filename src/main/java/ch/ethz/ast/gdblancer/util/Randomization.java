@@ -122,7 +122,7 @@ public class Randomization {
         return getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\");
     }
 
-    public static Object getCharacter() {
+    public static char getCharacter() {
         return getCharacterFromAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\");
     }
 }
