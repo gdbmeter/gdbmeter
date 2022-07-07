@@ -123,7 +123,9 @@ public class RedisRefinementOracle implements Oracle {
                             // Floating point numbers are truncated by RedisGraph
                             // this means we have to compare the string representation instead
                             // See: https://github.com/RedisGraph/RedisGraph/issues/2417
-                            expectedConstant = new CypherConstant.StringConstant(String.format("%f", value));
+
+                            Double refinedValue = (Double) value;
+                            expectedConstant = new CypherConstant.StringConstant(String.format("%f", refinedValue));
                             CypherVariablePropertyAccess access = new CypherVariablePropertyAccess(String.format("n%d.%s", current, key));
                             CypherFunctionCall functionCall = new CypherFunctionCall(RedisFunction.TO_STRING, new CypherExpression[]{access});
 
