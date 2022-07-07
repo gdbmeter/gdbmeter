@@ -29,7 +29,7 @@ public class RedisGenerator implements Generator<RedisConnection> {
     }
 
     private static int mapAction(Action action) {
-        int selectedNumber = 0;
+        int selectedNumber;
 
         switch (action) {
             case CREATE:
