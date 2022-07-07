@@ -3,10 +3,6 @@ package ch.ethz.ast.gdblancer.janus;
 import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JConnection;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.gen.*;
-import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 

@@ -3,8 +3,6 @@ package ch.ethz.ast.gdblancer.janus;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.util.Randomization;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Set;
 
@@ -34,6 +32,8 @@ public class JanusCreateGenerator {
                     throw new AssertionError(type);
             }
         }
+
+        query.append(".next()");
 
         return new JanusQuery(query.toString());
     }

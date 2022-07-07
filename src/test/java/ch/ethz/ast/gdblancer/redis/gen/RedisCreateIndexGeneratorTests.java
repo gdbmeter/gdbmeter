@@ -5,8 +5,6 @@ import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RedisCreateIndexGeneratorTests extends RedisSchemaGenerator {

@@ -1,7 +1,6 @@
 package ch.ethz.ast.gdblancer.redis.gen;
 
 import ch.ethz.ast.gdblancer.common.schema.Entity;
-import ch.ethz.ast.gdblancer.redis.ast.RedisExpressionGenerator;
 import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
