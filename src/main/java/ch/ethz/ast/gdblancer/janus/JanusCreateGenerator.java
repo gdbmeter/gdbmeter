@@ -18,19 +18,41 @@ public class JanusCreateGenerator {
         for (String property : selectedProperties) {
             JanusType type = entity.getAvailableProperties().get(property);
 
+            Object value;
+
             switch (type) {
                 case STRING:
-                    query.append(String.format(".property('%s', '%s')", property, escape(Randomization.getString())));
+                    value = escape(Randomization.getString());
                     break;
                 case CHARACTER:
-                    query.append(String.format(".property('%s', '%s')", property, escape("" + Randomization.getCharacter())));
+                    value = escape("" + Randomization.getCharacter());
                     break;
                 case BOOLEAN:
-                    query.append(String.format(".property('%s', '%s')", property, Randomization.getBoolean()));
+                    value = Randomization.getBoolean();
+                    break;
+                case BYTE:
+                    value = Randomization.getByte();
+                    break;
+                case SHORT:
+                    value = Randomization.getShort();
+                    break;
+                case INTEGER:
+                    value = Randomization.nextInt();
+                    break;
+                case LONG:
+                    value = Randomization.getInteger();
+                    break;
+                case FLOAT:
+                    value = Randomization.nextFloat();
+                    break;
+                case DOUBLE:
+                    value = Randomization.getDouble();
                     break;
                 default:
                     throw new AssertionError(type);
             }
+
+            query.append(String.format(".property('%s', '%s')", property, value));
         }
 
         query.append(".next()");

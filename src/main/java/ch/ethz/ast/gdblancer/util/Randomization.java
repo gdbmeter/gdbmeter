@@ -15,6 +15,26 @@ public class Randomization {
         return random.nextInt(lower, upper);
     }
 
+    public static int nextInt() {
+        return random.nextInt();
+    }
+
+    public static short getShort() {
+        if (smallBiasProbability()) {
+            return Randomization.fromOptions((short) 0, Short.MAX_VALUE, Short.MIN_VALUE);
+        }
+
+        return (short) random.nextInt(Short.MAX_VALUE + 1);
+    }
+
+    public static byte getByte() {
+        if (smallBiasProbability()) {
+            return Randomization.fromOptions((byte) 0, Byte.MAX_VALUE, Byte.MIN_VALUE);
+        }
+
+        return (byte) random.nextInt(Byte.MAX_VALUE + 1);
+    }
+
     public static float nextFloat() {
         return random.nextFloat();
     }
