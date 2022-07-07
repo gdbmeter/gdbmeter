@@ -16,7 +16,7 @@ public class CypherReturnGenerator<T> {
     }
 
     public static <E> String returnEntities(Map<String, Entity<E>> entities) {
-        CypherReturnGenerator generator = new CypherReturnGenerator<E>(entities);
+        CypherReturnGenerator<E> generator = new CypherReturnGenerator<>(entities);
         generator.generateReturn();
 
         if (Randomization.getBoolean()) {

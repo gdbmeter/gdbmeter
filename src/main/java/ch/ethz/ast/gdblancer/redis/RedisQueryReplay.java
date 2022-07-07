@@ -4,7 +4,6 @@ import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.QueryReplay;
 
-import java.io.IOException;
 import java.util.List;
 
 public class RedisQueryReplay extends QueryReplay {
@@ -25,8 +24,6 @@ public class RedisQueryReplay extends QueryReplay {
             for (String query : queries) {
                 new RedisQuery(query, errors).execute(state);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

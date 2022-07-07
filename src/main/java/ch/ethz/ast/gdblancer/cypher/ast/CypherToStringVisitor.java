@@ -5,7 +5,7 @@ public class CypherToStringVisitor implements CypherVisitor {
     private final StringBuilder sb = new StringBuilder();
 
     @Override
-    public void visit(BinaryOperatorNode<CypherExpression, ?> operation) {
+    public void visit(BinaryOperatorNode<? extends CypherExpression, ?> operation) {
         sb.append("(");
         visit(operation.getLeft());
         sb.append(")");
@@ -25,7 +25,7 @@ public class CypherToStringVisitor implements CypherVisitor {
     }
 
     @Override
-    public void visit(CypherFunctionCall functionCall) {
+    public void visit(CypherFunctionCall<?> functionCall) {
         sb.append(functionCall.getFunctionName());
         sb.append("(");
 

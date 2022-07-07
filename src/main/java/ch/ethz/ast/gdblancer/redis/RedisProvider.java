@@ -23,7 +23,7 @@ public class RedisProvider implements Provider<RedisConnection, RedisType> {
     }
 
     @Override
-    public Generator<RedisConnection> getGenerator(Schema schema) {
+    public Generator<RedisConnection> getGenerator(Schema<RedisType> schema) {
         return new RedisGenerator(schema);
     }
 

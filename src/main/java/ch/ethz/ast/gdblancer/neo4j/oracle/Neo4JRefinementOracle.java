@@ -133,7 +133,7 @@ public class Neo4JRefinementOracle implements Oracle {
                             } else if (Double.isNaN(refinedFloat)) {
                                 // NaN == NaN is always false
                                 // Therefore we use toString(n.p) == "NaN" which should work
-                                CypherExpression toString = new CypherFunctionCall(Neo4JFunction.TO_STRING, new CypherVariablePropertyAccess[]{new CypherVariablePropertyAccess(String.format("n%d.%s", current, key))});
+                                CypherExpression toString = new CypherFunctionCall<>(Neo4JFunction.TO_STRING, new CypherVariablePropertyAccess[]{new CypherVariablePropertyAccess(String.format("n%d.%s", current, key))});
                                 CypherExpression expectedString = new CypherConstant.StringConstant("NaN");
                                 CypherExpression branch = new CypherBinaryComparisonOperation(toString, expectedString, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
                                 refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);

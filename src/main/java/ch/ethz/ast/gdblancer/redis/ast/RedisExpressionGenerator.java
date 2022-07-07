@@ -16,9 +16,9 @@ import java.util.stream.Stream;
 public class RedisExpressionGenerator {
     
     private static final int MAX_DEPTH = 3;
-    private final Map<String, Entity> variables;
+    private final Map<String, Entity<RedisType>> variables;
 
-    public RedisExpressionGenerator(Map<String, Entity> variables) {
+    public RedisExpressionGenerator(Map<String, Entity<RedisType>> variables) {
         this.variables = variables;
     }
 
@@ -203,11 +203,11 @@ public class RedisExpressionGenerator {
         return generateExpressionInternal(depth, type);
     }
 
-    public static CypherExpression generateExpression(Map<String, Entity> variables, RedisType type) {
+    public static CypherExpression generateExpression(Map<String, Entity<RedisType>> variables, RedisType type) {
         return new RedisExpressionGenerator(variables).generateExpression(0, type);
     }
 
-    public static CypherExpression generateExpression(Map<String, Entity> variables) {
+    public static CypherExpression generateExpression(Map<String, Entity<RedisType>> variables) {
         return generateExpression(variables, RedisType.getRandom());
     }
 
@@ -255,7 +255,7 @@ public class RedisExpressionGenerator {
         }
     }
 
-    private CypherFunctionCall generateFunction(int depth, RedisType returnType) {
+    private CypherFunctionCall<RedisType> generateFunction(int depth, RedisType returnType) {
         List<RedisFunction> functions = Stream.of(RedisFunction.values())
                 .filter(function -> function.supportReturnType(returnType))
                 .collect(Collectors.toList());
@@ -277,7 +277,7 @@ public class RedisExpressionGenerator {
             arguments[i] = generateExpression(depth + 1, argumentTypes[i]);
         }
 
-        return new CypherFunctionCall(chosenFunction, arguments);
+        return new CypherFunctionCall<>(chosenFunction, arguments);
     }
 
 }
