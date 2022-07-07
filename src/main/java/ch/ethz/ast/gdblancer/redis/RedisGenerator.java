@@ -4,6 +4,7 @@ import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.redis.gen.*;
+import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -21,15 +22,15 @@ public class RedisGenerator implements Generator<RedisConnection> {
         SET(RedisSetGenerator::setProperties),
         DELETE(RedisDeleteGenerator::deleteNodes);
 
-        private final Function<Schema, RedisQuery> generator;
+        private final Function<Schema<RedisType>, RedisQuery> generator;
 
-        Action(Function<Schema, RedisQuery> generator) {
+        Action(Function<Schema<RedisType>, RedisQuery> generator) {
             this.generator = generator;
         }
     }
 
     private static int mapAction(Action action) {
-        int selectedNumber = 0;
+        int selectedNumber;
 
         switch (action) {
             case CREATE:
@@ -53,15 +54,15 @@ public class RedisGenerator implements Generator<RedisConnection> {
         return selectedNumber;
     }
 
-    private final Schema schema;
+    private final Schema<RedisType> schema;
 
-    public RedisGenerator(Schema schema) {
+    public RedisGenerator(Schema<RedisType> schema) {
         this.schema = schema;
     }
 
     @Override
     public void generate(GlobalState<RedisConnection> globalState) {
-        List<Function<Schema, RedisQuery>> queries = new ArrayList<>();
+        List<Function<Schema<RedisType>, RedisQuery>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -74,7 +75,7 @@ public class RedisGenerator implements Generator<RedisConnection> {
 
         Randomization.shuffleList(queries);
 
-        for (Function<Schema, RedisQuery> queryGenerator : queries) {
+        for (Function<Schema<RedisType>, RedisQuery> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;

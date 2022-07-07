@@ -2,7 +2,6 @@ package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.common.StringQuery;
 
 import java.util.List;

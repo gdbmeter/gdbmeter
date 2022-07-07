@@ -33,7 +33,7 @@ public class Schema<T> {
             relationshipSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes));
         }
 
-        return new Schema<E>(nodeSchema, relationshipSchema);
+        return new Schema<>(nodeSchema, relationshipSchema);
     }
 
     public void setIndices(Set<String> indices) {

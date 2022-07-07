@@ -117,12 +117,10 @@ public class Neo4JRefinementOracle implements Oracle {
                             expectedConstant = new CypherConstant.BooleanConstant((Boolean) value);
                             break;
                         case FLOAT:
-                            expectedConstant = new CypherConstant.FloatConstant((Double) value);
-
-                            Double refinedFloat = (Double) value;
+                            double refinedFloat = (Double) value;
 
                             // Handle special cases such as Infinity and NaN which aren't supported in Neo4J directly
-                            if (refinedFloat.isInfinite()) {
+                            if (Double.isInfinite(refinedFloat)) {
                                 if (refinedFloat > 0) {
                                     expectedConstant = new CypherBinaryArithmeticOperation(new CypherConstant.FloatConstant(1.0D),
                                             new CypherConstant.FloatConstant(0.0D),
@@ -132,10 +130,10 @@ public class Neo4JRefinementOracle implements Oracle {
                                             new CypherConstant.FloatConstant(0.0D),
                                             CypherBinaryArithmeticOperation.ArithmeticOperator.DIVISION);
                                 }
-                            } else if (refinedFloat.isNaN()) {
+                            } else if (Double.isNaN(refinedFloat)) {
                                 // NaN == NaN is always false
                                 // Therefore we use toString(n.p) == "NaN" which should work
-                                CypherExpression toString = new CypherFunctionCall(Neo4JFunction.TO_STRING, new CypherVariablePropertyAccess[]{new CypherVariablePropertyAccess(String.format("n%d.%s", current, key))});
+                                CypherExpression toString = new CypherFunctionCall<>(Neo4JFunction.TO_STRING, new CypherVariablePropertyAccess[]{new CypherVariablePropertyAccess(String.format("n%d.%s", current, key))});
                                 CypherExpression expectedString = new CypherConstant.StringConstant("NaN");
                                 CypherExpression branch = new CypherBinaryComparisonOperation(toString, expectedString, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
                                 refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);

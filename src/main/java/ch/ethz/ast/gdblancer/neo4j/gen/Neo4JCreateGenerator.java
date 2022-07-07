@@ -18,7 +18,7 @@ public class Neo4JCreateGenerator extends CypherCreateGenerator<Neo4JType> {
     }
 
     @Override
-    protected CypherPropertyGenerator getPropertyGenerator(Entity<Neo4JType> entity, Map<String, Entity<Neo4JType>> variables) {
+    protected CypherPropertyGenerator<Neo4JType> getPropertyGenerator(Entity<Neo4JType> entity, Map<String, Entity<Neo4JType>> variables) {
         return new Neo4JPropertyGenerator(entity, variables);
     }
 

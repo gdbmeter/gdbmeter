@@ -18,7 +18,7 @@ public class RedisCreateGenerator extends CypherCreateGenerator<RedisType> {
     }
 
     @Override
-    protected CypherPropertyGenerator getPropertyGenerator(Entity<RedisType> entity, Map<String, Entity<RedisType>> variables) {
+    protected CypherPropertyGenerator<RedisType> getPropertyGenerator(Entity<RedisType> entity, Map<String, Entity<RedisType>> variables) {
         return new RedisPropertyGenerator(entity, variables);
     }
 

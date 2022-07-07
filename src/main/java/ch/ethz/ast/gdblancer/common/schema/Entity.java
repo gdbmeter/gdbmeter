@@ -29,7 +29,7 @@ public class Entity<T> {
             availableProperties.put(CypherUtil.generateValidName(), Randomization.fromSet(availableTypes));
         }
 
-        return new Entity<E>(availableProperties);
+        return new Entity<>(availableProperties);
     }
 
     public Map<String, T> getAvailableProperties() {

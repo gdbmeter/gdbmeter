@@ -60,7 +60,7 @@ public class SchemaTests {
     void testGetEntityByLabel() {
         Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String label = schema.getRandomLabel();
-        Entity entity = schema.getEntityByLabel(label);
+        Entity<String> entity = schema.getEntityByLabel(label);
 
         assertNotNull(entity);
     }
@@ -69,7 +69,7 @@ public class SchemaTests {
     void testGetEntityByType() {
         Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String type = schema.getRandomType();
-        Entity entity = schema.getEntityByType(type);
+        Entity<String> entity = schema.getEntityByType(type);
 
         assertNotNull(entity);
     }

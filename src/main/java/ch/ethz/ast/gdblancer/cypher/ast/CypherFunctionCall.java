@@ -1,11 +1,11 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
-public class CypherFunctionCall implements CypherExpression {
+public class CypherFunctionCall<T> implements CypherExpression {
 
-    private final CypherFunctionDescription function;
+    private final CypherFunctionDescription<T> function;
     private final CypherExpression[] arguments;
 
-    public CypherFunctionCall(CypherFunctionDescription function,
+    public CypherFunctionCall(CypherFunctionDescription<T> function,
                               CypherExpression[] arguments) {
         this.function = function;
         this.arguments = arguments;
