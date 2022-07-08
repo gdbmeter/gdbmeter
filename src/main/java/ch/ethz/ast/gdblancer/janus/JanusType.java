@@ -3,6 +3,7 @@ package ch.ethz.ast.gdblancer.janus;
 public enum JanusType {
 
     STRING,
+    // TODO: Find out how to properly insert chars
     // CHARACTER,
     BOOLEAN,
     BYTE,

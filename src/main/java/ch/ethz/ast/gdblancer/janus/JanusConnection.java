@@ -26,6 +26,9 @@ public class JanusConnection implements Connection {
         PropertiesConfiguration conf = ConfigurationUtil.loadPropertiesConfig("conf/test.properties");
         graph = GraphFactory.open(conf);
 
+        // This is a workaround to be able to use strings as queries
+        // An alternative approach would be to create an AST of a query and then map it to the functional Gremlin API
+        // However, in that case we also need to provide a toString() version so that we can reproduce bugs
         ConcurrentBindings bindings = new ConcurrentBindings();
         traversal = graph.traversal();
         bindings.putIfAbsent("g", traversal);
