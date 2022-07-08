@@ -9,13 +9,35 @@ import java.util.UUID;
 
 public class JanusCreateGenerator {
 
+    private final Schema<JanusType> schema;
+    private final StringBuilder query = new StringBuilder();
+
     private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\r|&\\";
+
+    public JanusCreateGenerator(Schema<JanusType> schema) {
+        this.schema = schema;
+    }
+
     public static JanusQuery createEntities(Schema<JanusType> schema) {
+        return new JanusCreateGenerator(schema).generateAddV();
+    }
+
+    private JanusQuery generateAddV() {
+        query.append("g");
+
+        for (int i = 0; i < Randomization.nextInt(1, 6); i++) {
+            generateNode();
+        }
+
+        return new JanusQuery(query.toString());
+    }
+
+    private void generateNode() {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
         Set<String> selectedProperties = Randomization.nonEmptySubset(entity.getAvailableProperties().keySet());
 
-        StringBuilder query = new StringBuilder(String.format("g.addV('%s')", label));
+        query.append(String.format(".addV('%s')", label));
 
         for (String property : selectedProperties) {
             JanusType type = entity.getAvailableProperties().get(property);
@@ -56,10 +78,6 @@ public class JanusCreateGenerator {
 
             query.append(")");
         }
-
-        query.append(".next()");
-
-        return new JanusQuery(query.toString());
     }
 
     private static String escape(String original) {
@@ -101,7 +119,6 @@ public class JanusCreateGenerator {
         }
 
         return sb.toString();
-
     }
 
 }
