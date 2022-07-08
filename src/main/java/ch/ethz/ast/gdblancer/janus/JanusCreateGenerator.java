@@ -5,9 +5,11 @@ import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class JanusCreateGenerator {
 
+    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\r|&\\";
     public static JanusQuery createEntities(Schema<JanusType> schema) {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
@@ -18,41 +20,41 @@ public class JanusCreateGenerator {
         for (String property : selectedProperties) {
             JanusType type = entity.getAvailableProperties().get(property);
 
-            Object value;
+            query.append(String.format(".property('%s', ", property));
 
             switch (type) {
                 case STRING:
-                    value = escape(Randomization.getString());
-                    break;
-                case CHARACTER:
-                    value = escape("" + Randomization.getCharacter());
+                    query.append(String.format("\"%s\"", escape(Randomization.getStringOfAlphabet(ALPHABET))));
                     break;
                 case BOOLEAN:
-                    value = Randomization.getBoolean();
+                    query.append(Randomization.getBoolean() ? "true" : "false");
                     break;
                 case BYTE:
-                    value = Randomization.getByte();
+                    query.append(String.format("(byte) %s", Randomization.getByte()));
                     break;
                 case SHORT:
-                    value = Randomization.getShort();
+                    query.append(String.format("(short) %s", Randomization.getShort()));
                     break;
                 case INTEGER:
-                    value = Randomization.nextInt();
+                    query.append(String.format("(int) %s", Randomization.nextInt()));
                     break;
                 case LONG:
-                    value = Randomization.getInteger();
+                    query.append(String.format("%sL", Randomization.getInteger()));
                     break;
                 case FLOAT:
-                    value = Randomization.nextFloat();
+                    query.append(String.format("%sf", Randomization.nextFloat()));
                     break;
                 case DOUBLE:
-                    value = Randomization.getDouble();
+                    query.append(String.format("%sd", Randomization.getDouble()));
+                    break;
+                case UUID:
+                    query.append(String.format("UUID.fromString('%s')", UUID.randomUUID()));
                     break;
                 default:
                     throw new AssertionError(type);
             }
 
-            query.append(String.format(".property('%s', '%s')", property, value));
+            query.append(")");
         }
 
         query.append(".next()");
