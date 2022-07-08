@@ -5,6 +5,8 @@ import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,7 +18,7 @@ public class RedisPropertyGeneratorTests {
     void testGenerateProperties() {
         while (true) {
             try {
-                Entity<RedisType> entity = Entity.generateRandomEntity(Set.of(RedisType.values()));
+                Entity<RedisType> entity = Entity.generateRandomEntity(Set.of(RedisType.values()), new HashSet<>());
 
                 String query = new RedisPropertyGenerator(entity).generateProperties();
                 assertNotNull(query);

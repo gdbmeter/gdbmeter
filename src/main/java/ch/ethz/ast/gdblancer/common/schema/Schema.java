@@ -21,16 +21,21 @@ public class Schema<T> {
         this.indices = new HashSet<>();
     }
 
+    /**
+     * Generates a random schema and uses the CypherUtil to generate valid names.
+     * Property and label names are unique to avoid schema problems.
+     */
     public static <E> Schema<E> generateRandomSchema(Set<E> availableTypes) {
         Map<String, Entity<E>> nodeSchema = new HashMap<>();
         Map<String, Entity<E>> relationshipSchema = new HashMap<>();
+        Set<String> takenNames = new HashSet<>();
 
         for (int i = 0; i < Randomization.nextInt(3, 10); i++) {
-            nodeSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes));
+            nodeSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes, takenNames));
         }
 
         for (int i = 0; i < Randomization.nextInt(3, 4); i++) {
-            relationshipSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes));
+            relationshipSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes, takenNames));
         }
 
         return new Schema<>(nodeSchema, relationshipSchema);

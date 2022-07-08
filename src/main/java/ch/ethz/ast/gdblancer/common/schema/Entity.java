@@ -3,6 +3,7 @@ package ch.ethz.ast.gdblancer.common.schema;
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,12 +22,20 @@ public class Entity<T> {
 
     /**
      * Generates a cypher entity based on a set of available types.
+     * The property names are enforced to be unique by consulting takenNames.
      */
-    public static <E> Entity<E> generateRandomEntity(Set<E> availableTypes) {
+    public static <E> Entity<E> generateRandomEntity(Set<E> availableTypes, Set<String> takenNames) {
         Map<String, E> availableProperties = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(1, 6); i++) {
-            availableProperties.put(CypherUtil.generateValidName(), Randomization.fromSet(availableTypes));
+            String name;
+
+            do {
+                name = CypherUtil.generateValidName();
+            } while (takenNames.contains(name));
+
+            takenNames.add(name);
+            availableProperties.put(name, Randomization.fromSet(availableTypes));
         }
 
         return new Entity<>(availableProperties);
