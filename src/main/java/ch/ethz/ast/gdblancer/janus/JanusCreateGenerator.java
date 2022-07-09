@@ -48,6 +48,9 @@ public class JanusCreateGenerator {
                 case STRING:
                     query.append(String.format("\"%s\"", escape(Randomization.getStringOfAlphabet(ALPHABET))));
                     break;
+                case CHARACTER:
+                    query.append(String.format("(char) %s", Randomization.nextInt(0, Character.MAX_VALUE + 1)));
+                    break;
                 case BOOLEAN:
                     query.append(Randomization.getBoolean() ? "true" : "false");
                     break;
