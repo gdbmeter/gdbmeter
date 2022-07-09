@@ -31,8 +31,9 @@ public class JanusConnection implements Connection {
         // However, in that case we also need to provide a toString() version so that we can reproduce bugs
         ConcurrentBindings bindings = new ConcurrentBindings();
         traversal = graph.traversal();
-        bindings.putIfAbsent("g", traversal);
+        bindings.put("g", traversal);
 
+        // TODO: Maybe set the executorService to 1 at this point to avoid having to commit the transaction all the time
         executor = GremlinExecutor.build()
                 .evaluationTimeout(3000L)
                 .globalBindings(bindings)
@@ -49,6 +50,8 @@ public class JanusConnection implements Connection {
     public List<Map<String, Object>> execute(JanusQuery query) throws ExecutionException, InterruptedException {
         CompletableFuture<Object> future = executor.eval(query.getQuery());
         future.get();
+
+        executor.eval("g.tx().commit()").get();
         return null;
     }
 }
