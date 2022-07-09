@@ -2,8 +2,11 @@ package ch.ethz.ast.gdblancer.janus;
 
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,6 +14,7 @@ public class JanusCreateGenerator {
 
     private final Schema<JanusType> schema;
     private final StringBuilder query = new StringBuilder();
+    private final Set<String> nodeVariables = new HashSet<>();
 
     private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\r|&\\";
 
@@ -29,6 +33,16 @@ public class JanusCreateGenerator {
             generateNode();
         }
 
+        for (String from : nodeVariables) {
+            for (String to : nodeVariables) {
+                if (Randomization.getBoolean()) {
+                    generateEdge(from, to);
+                }
+            }
+        }
+
+        query.append(".next()");
+
         return new JanusQuery(query.toString());
     }
 
@@ -39,8 +53,17 @@ public class JanusCreateGenerator {
 
         query.append(String.format(".addV('%s')", label));
 
-        for (String property : selectedProperties) {
-            JanusType type = entity.getAvailableProperties().get(property);
+        generateProperties(selectedProperties, entity.getAvailableProperties());
+
+        String name = getUniqueVariableName();
+        nodeVariables.add(name);
+
+        query.append(String.format(".as('%s')", name));
+    }
+
+    private void generateProperties(Set<String> properties, Map<String, JanusType> types) {
+        for (String property : properties) {
+            JanusType type = types.get(property);
 
             query.append(String.format(".property('%s', ", property));
 
@@ -81,6 +104,28 @@ public class JanusCreateGenerator {
 
             query.append(")");
         }
+    }
+
+    private void generateEdge(String from, String to) {
+        String type = schema.getRandomType();
+        Entity<JanusType> entity = schema.getEntityByType(type);
+        Set<String> selectedProperties = Randomization.nonEmptySubset(entity.getAvailableProperties().keySet());
+
+        query.append(String.format(".addE('%s')", type));
+        query.append(String.format(".from('%s')", from));
+        query.append(String.format(".to('%s')", to));
+
+        generateProperties(selectedProperties, entity.getAvailableProperties());
+    }
+
+    private String getUniqueVariableName() {
+        String name;
+
+        do {
+            name = CypherUtil.generateValidName();
+        } while (nodeVariables.contains(name));
+
+        return name;
     }
 
     private static String escape(String original) {
