@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 public class JanusConnection implements Connection {
 
@@ -33,10 +34,12 @@ public class JanusConnection implements Connection {
         traversal = graph.traversal();
         bindings.put("g", traversal);
 
-        // TODO: Maybe set the executorService to 1 at this point to avoid having to commit the transaction all the time
         executor = GremlinExecutor.build()
                 .evaluationTimeout(3000L)
                 .globalBindings(bindings)
+                // this makes sure that all queries are executed in the same thread
+                // it seems to prevent PermanentLockingExceptions
+                .executorService(Executors.newFixedThreadPool(1))
                 .create();
     }
 
@@ -51,6 +54,8 @@ public class JanusConnection implements Connection {
         CompletableFuture<Object> future = executor.eval(query.getQuery());
         future.get();
 
+        // This is technically not necessary since we run all queries in the same transaction.
+        // But it's still necessary when querying properties of our graph from a different thread or client.
         executor.eval("g.tx().commit()").get();
         return null;
     }
