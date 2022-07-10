@@ -97,13 +97,7 @@ public class Schema<T> {
     }
 
     public String generateRandomIndexName() {
-        String name;
-
-        do {
-            name = CypherUtil.generateValidName();
-        } while (indices.contains(name));
-
-        return name;
+        return Randomization.generateUniqueElement(indices, CypherUtil::generateValidName);
     }
 
     private Map<String, Set<String>> getNodeSchemaByPropertyType(T type) {

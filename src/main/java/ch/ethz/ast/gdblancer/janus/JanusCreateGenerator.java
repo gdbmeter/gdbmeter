@@ -55,7 +55,7 @@ public class JanusCreateGenerator {
 
         generateProperties(selectedProperties, entity.getAvailableProperties());
 
-        String name = getUniqueVariableName();
+        String name = Randomization.generateUniqueElement(nodeVariables, CypherUtil::generateValidName);
         nodeVariables.add(name);
 
         query.append(String.format(".as('%s')", name));
@@ -116,16 +116,6 @@ public class JanusCreateGenerator {
         query.append(String.format(".to('%s')", to));
 
         generateProperties(selectedProperties, entity.getAvailableProperties());
-    }
-
-    private String getUniqueVariableName() {
-        String name;
-
-        do {
-            name = CypherUtil.generateValidName();
-        } while (nodeVariables.contains(name));
-
-        return name;
     }
 
     private static String escape(String original) {

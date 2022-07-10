@@ -3,7 +3,6 @@ package ch.ethz.ast.gdblancer.common.schema;
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,13 +27,9 @@ public class Entity<T> {
         Map<String, E> availableProperties = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(1, 6); i++) {
-            String name;
-
-            do {
-                name = CypherUtil.generateValidName();
-            } while (takenNames.contains(name));
-
+            String name = Randomization.generateUniqueElement(takenNames, CypherUtil::generateValidName);
             takenNames.add(name);
+
             availableProperties.put(name, Randomization.fromSet(availableTypes));
         }
 

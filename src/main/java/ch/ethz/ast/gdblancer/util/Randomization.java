@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer.util;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 public class Randomization {
 
@@ -145,4 +146,15 @@ public class Randomization {
     public static char getCharacter() {
         return getCharacterFromAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\");
     }
+
+    public static <E> E generateUniqueElement(Set<E> elements, Supplier<E> generator) {
+        E element;
+
+        do {
+            element = generator.get();
+        } while (elements.contains(element));
+
+        return element;
+    }
+
 }
