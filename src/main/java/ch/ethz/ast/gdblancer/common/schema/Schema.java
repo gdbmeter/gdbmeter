@@ -31,11 +31,19 @@ public class Schema<T> {
         Set<String> takenNames = new HashSet<>();
 
         for (int i = 0; i < Randomization.nextInt(3, 10); i++) {
-            nodeSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes, takenNames));
+            String name = Randomization.generateUniqueElement(takenNames, CypherUtil::generateValidName);
+            takenNames.add(name);
+            Entity<E> entity = Entity.generateRandomEntity(availableTypes, takenNames);
+
+            nodeSchema.put(name, entity);
         }
 
         for (int i = 0; i < Randomization.nextInt(3, 4); i++) {
-            relationshipSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes, takenNames));
+            String name = Randomization.generateUniqueElement(takenNames, CypherUtil::generateValidName);
+            takenNames.add(name);
+            Entity<E> entity = Entity.generateRandomEntity(availableTypes, takenNames);
+
+            relationshipSchema.put(name, entity);
         }
 
         return new Schema<>(nodeSchema, relationshipSchema);
