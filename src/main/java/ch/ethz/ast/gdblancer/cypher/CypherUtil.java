@@ -7,7 +7,9 @@ import java.util.Set;
 public class CypherUtil {
 
     private static final Set<String> KEYWORDS = Set.of(
-            "AND", "CONTAINS", "DISTINCT", "IN", "NOT", "OR", "XOR", "CASE", "WHERE", "FROM", "SHOW", "MATCH", "MERGE", "TRUE", "FALSE"
+            "AND", "CONTAINS", "DISTINCT", "IN", "NOT", "OR", "XOR", "CASE", "WHERE", "FROM", "SHOW", "MATCH", "MERGE", "TRUE", "FALSE",
+            // JanusGraph specific reserved names:
+            "KEY", "VERTEX", "EDGE", "ELEMENT", "PROPERTY", "LABEL"
     );
 
     /**
