@@ -142,11 +142,7 @@ public class Randomization {
     public static String getString() {
         return getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\");
     }
-
-    public static char getCharacter() {
-        return getCharacterFromAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\");
-    }
-
+    
     public static <E> E generateUniqueElement(Set<E> elements, Supplier<E> generator) {
         E element;
 
