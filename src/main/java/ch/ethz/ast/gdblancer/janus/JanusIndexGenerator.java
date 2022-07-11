@@ -31,9 +31,6 @@ public class JanusIndexGenerator {
             public boolean execute(GlobalState<JanusConnection> globalState) {
                 JanusConnection connection = globalState.getConnection();
                 JanusGraph graph = connection.getGraph();
-
-                graph.tx().rollback(); // just to be sure
-
                 JanusGraphManagement management = graph.openManagement();
 
                 try {
@@ -46,8 +43,6 @@ public class JanusIndexGenerator {
                             .buildCompositeIndex();
 
                     management.commit();
-                    graph.tx().commit();
-                    System.out.println(management.getOpenInstances());
 
                     // Wait for the index to be created
                     ManagementSystem.awaitGraphIndexStatus(graph, indexName).
@@ -58,7 +53,6 @@ public class JanusIndexGenerator {
                     management = graph.openManagement();
                     management.updateIndex(management.getGraphIndex(indexName), SchemaAction.REINDEX).get();
                     management.commit();
-                    graph.tx().commit();
                 } catch (InterruptedException | ExecutionException e) {
                     return false;
                 }
@@ -69,11 +63,6 @@ public class JanusIndexGenerator {
             @Override
             public List<Map<String, Object>> executeAndGet(GlobalState<JanusConnection> globalState) {
                 throw new NotSupportedException();
-            }
-
-            @Override
-            public String getQuery() {
-                return "Create index on label {}";
             }
         };
     }

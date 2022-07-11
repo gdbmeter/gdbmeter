@@ -10,6 +10,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphIndex;
+import org.janusgraph.core.schema.JanusGraphManagement;
 import org.janusgraph.util.system.ConfigurationUtil;
 
 import java.util.HashSet;
@@ -49,9 +50,6 @@ public class JanusConnection implements Connection {
 
     @Override
     public void close() throws Exception {
-        System.out.println(traversal.V().count().next());
-        System.out.println(traversal.E().count().next());
-
         executor.close();
         traversal.close();
         graph.close();
@@ -73,10 +71,15 @@ public class JanusConnection implements Connection {
 
     public Set<String> getIndexNames() {
         Set<String> names = new HashSet<>();
+        JanusGraphManagement management = graph.openManagement();
 
-        for (JanusGraphIndex index : graph.openManagement().getGraphIndexes(Vertex.class)) {
+        for (JanusGraphIndex index : management.getGraphIndexes(Vertex.class)) {
             names.add(index.name());
         }
+
+        // This is mandatory because otherwise we have an open transaction which causes
+        // problems when creating indices!
+        management.commit();
 
         return names;
     }

@@ -41,7 +41,6 @@ public class JanusGenerator implements Generator<JanusConnection> {
         switch (action) {
             case CREATE:
                 selectedNumber = Randomization.nextInt(20, 30);
-                selectedNumber = 0;
                 break;
             case CREATE_INDEX:
                 selectedNumber = Randomization.nextInt(3,  10);
