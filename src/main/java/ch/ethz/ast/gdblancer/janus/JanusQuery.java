@@ -2,27 +2,35 @@ package ch.ethz.ast.gdblancer.janus;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.StringQuery;
 
 import java.util.List;
 import java.util.Map;
 
-public class JanusQuery extends StringQuery<JanusConnection> {
+public class JanusQuery extends JanusQueryAdapter {
+
+    private final String query;
 
     public JanusQuery(String query) {
-        super(query);
+        this(query, new ExpectedErrors());
     }
 
     public JanusQuery(String query, boolean couldAffectSchema) {
-        super(query, couldAffectSchema);
+        this(query, new ExpectedErrors(), couldAffectSchema);
     }
 
     public JanusQuery(String query, ExpectedErrors expectedErrors) {
-        super(query, expectedErrors);
+        this(query, expectedErrors, false);
     }
 
     public JanusQuery(String query, ExpectedErrors expectedErrors, boolean couldAffectSchema) {
-        super(query, expectedErrors, couldAffectSchema);
+        super(expectedErrors, couldAffectSchema);
+
+        this.query = query;
+    }
+
+    @Override
+    public String getQuery() {
+        return query;
     }
 
     @Override

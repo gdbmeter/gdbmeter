@@ -20,13 +20,13 @@ import java.util.concurrent.ExecutionException;
 
 public class JanusIndexGenerator {
 
-    public static JanusQuery createIndex(Schema<JanusType> schema) {
+    public static JanusQueryAdapter createIndex(Schema<JanusType> schema) {
         Index index = schema.generateRandomNodeIndex();
         String label = index.getLabel();
         Set<String> properties = index.getPropertyNames();
         String indexName = schema.generateRandomIndexName();
 
-        return new JanusQuery("", true) {
+        return new JanusQueryAdapter(true) {
             @Override
             public boolean execute(GlobalState<JanusConnection> globalState) {
                 JanusConnection connection = globalState.getConnection();
@@ -58,6 +58,11 @@ public class JanusIndexGenerator {
                 }
 
                 return true;
+            }
+
+            @Override
+            public String getQuery() {
+                throw new NotSupportedException();
             }
 
             @Override

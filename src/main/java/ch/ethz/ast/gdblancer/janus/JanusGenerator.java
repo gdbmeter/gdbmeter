@@ -28,9 +28,9 @@ public class JanusGenerator implements Generator<JanusConnection> {
         // SET(Neo4JSetGenerator::setProperties),
         // REMOVE(Neo4JRemoveGenerator::removeProperties);
 
-        private final Function<Schema<JanusType>, JanusQuery> generator;
+        private final Function<Schema<JanusType>, JanusQueryAdapter> generator;
 
-        Action(Function<Schema<JanusType>, JanusQuery> generator) {
+        Action(Function<Schema<JanusType>, JanusQueryAdapter> generator) {
             this.generator = generator;
         }
     }
@@ -90,7 +90,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
 
     public void generate(GlobalState<JanusConnection> globalState) {
         createJanusSchema(globalState.getConnection().getGraph());
-        List<Function<Schema<JanusType>, JanusQuery>> queries = new ArrayList<>();
+        List<Function<Schema<JanusType>, JanusQueryAdapter>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -103,11 +103,11 @@ public class JanusGenerator implements Generator<JanusConnection> {
 
         Randomization.shuffleList(queries);
 
-        for (Function<Schema<JanusType>, JanusQuery> queryGenerator : queries) {
+        for (Function<Schema<JanusType>, JanusQueryAdapter> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;
-                JanusQuery query;
+                JanusQueryAdapter query;
 
                 do {
                     query = queryGenerator.apply(schema);
