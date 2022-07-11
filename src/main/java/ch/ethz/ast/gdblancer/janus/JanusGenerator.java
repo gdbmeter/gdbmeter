@@ -2,18 +2,31 @@ package ch.ethz.ast.gdblancer.janus;
 
 import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
+import org.janusgraph.core.Cardinality;
+import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.schema.JanusGraphManagement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class JanusGenerator implements Generator<JanusConnection> {
 
     enum Action {
-        CREATE(JanusCreateGenerator::createEntities);
+        CREATE(JanusCreateGenerator::createEntities),
+        CREATE_INDEX(JanusIndexGenerator::createIndex);
+        // DROP_INDEX(Neo4JDropIndexGenerator::dropIndex),
+        // SHOW_FUNCTIONS(Neo4JShowFunctionsGenerator::showFunctions),
+        // SHOW_PROCEDURES(Neo4JShowProceduresGenerator::showProcedures),
+        // SHOW_TRANSACTIONS(Neo4JShowTransactionsGenerator::showTransactions),
+        // DELETE(Neo4JDeleteGenerator::deleteNodes),
+        // SET(Neo4JSetGenerator::setProperties),
+        // REMOVE(Neo4JRemoveGenerator::removeProperties);
 
         private final Function<Schema<JanusType>, JanusQuery> generator;
 
@@ -28,6 +41,10 @@ public class JanusGenerator implements Generator<JanusConnection> {
         switch (action) {
             case CREATE:
                 selectedNumber = Randomization.nextInt(20, 30);
+                selectedNumber = 0;
+                break;
+            case CREATE_INDEX:
+                selectedNumber = Randomization.nextInt(3,  10);
                 break;
             default:
                 throw new AssertionError(action);
