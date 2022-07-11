@@ -126,4 +126,12 @@ public class Schema<T> {
         return schema;
     }
 
+    public Set<String> getLabels() {
+        return nodeSchema.keySet();
+    }
+
+    public Set<String> getTypes() {
+        return relationshipSchema.keySet();
+    }
+
 }

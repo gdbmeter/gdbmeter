@@ -42,7 +42,38 @@ public class JanusGenerator implements Generator<JanusConnection> {
         this.schema = schema;
     }
 
+    public void createJanusSchema(JanusGraph graph) {
+        JanusGraphManagement management = graph.openManagement();
+
+        for (String label : schema.getLabels()) {
+            management.makeVertexLabel(label).make();
+
+            Entity<JanusType> entity = schema.getEntityByLabel(label);
+
+            for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
+                management.makePropertyKey(property.getKey())
+                        .cardinality(Cardinality.SINGLE)
+                        .dataType(property.getValue().getJavaClass()).make();
+            }
+        }
+
+        for (String label : schema.getTypes()) {
+            management.makeEdgeLabel(label).make();
+
+            Entity<JanusType> entity = schema.getEntityByType(label);
+
+            for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
+                management.makePropertyKey(property.getKey())
+                        .cardinality(Cardinality.SINGLE)
+                        .dataType(property.getValue().getJavaClass()).make();
+            }
+        }
+
+        management.commit();
+    }
+
     public void generate(GlobalState<JanusConnection> globalState) {
+        createJanusSchema(globalState.getConnection().getGraph());
         List<Function<Schema<JanusType>, JanusQuery>> queries = new ArrayList<>();
 
         // Sample the actions
@@ -66,9 +97,12 @@ public class JanusGenerator implements Generator<JanusConnection> {
                     query = queryGenerator.apply(schema);
                     success = query.execute(globalState);
                 } while (!success && tries++ < 1000);
+
+                if (success && query.couldAffectSchema()) {
+                    schema.setIndices(globalState.getConnection().getIndexNames());
+                }
             } catch (IgnoreMeException ignored) {}
         }
-
     }
 
 }
