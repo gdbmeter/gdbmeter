@@ -1,8 +1,11 @@
-package ch.ethz.ast.gdblancer.janus;
+package ch.ethz.ast.gdblancer.janus.gen;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.schema.Index;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.JanusConnection;
+import ch.ethz.ast.gdblancer.janus.JanusQueryAdapter;
+import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.PropertyKey;

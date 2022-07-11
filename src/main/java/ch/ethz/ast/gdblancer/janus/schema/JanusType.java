@@ -1,4 +1,4 @@
-package ch.ethz.ast.gdblancer.janus;
+package ch.ethz.ast.gdblancer.janus.schema;
 
 public enum JanusType {
 

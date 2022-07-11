@@ -5,6 +5,7 @@ import ch.ethz.ast.gdblancer.common.OracleFactory;
 import ch.ethz.ast.gdblancer.common.Provider;
 import ch.ethz.ast.gdblancer.common.QueryReplay;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 
 import java.util.Set;
 

@@ -1,8 +1,10 @@
-package ch.ethz.ast.gdblancer.janus;
+package ch.ethz.ast.gdblancer.janus.gen;
 
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.cypher.CypherUtil;
+import ch.ethz.ast.gdblancer.janus.JanusQuery;
+import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.HashSet;
