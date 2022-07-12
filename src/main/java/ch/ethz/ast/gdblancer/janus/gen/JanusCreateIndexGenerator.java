@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-public class JanusIndexGenerator {
+public class JanusCreateIndexGenerator {
 
     public static JanusQueryAdapter createIndex(Schema<JanusType> schema) {
         Index index = schema.generateRandomNodeIndex();
@@ -27,6 +27,7 @@ public class JanusIndexGenerator {
         Set<String> properties = index.getPropertyNames();
         String indexName = schema.generateRandomIndexName();
 
+        // TODO: Maybe move to own class -> might be useful for QueryReplay later on
         return new JanusQueryAdapter(true) {
             @Override
             public boolean execute(GlobalState<JanusConnection> globalState) {

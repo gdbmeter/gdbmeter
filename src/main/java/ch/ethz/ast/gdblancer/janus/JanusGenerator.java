@@ -5,7 +5,8 @@ import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.janus.gen.JanusCreateGenerator;
-import ch.ethz.ast.gdblancer.janus.gen.JanusIndexGenerator;
+import ch.ethz.ast.gdblancer.janus.gen.JanusCreateIndexGenerator;
+import ch.ethz.ast.gdblancer.janus.gen.JanusRemoveIndexGenerator;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -22,11 +23,8 @@ public class JanusGenerator implements Generator<JanusConnection> {
 
     enum Action {
         CREATE(JanusCreateGenerator::createEntities),
-        CREATE_INDEX(JanusIndexGenerator::createIndex);
-        // DROP_INDEX(Neo4JDropIndexGenerator::dropIndex),
-        // SHOW_FUNCTIONS(Neo4JShowFunctionsGenerator::showFunctions),
-        // SHOW_PROCEDURES(Neo4JShowProceduresGenerator::showProcedures),
-        // SHOW_TRANSACTIONS(Neo4JShowTransactionsGenerator::showTransactions),
+        CREATE_INDEX(JanusCreateIndexGenerator::createIndex),
+        DROP_INDEX(JanusRemoveIndexGenerator::dropIndex);
         // DELETE(Neo4JDeleteGenerator::deleteNodes),
         // SET(Neo4JSetGenerator::setProperties),
         // REMOVE(Neo4JRemoveGenerator::removeProperties);
@@ -46,7 +44,8 @@ public class JanusGenerator implements Generator<JanusConnection> {
                 selectedNumber = Randomization.nextInt(20, 30);
                 break;
             case CREATE_INDEX:
-                selectedNumber = Randomization.nextInt(3,  10);
+            case DROP_INDEX:
+                selectedNumber = Randomization.nextInt(0,  3);
                 break;
             default:
                 throw new AssertionError(action);
