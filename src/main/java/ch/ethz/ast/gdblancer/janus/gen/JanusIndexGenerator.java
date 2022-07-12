@@ -8,8 +8,6 @@ import ch.ethz.ast.gdblancer.janus.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.core.PropertyKey;
-import org.janusgraph.core.VertexLabel;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.janusgraph.core.schema.SchemaAction;
 import org.janusgraph.core.schema.SchemaStatus;
@@ -32,19 +30,20 @@ public class JanusIndexGenerator {
         return new JanusQueryAdapter(true) {
             @Override
             public boolean execute(GlobalState<JanusConnection> globalState) {
+                globalState.getLogger().info("Creating composite index {} on label {} and properties {}", indexName, label, properties);
+
                 JanusConnection connection = globalState.getConnection();
                 JanusGraph graph = connection.getGraph();
                 JanusGraphManagement management = graph.openManagement();
 
                 try {
-                    PropertyKey propertyKey = management.getPropertyKey(properties.toArray(new String[]{})[0]);
-                    VertexLabel vertexLabel = management.getVertexLabel(label);
+                    JanusGraphManagement.IndexBuilder builder = management.buildIndex(indexName, Vertex.class);
 
-                    management.buildIndex(indexName, Vertex.class)
-                            .addKey(propertyKey)
-                            .indexOnly(vertexLabel)
-                            .buildCompositeIndex();
+                    for (String property : properties) {
+                        builder = builder.addKey(management.getPropertyKey(property));
+                    }
 
+                    builder.indexOnly(management.getVertexLabel(label)).buildCompositeIndex();
                     management.commit();
 
                     // Wait for the index to be created
@@ -57,6 +56,7 @@ public class JanusIndexGenerator {
                     management.updateIndex(management.getGraphIndex(indexName), SchemaAction.REINDEX).get();
                     management.commit();
                 } catch (InterruptedException | ExecutionException e) {
+                    management.rollback();
                     return false;
                 }
 
