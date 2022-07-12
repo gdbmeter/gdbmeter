@@ -11,6 +11,7 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
 import org.janusgraph.core.schema.JanusGraphIndex;
 import org.janusgraph.core.schema.JanusGraphManagement;
+import org.janusgraph.core.schema.SchemaStatus;
 import org.janusgraph.util.system.ConfigurationUtil;
 
 import java.util.HashSet;
@@ -74,7 +75,11 @@ public class JanusConnection implements Connection {
         JanusGraphManagement management = graph.openManagement();
 
         for (JanusGraphIndex index : management.getGraphIndexes(Vertex.class)) {
-            names.add(index.name());
+            // If the index is enabled it should have status ENABLED on any field
+            // And there is always at least one field
+            if (index.getIndexStatus(index.getFieldKeys()[0]) == SchemaStatus.ENABLED) {
+                names.add(index.name());
+            }
         }
 
         // This is mandatory because otherwise we have an open transaction which causes
