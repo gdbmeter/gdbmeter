@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.janus;
 
 import ch.ethz.ast.gdblancer.common.Connection;
+import ch.ethz.ast.gdblancer.janus.query.JanusQuery;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.tinkerpop.gremlin.groovy.engine.GremlinExecutor;

@@ -7,6 +7,7 @@ import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.janus.gen.JanusCreateGenerator;
 import ch.ethz.ast.gdblancer.janus.gen.JanusCreateIndexGenerator;
 import ch.ethz.ast.gdblancer.janus.gen.JanusRemoveIndexGenerator;
+import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;

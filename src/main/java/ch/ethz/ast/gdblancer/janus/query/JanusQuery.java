@@ -1,7 +1,8 @@
-package ch.ethz.ast.gdblancer.janus;
+package ch.ethz.ast.gdblancer.janus.query;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.janus.JanusConnection;
 
 import java.util.List;
 import java.util.Map;
