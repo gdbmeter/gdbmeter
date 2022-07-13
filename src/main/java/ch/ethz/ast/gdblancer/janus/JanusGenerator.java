@@ -6,6 +6,7 @@ import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.janus.gen.JanusCreateGenerator;
 import ch.ethz.ast.gdblancer.janus.gen.JanusCreateIndexGenerator;
+import ch.ethz.ast.gdblancer.janus.gen.JanusDeleteGenerator;
 import ch.ethz.ast.gdblancer.janus.gen.JanusRemoveIndexGenerator;
 import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
@@ -25,8 +26,8 @@ public class JanusGenerator implements Generator<JanusConnection> {
     enum Action {
         CREATE(JanusCreateGenerator::createEntities),
         CREATE_INDEX(JanusCreateIndexGenerator::createIndex),
-        DROP_INDEX(JanusRemoveIndexGenerator::dropIndex);
-        // DELETE(Neo4JDeleteGenerator::deleteNodes),
+        DROP_INDEX(JanusRemoveIndexGenerator::dropIndex),
+        DELETE(JanusDeleteGenerator::deleteNodes);
         // SET(Neo4JSetGenerator::setProperties),
         // REMOVE(Neo4JRemoveGenerator::removeProperties);
 
@@ -43,6 +44,9 @@ public class JanusGenerator implements Generator<JanusConnection> {
         switch (action) {
             case CREATE:
                 selectedNumber = Randomization.nextInt(20, 30);
+                break;
+            case DELETE:
+                selectedNumber = Randomization.nextInt(5, 10);
                 break;
             case CREATE_INDEX:
             case DROP_INDEX:
