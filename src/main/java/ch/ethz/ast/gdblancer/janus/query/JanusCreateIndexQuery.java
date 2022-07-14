@@ -4,6 +4,7 @@ import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.janus.JanusConnection;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.schema.JanusGraphIndex;
 import org.janusgraph.core.schema.JanusGraphManagement;
 import org.janusgraph.core.schema.SchemaAction;
 import org.janusgraph.core.schema.SchemaStatus;
@@ -52,9 +53,16 @@ public class JanusCreateIndexQuery extends JanusQueryAdapter {
                     status(SchemaStatus.REGISTERED)
                     .call();
 
-            // Update the index
             management = graph.openManagement();
-            management.updateIndex(management.getGraphIndex(indexName), SchemaAction.REINDEX).get();
+            JanusGraphIndex graphIndex = management.getGraphIndex(indexName);
+
+            if (graphIndex == null) {
+                // In this case we probably timed out whilst waiting for the REGISTERED state.
+                return false;
+            }
+
+            // Update the index
+            management.updateIndex(graphIndex, SchemaAction.REINDEX).get();
             management.commit();
         } catch (InterruptedException | ExecutionException e) {
             management.rollback();
