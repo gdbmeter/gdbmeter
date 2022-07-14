@@ -31,7 +31,7 @@ public class JanusCreateIndexQuery extends JanusQueryAdapter {
 
     @Override
     public boolean execute(GlobalState<JanusConnection> globalState) {
-        globalState.getLogger().info("Creating composite index {} on label {} and properties {}", indexName, label, properties);
+        globalState.getLogger().info("Creating mixed index {} on label {} and properties {}", indexName, label, properties);
 
         JanusConnection connection = globalState.getConnection();
         JanusGraph graph = connection.getGraph();
@@ -44,7 +44,7 @@ public class JanusCreateIndexQuery extends JanusQueryAdapter {
                 builder = builder.addKey(management.getPropertyKey(property));
             }
 
-            builder.indexOnly(management.getVertexLabel(label)).buildCompositeIndex();
+            builder.indexOnly(management.getVertexLabel(label)).buildMixedIndex("search");
             management.commit();
 
             // Wait for the index to be created
