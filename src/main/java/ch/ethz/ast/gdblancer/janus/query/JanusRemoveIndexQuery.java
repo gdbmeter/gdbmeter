@@ -9,8 +9,6 @@ import org.janusgraph.core.schema.SchemaStatus;
 import org.janusgraph.graphdb.database.management.ManagementSystem;
 
 import javax.ws.rs.NotSupportedException;
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -37,16 +35,6 @@ public class JanusRemoveIndexQuery extends JanusQueryAdapter {
             management.commit();
 
             ManagementSystem.awaitGraphIndexStatus(graph, indexName).status(SchemaStatus.DISABLED).call();
-
-            // To delete the index from the backend we simply delete the appropriate folder
-            File indexFolder = new File("data/searchindex/" + indexName);
-            File[] folderContents = indexFolder.listFiles();
-
-            if (folderContents != null) {
-                Arrays.stream(folderContents).forEach(File::delete);
-            }
-
-            indexFolder.delete();
         } catch (InterruptedException | ExecutionException e) {
             management.rollback();
             return false;
