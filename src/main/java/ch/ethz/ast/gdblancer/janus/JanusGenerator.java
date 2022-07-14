@@ -4,10 +4,7 @@ import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
-import ch.ethz.ast.gdblancer.janus.gen.JanusCreateGenerator;
-import ch.ethz.ast.gdblancer.janus.gen.JanusCreateIndexGenerator;
-import ch.ethz.ast.gdblancer.janus.gen.JanusDeleteGenerator;
-import ch.ethz.ast.gdblancer.janus.gen.JanusRemoveIndexGenerator;
+import ch.ethz.ast.gdblancer.janus.gen.*;
 import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -28,7 +25,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
         CREATE_INDEX(JanusCreateIndexGenerator::createIndex),
         DROP_INDEX(JanusRemoveIndexGenerator::dropIndex),
         DELETE(JanusDeleteGenerator::deleteNodes);
-        // SET(Neo4JSetGenerator::setProperties),
+        // SET(JanusPropertyUpdateGenerator::updateProperties);
         // REMOVE(Neo4JRemoveGenerator::removeProperties);
 
         private final Function<Schema<JanusType>, JanusQueryAdapter> generator;
