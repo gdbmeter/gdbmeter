@@ -62,7 +62,14 @@ public class JanusCreateIndexQuery extends JanusQueryAdapter {
             }
 
             // Update the index
-            management.updateIndex(graphIndex, SchemaAction.REINDEX).get();
+            JanusGraphManagement.IndexJobFuture future = management.updateIndex(graphIndex, SchemaAction.REINDEX);
+
+            if (future == null) {
+                globalState.getLogger().warn("The returned future from updateIndex is null");
+                return false;
+            }
+
+            future.get();
             management.commit();
         } catch (InterruptedException | ExecutionException e) {
             management.rollback();
