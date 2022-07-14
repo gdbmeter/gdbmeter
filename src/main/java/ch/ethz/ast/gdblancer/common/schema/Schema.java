@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class Schema<T> {
 
@@ -105,7 +106,11 @@ public class Schema<T> {
     }
 
     public String generateRandomIndexName() {
-        return Randomization.generateUniqueElement(indices, CypherUtil::generateValidName);
+        return generateRandomIndexName(CypherUtil::generateValidName);
+    }
+
+    public String generateRandomIndexName(Supplier<String> generator) {
+        return Randomization.generateUniqueElement(indices, generator);
     }
 
     private Map<String, Set<String>> getNodeSchemaByPropertyType(T type) {
