@@ -49,6 +49,8 @@ public class JanusConnection implements Connection {
 
     @Override
     public void close() throws Exception {
+        JanusGraphFactory.drop(graph);
+
         executor.close();
         traversal.close();
         graph.close();
