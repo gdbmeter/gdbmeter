@@ -15,7 +15,10 @@ import org.janusgraph.core.schema.JanusGraphManagement;
 import org.janusgraph.core.schema.SchemaStatus;
 import org.janusgraph.util.system.ConfigurationUtil;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
