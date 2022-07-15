@@ -25,8 +25,8 @@ public class JanusGenerator implements Generator<JanusConnection> {
         CREATE_INDEX(JanusCreateIndexGenerator::createIndex),
         DROP_INDEX(JanusRemoveIndexGenerator::dropIndex),
         DELETE(JanusDeleteGenerator::deleteNodes),
-        SET(JanusPropertyUpdateGenerator::updateProperties);
-        // REMOVE(Neo4JRemoveGenerator::removeProperties);
+        SET(JanusPropertyUpdateGenerator::updateProperties),
+        REMOVE(JanusPropertyRemoveGenerator::removeProperties);
 
         private final Function<Schema<JanusType>, JanusQueryAdapter> generator;
 
@@ -43,6 +43,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
                 selectedNumber = Randomization.nextInt(20, 30);
                 break;
             case SET:
+            case REMOVE:
                 selectedNumber = Randomization.nextInt(5, 15);
                 break;
             case DELETE:
