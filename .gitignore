@@ -30,5 +30,8 @@ hs_err_pid*
 # Embedded database
 database/
 
+# Embedded index structure
+data/
+
 # Log folder
 logs/
