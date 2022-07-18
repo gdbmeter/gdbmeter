@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.janus.schema;
 
+// See: https://docs.janusgraph.org/schema/#property-key-data-type
 public enum JanusType {
 
     STRING(String.class),

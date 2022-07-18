@@ -6,6 +6,7 @@ import java.util.Set;
 
 import static ch.ethz.ast.gdblancer.janus.schema.JanusType.*;
 
+// See: https://docs.janusgraph.org/interactions/search-predicates/
 public enum JanusPredicate {
 
     EQUALS("eq"),
