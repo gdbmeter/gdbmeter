@@ -8,13 +8,7 @@ public class Neo4JBugs {
     // https://github.com/neo4j/neo4j/issues/12869
     public static final boolean bug12869 = true;
 
-    // https://github.com/neo4j/neo4j/issues/12877
-    public static final boolean bug12877 = true;
-
-    // https://github.com/neo4j/neo4j/issues/12879
-    public static final boolean bug12879 = true;
-
-    // https://github.com/neo4j/neo4j/issues/12878
+    // https://github.com/neo4j/neo4j/issues/128278
     public static final boolean bug12878 = true;
 
     static public class PartitionOracleSpecific {
