@@ -38,14 +38,6 @@ public class ExpectedErrors {
         }
 
         if (exception instanceof QueryExecutionException) {
-            if (Neo4JBugs.bug12877) {
-                if (((QueryExecutionException) exception).getStatusCode().equals("Neo.DatabaseError.Statement.ExecutionFailed")) {
-                    if (message.startsWith("Expected \nRegularSinglePlannerQuery(QueryGraph {Nodes: ['n'],")) {
-                        return true;
-                    }
-                }
-            }
-
             if (Neo4JBugs.bug12878) {
                 if (message.startsWith("Node with id") && message.endsWith("has been deleted in this transaction")) {
                     return true;
@@ -53,9 +45,9 @@ public class ExpectedErrors {
             }
         }
 
-        if (Neo4JBugs.bug12879) {
-            if (exception instanceof UnsupportedOperationException) {
-                if (message.equals("TEXT index has no value capability")) {
+        if (Neo4JBugs.bug12911) {
+            if (exception instanceof IllegalStateException) {
+                if (message.equalsIgnoreCase("Planning a distinct for union, but no union was planned before.")) {
                     return true;
                 }
             }
