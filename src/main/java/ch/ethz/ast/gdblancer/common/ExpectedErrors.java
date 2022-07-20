@@ -45,6 +45,14 @@ public class ExpectedErrors {
             }
         }
 
+        if (Neo4JBugs.bug12911) {
+            if (exception instanceof IllegalStateException) {
+                if (message.equalsIgnoreCase("Planning a distinct for union, but no union was planned before.")) {
+                    return true;
+                }
+            }
+        }
+
         if (RedisBugs.bug3010) {
             if (exception instanceof NumberFormatException) {
                 if (message.equals("For input string: \"inf\"") ||
