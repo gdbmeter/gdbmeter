@@ -4,15 +4,14 @@ import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
-import ch.ethz.ast.gdblancer.cypher.ast.CypherVisitor;
 import ch.ethz.ast.gdblancer.janus.JanusConnection;
+import ch.ethz.ast.gdblancer.janus.gen.JanusValueGenerator;
 import ch.ethz.ast.gdblancer.janus.query.JanusQuery;
+import ch.ethz.ast.gdblancer.janus.schema.JanusPredicate;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
-import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
-import ch.ethz.ast.gdblancer.neo4j.ast.Neo4JExpressionGenerator;
-import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
+import org.apache.tinkerpop.gremlin.structure.T;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,10 +31,10 @@ public class JanusEmptyResultOracle implements Oracle {
     @Override
     public void check() {
         Set<Long> allIds = new HashSet<>();
-        List<Map<String, Object>> idResult = new JanusQuery("MATCH (n) RETURN id(n)").executeAndGet(state);
+        List<Map<String, Object>> idResult = new JanusQuery("g.V().valueMap(true).toList()").executeAndGet(state);
 
         for (Map<String, Object> properties : idResult) {
-            allIds.add((Long) properties.get("id(n)"));
+            allIds.add((Long) properties.get(T.id));
         }
 
         if (allIds.isEmpty()) {
@@ -44,35 +43,41 @@ public class JanusEmptyResultOracle implements Oracle {
 
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
+        Map<String, JanusType> availableProperties = entity.getAvailableProperties();
 
-        String query = String.format("MATCH (n:%s) WHERE %s RETURN n",
+        String matchProperty = Randomization.fromSet(availableProperties.keySet());
+        JanusType matchType = availableProperties.get(matchProperty);
+        JanusPredicate predicate = JanusPredicate.compareTo(matchType);
+
+        String query = String.format("g.V().hasLabel('%s').has('%s', %s).count().next()",
                 label,
-                CypherVisitor.asString(Neo4JExpressionGenerator.generateExpression(Map.of("n", entity), Neo4JType.BOOLEAN)));
+                matchProperty,
+                predicate.toString(JanusValueGenerator.generate(matchType)));
 
         JanusQuery initialQuery = new JanusQuery(query);
 
-        List<Map<String, Object>> initialResult = initialQuery.executeAndGet(state);
+        Long initialResult = (Long) initialQuery.executeAndGet(state).get(0).get("count");
 
         if (initialResult == null) {
             throw new IgnoreMeException();
         }
 
-        if (initialResult.isEmpty()) {
+        if (initialResult == 0) {
             for (int i = 0; i < Randomization.smallNumber() && !allIds.isEmpty(); i++) {
                 Long chosenId = Randomization.fromSet(allIds);
 
-                new JanusQuery(String.format("MATCH (n) WHERE id(n) = %d DETACH DELETE n", chosenId)).execute(state);
+                new JanusQuery(String.format("g.V(%d).drop()", chosenId)).execute(state);
                 allIds.remove(chosenId);
             }
 
-            List<Map<String, Object>> result = initialQuery.executeAndGet(state);
+            Long result = (Long) initialQuery.executeAndGet(state).get(0).get("count");
 
             if (result == null) {
                 throw new AssertionError("Empty oracle failed because the second query threw an exception");
             }
 
-            if (result.size() != 0) {
-                throw new AssertionError(String.format("Empty oracle failed with size: %d", result.size()));
+            if (result != 0) {
+                throw new AssertionError(String.format("Empty oracle failed with size: %d", result));
             }
         }
 

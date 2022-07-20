@@ -5,6 +5,7 @@ import ch.ethz.ast.gdblancer.common.OracleFactory;
 import ch.ethz.ast.gdblancer.common.Provider;
 import ch.ethz.ast.gdblancer.common.QueryReplay;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.oracle.JanusOracleFactory;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 
 import java.util.Set;
@@ -28,7 +29,7 @@ public class JanusProvider implements Provider<JanusConnection, JanusType> {
 
     @Override
     public OracleFactory<JanusConnection, JanusType> getOracleFactory() {
-        return null;
+        return new JanusOracleFactory();
     }
 
     @Override

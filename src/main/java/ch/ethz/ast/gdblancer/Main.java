@@ -20,7 +20,7 @@ public class Main {
 
         int option = Integer.parseInt(args[0]);
         Provider<?, ?> provider;
-        OracleType type = OracleType.PARTITION;
+        OracleType type = OracleType.EMPTY_RESULT;
 
         switch (option) {
             case 0:
@@ -55,14 +55,10 @@ public class Main {
                 state.setConnection(connection);
 
                 Schema<T> schema = provider.getSchema();
-                Oracle oracle = null;
-                // Oracle oracle = factory.createOracle(oracleType, state, schema);
-                // oracle.onGenerate();
+                Oracle oracle = factory.createOracle(oracleType, state, schema);
+                oracle.onGenerate();
 
                 provider.getGenerator(schema).generate(state);
-                if (true) {
-                    continue;
-                }
 
                 state.getLogger().info("Running oracle");
 

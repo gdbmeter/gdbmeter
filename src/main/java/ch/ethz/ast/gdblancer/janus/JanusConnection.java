@@ -42,7 +42,7 @@ public class JanusConnection implements Connection {
         bindings.put("g", traversal);
 
         executor = GremlinExecutor.build()
-                .evaluationTimeout(3000L)
+                .evaluationTimeout(4000L)
                 .globalBindings(bindings)
                 // this makes sure that all queries are executed in the same thread
                 // it seems to prevent PermanentLockingExceptions
@@ -61,12 +61,21 @@ public class JanusConnection implements Connection {
 
     public List<Map<String, Object>> execute(JanusQuery query) throws ExecutionException, InterruptedException {
         CompletableFuture<Object> future = executor.eval(query.getQuery());
-        future.get();
+        Object result = future.get();
+
+        List<Map<String, Object>> realResult = null;
+
+        if (result instanceof List<?>) {
+            realResult = (List<Map<String, Object>>) result;
+        } else if (result instanceof Long) {
+            realResult = List.of(Map.of("count", result));
+        }
 
         // This is technically not necessary since we run all queries in the same transaction.
         // But it's still necessary when querying properties of our graph from a different thread or client.
         executor.eval("g.tx().commit()").get();
-        return null;
+
+        return realResult;
     }
 
     public JanusGraph getGraph() {
