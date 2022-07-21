@@ -35,6 +35,7 @@ public class JanusEmptyResultOracle implements Oracle {
         List<Map<String, Object>> idResult = new JanusQuery("g.V().valueMap(true).toList()").executeAndGet(state);
 
         for (Map<String, Object> properties : idResult) {
+            //noinspection SuspiciousMethodCalls
             allIds.add((Long) properties.get(T.id));
         }
 

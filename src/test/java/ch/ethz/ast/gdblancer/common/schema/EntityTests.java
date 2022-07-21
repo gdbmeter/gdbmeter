@@ -3,7 +3,6 @@ package ch.ethz.ast.gdblancer.common.schema;
 import ch.ethz.ast.gdblancer.neo4j.schema.Neo4JType;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;

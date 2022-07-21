@@ -1,6 +1,5 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
-import ch.ethz.ast.gdblancer.neo4j.Neo4JBugs;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class CypherBinaryLogicalOperation

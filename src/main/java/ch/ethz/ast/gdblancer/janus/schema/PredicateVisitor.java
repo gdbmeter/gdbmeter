@@ -1,7 +1,5 @@
 package ch.ethz.ast.gdblancer.janus.schema;
 
-import com.thoughtworks.qdox.model.expression.PreIncrement;
-
 public interface PredicateVisitor {
 
     void visit(BinaryPredicate predicate);

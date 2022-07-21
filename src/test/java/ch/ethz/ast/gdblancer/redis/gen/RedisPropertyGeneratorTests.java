@@ -5,7 +5,6 @@ import ch.ethz.ast.gdblancer.redis.schema.RedisType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
