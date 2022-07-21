@@ -5,10 +5,11 @@ import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.janus.JanusConnection;
-import ch.ethz.ast.gdblancer.janus.gen.JanusValueGenerator;
 import ch.ethz.ast.gdblancer.janus.query.JanusQuery;
-import ch.ethz.ast.gdblancer.janus.schema.JanusPredicate;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
+import ch.ethz.ast.gdblancer.janus.schema.Predicate;
+import ch.ethz.ast.gdblancer.janus.schema.PredicateGenerator;
+import ch.ethz.ast.gdblancer.janus.schema.PredicateVisitor;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
 import org.apache.tinkerpop.gremlin.structure.T;
@@ -47,12 +48,12 @@ public class JanusEmptyResultOracle implements Oracle {
 
         String matchProperty = Randomization.fromSet(availableProperties.keySet());
         JanusType matchType = availableProperties.get(matchProperty);
-        JanusPredicate predicate = JanusPredicate.compareTo(matchType);
+        Predicate predicate = PredicateGenerator.generateFor(matchType);
 
         String query = String.format("g.V().hasLabel('%s').has('%s', %s).count().next()",
                 label,
                 matchProperty,
-                predicate.toString(JanusValueGenerator.generate(matchType)));
+                PredicateVisitor.asString(predicate));
 
         JanusQuery initialQuery = new JanusQuery(query);
 
@@ -63,10 +64,11 @@ public class JanusEmptyResultOracle implements Oracle {
         }
 
         if (initialResult == 0) {
-            for (int i = 0; i < Randomization.smallNumber() && !allIds.isEmpty(); i++) {
+            int nr = Randomization.smallNumber();
+            for (int i = 0; i < nr && !allIds.isEmpty(); i++) {
                 Long chosenId = Randomization.fromSet(allIds);
 
-                new JanusQuery(String.format("g.V(%d).drop()", chosenId)).execute(state);
+                new JanusQuery(String.format("g.V(%d).drop().iterate()", chosenId)).execute(state);
                 allIds.remove(chosenId);
             }
 

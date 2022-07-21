@@ -4,8 +4,10 @@ import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.janus.query.JanusQuery;
 import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
-import ch.ethz.ast.gdblancer.janus.schema.JanusPredicate;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
+import ch.ethz.ast.gdblancer.janus.schema.Predicate;
+import ch.ethz.ast.gdblancer.janus.schema.PredicateGenerator;
+import ch.ethz.ast.gdblancer.janus.schema.PredicateVisitor;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class JanusPropertyRemoveGenerator {
@@ -29,12 +31,12 @@ public class JanusPropertyRemoveGenerator {
 
         JanusType matchType = entity.getAvailableProperties().get(matchProperty);
 
-        JanusPredicate predicate = JanusPredicate.compareTo(matchType);
+        Predicate predicate = PredicateGenerator.generateFor(matchType);
 
         query.append(String.format("g.V().hasLabel('%s').has('%s', %s).properties('%s').drop().iterate()",
                 label,
                 matchProperty,
-                predicate.toString(JanusValueGenerator.generate(matchType)),
+                PredicateVisitor.asString(predicate),
                 removeProperty));
 
         return new JanusQuery(query.toString());
