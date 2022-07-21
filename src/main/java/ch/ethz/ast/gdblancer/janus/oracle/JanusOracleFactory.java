@@ -15,6 +15,8 @@ public class JanusOracleFactory implements OracleFactory<JanusConnection, JanusT
         switch (type) {
             case EMPTY_RESULT:
                 return new JanusEmptyResultOracle(state, schema);
+            case NON_EMPTY_RESULT:
+                return new JanusNonEmptyResultOracle(state, schema);
             default:
                 throw new AssertionError(type);
         }
