@@ -65,8 +65,7 @@ public class JanusEmptyResultOracle implements Oracle {
         }
 
         if (initialResult == 0) {
-            int nr = Randomization.smallNumber();
-            for (int i = 0; i < nr && !allIds.isEmpty(); i++) {
+            for (int i = 0; i < Randomization.smallNumber() && !allIds.isEmpty(); i++) {
                 Long chosenId = Randomization.fromSet(allIds);
 
                 new JanusQuery(String.format("g.V(%d).drop().iterate()", chosenId)).execute(state);
