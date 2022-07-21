@@ -56,6 +56,7 @@ public class PredicateGenerator {
         }
     }
 
+    // TODO: Maybe only generate "valid" ranges
     private Predicate generateRangePredicate(JanusType type) {
         return new RangePredicate(RangePredicate.Type.getRandom(), JanusValueGenerator.generate(type), JanusValueGenerator.generate(type));
     }
