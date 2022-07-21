@@ -6,11 +6,15 @@ public interface PredicateVisitor {
 
     void visit(SimplePredicate predicate);
 
+    void visit(RangePredicate predicate);
+
     default void visit(Predicate predicate) {
         if (predicate instanceof BinaryPredicate) {
             visit((BinaryPredicate) predicate);
-        } else if (predicate instanceof  SimplePredicate) {
+        } else if (predicate instanceof SimplePredicate) {
             visit((SimplePredicate) predicate);
+        } else if (predicate instanceof RangePredicate) {
+            visit((RangePredicate) predicate);
         } else {
             throw new AssertionError(predicate);
         }

@@ -23,7 +23,7 @@ public class PredicateGenerator {
         currentDepth++;
 
         if (currentDepth >= MAX_DEPTH || Randomization.getBoolean()) {
-            return generateSimplePredicate(type);
+            return generateTerminatingPredicate(type);
         } else {
             return generateBinaryPredicate(type);
         }
@@ -31,6 +31,14 @@ public class PredicateGenerator {
 
     private Predicate generateBinaryPredicate(JanusType type) {
         return new BinaryPredicate(BinaryPredicate.Type.getRandom(), generateForInternal(type), generateForInternal(type));
+    }
+
+    private Predicate generateTerminatingPredicate(JanusType type) {
+        if (Randomization.getBoolean()) {
+            return generateSimplePredicate(type);
+        } else {
+            return generateRangePredicate(type);
+        }
     }
 
     private Predicate generateSimplePredicate(JanusType type) {
@@ -48,5 +56,8 @@ public class PredicateGenerator {
         }
     }
 
+    private Predicate generateRangePredicate(JanusType type) {
+        return new RangePredicate(RangePredicate.Type.getRandom(), JanusValueGenerator.generate(type), JanusValueGenerator.generate(type));
+    }
 
 }

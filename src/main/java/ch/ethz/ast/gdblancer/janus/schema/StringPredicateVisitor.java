@@ -22,6 +22,16 @@ public class StringPredicateVisitor implements PredicateVisitor {
         builder.append(")");
     }
 
+    @Override
+    public void visit(RangePredicate predicate) {
+        builder.append(predicate.getType().getName());
+        builder.append("(");
+        builder.append(predicate.getLeft());
+        builder.append(", ");
+        builder.append(predicate.getRight());
+        builder.append(")");
+    }
+
     public String get() {
         return builder.toString();
     }
