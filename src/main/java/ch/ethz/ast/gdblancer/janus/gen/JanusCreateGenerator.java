@@ -17,8 +17,6 @@ public class JanusCreateGenerator {
     private final StringBuilder query = new StringBuilder();
     private final Set<String> nodeVariables = new HashSet<>();
 
-    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\r|&\\";
-
     public JanusCreateGenerator(Schema<JanusType> schema) {
         this.schema = schema;
     }
