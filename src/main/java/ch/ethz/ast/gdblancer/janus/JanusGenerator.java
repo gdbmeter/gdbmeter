@@ -51,7 +51,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
                 break;
             case CREATE_INDEX:
             case DROP_INDEX:
-                selectedNumber = Randomization.nextInt(0,  3);
+                selectedNumber = Randomization.nextInt(0,  4);
                 break;
             default:
                 throw new AssertionError(action);

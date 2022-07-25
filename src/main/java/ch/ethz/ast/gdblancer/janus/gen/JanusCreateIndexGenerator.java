@@ -16,24 +16,27 @@ public class JanusCreateIndexGenerator {
     public static JanusQueryAdapter createIndex(Schema<JanusType> schema) {
         String label;
         Set<String> properties;
+        boolean composite = Randomization.getBoolean();
 
         while (true) {
             Index index = schema.generateRandomNodeIndex();
             label = index.getLabel();
             properties = index.getPropertyNames();
 
+            if (composite || !JanusBugs.bug3144) {
+                break;
+            }
+
             Map<String, JanusType> typeMap = schema.getEntityByLabel(label).getAvailableProperties();
 
-            if (JanusBugs.bug3144) {
-                if (properties.stream().noneMatch(s -> typeMap.get(s).equals(JanusType.CHARACTER))) {
-                    break;
-                }
+            if (properties.stream().noneMatch(s -> typeMap.get(s).equals(JanusType.CHARACTER))) {
+                break;
             }
         }
 
         String indexName = schema.generateRandomIndexName(JanusCreateIndexGenerator::generateValidLuceneName);
 
-        return new JanusCreateIndexQuery(label, properties, indexName);
+        return new JanusCreateIndexQuery(label, properties, indexName, composite);
     }
 
     private static final Set<String> KEYWORDS = Set.of(

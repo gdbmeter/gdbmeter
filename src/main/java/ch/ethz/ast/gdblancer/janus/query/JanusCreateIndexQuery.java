@@ -21,18 +21,20 @@ public class JanusCreateIndexQuery extends JanusQueryAdapter {
     private final String label;
     private final Set<String> properties;
     private final String indexName;
+    private final boolean composite; // if not then the index is mixed
 
-    public JanusCreateIndexQuery(String label, Set<String> properties, String indexName) {
+    public JanusCreateIndexQuery(String label, Set<String> properties, String indexName, boolean composite) {
         super(true);
 
         this.label = label;
         this.properties = properties;
         this.indexName = indexName;
+        this.composite = composite;
     }
 
     @Override
     public boolean execute(GlobalState<JanusConnection> globalState) {
-        globalState.getLogger().info("Creating mixed index {} on label {} and properties {}", indexName, label, properties);
+        globalState.getLogger().info("Creating {} index {} on label {} and properties {}", composite ? "composite" : "mixed", indexName, label, properties);
 
         JanusConnection connection = globalState.getConnection();
         JanusGraph graph = connection.getGraph();
@@ -46,7 +48,14 @@ public class JanusCreateIndexQuery extends JanusQueryAdapter {
             }
 
             // TODO: Also support composite indices
-            builder.indexOnly(management.getVertexLabel(label)).buildMixedIndex("search");
+            builder = builder.indexOnly(management.getVertexLabel(label));
+
+            if (composite) {
+                builder.buildCompositeIndex();
+            } else {
+                builder.buildMixedIndex("search");
+            }
+
             management.commit();
 
             // Wait for the index to be created

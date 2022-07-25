@@ -24,13 +24,15 @@ public class JanusRemoveIndexQuery extends JanusQueryAdapter {
 
     @Override
     public boolean execute(GlobalState<JanusConnection> globalState) {
-        globalState.getLogger().info("Deleting mixed index {}", indexName);
-
         JanusConnection connection = globalState.getConnection();
         JanusGraph graph = connection.getGraph();
         JanusGraphManagement management = graph.openManagement();
+        boolean isComposite;
 
         try {
+            isComposite = management.getGraphIndex(indexName).isCompositeIndex();
+            globalState.getLogger().info("Deleting {} index {}", isComposite ? "composite" : "mixed", indexName);
+
             management.updateIndex(management.getGraphIndex(indexName), SchemaAction.DISABLE_INDEX).get();
             management.commit();
 
@@ -38,6 +40,19 @@ public class JanusRemoveIndexQuery extends JanusQueryAdapter {
         } catch (InterruptedException | ExecutionException e) {
             management.rollback();
             return false;
+        }
+
+        // A mixed index must be manually dropped from the backend, we simply ignore this case
+        if (isComposite) {
+            management = graph.openManagement();
+
+            try {
+                management.updateIndex(management.getGraphIndex(indexName), SchemaAction.REMOVE_INDEX).get();
+                management.commit();
+            } catch (InterruptedException | ExecutionException e) {
+                management.rollback();
+                return false;
+            }
         }
 
         return true;
