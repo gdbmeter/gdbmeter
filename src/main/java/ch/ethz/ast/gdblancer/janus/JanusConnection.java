@@ -37,6 +37,7 @@ public class JanusConnection implements Connection {
         // This is a workaround to be able to use strings as queries
         // An alternative approach would be to create an AST of a query and then map it to the functional Gremlin API
         // However, in that case we also need to provide a toString() version so that we can reproduce bugs
+        // See also: https://github.com/JanusGraph/janusgraph/pull/3149
         ConcurrentBindings bindings = new ConcurrentBindings();
         traversal = graph.traversal();
         bindings.put("g", traversal);
