@@ -27,7 +27,7 @@ public enum JanusPredicate {
     }
 
     public static JanusPredicate compareTo(JanusType type) {
-        if (Set.of(STRING,CHARACTER,BYTE,SHORT,INTEGER,LONG,FLOAT,DOUBLE).contains(type)) {
+        if (Set.of(STRING,CHARACTER,BYTE,SHORT,INTEGER,LONG,FLOAT,DOUBLE, DATE).contains(type)) {
             return Randomization.fromOptions(JanusPredicate.values());
         } else if (type.equals(UUID) || type.equals(BOOLEAN)) {
             return Randomization.fromOptions(JanusPredicate.EQUALS, JanusPredicate.NOT_EQUALS);

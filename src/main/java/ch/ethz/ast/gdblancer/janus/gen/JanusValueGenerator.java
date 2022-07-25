@@ -35,6 +35,8 @@ public class JanusValueGenerator {
                 return String.format("%sd", Randomization.getDouble());
             case UUID:
                 return String.format("UUID.fromString('%s')", UUID.randomUUID());
+            case DATE:
+                return String.format("new Date(%sL)", Randomization.getInteger());
             default:
                 throw new AssertionError(type);
         }
