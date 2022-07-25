@@ -45,6 +45,7 @@ public class JanusCreateIndexQuery extends JanusQueryAdapter {
                 builder = builder.addKey(management.getPropertyKey(property));
             }
 
+            // TODO: Also support composite indices
             builder.indexOnly(management.getVertexLabel(label)).buildMixedIndex("search");
             management.commit();
 

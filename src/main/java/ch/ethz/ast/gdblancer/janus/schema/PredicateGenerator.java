@@ -46,7 +46,16 @@ public class PredicateGenerator {
 
     private Predicate generateSimplePredicate(JanusType type) {
         if (Set.of(STRING, CHARACTER, BYTE, SHORT, INTEGER, LONG, FLOAT, DOUBLE, DATE).contains(type)) {
-            Type predicateType = getRandom();
+            Type predicateType;
+
+            if (type == STRING) {
+                predicateType = getRandom();
+            } else {
+                predicateType = Randomization.fromOptions(
+                        EQUALS, NOT_EQUALS, GREATER_THAN,
+                        LESS_THAN, GREATER_THAN_EQUAL, LESS_THAN_EQUAL);
+            }
+
             Object value;
 
             if (JanusBugs.bug6571) {

@@ -7,6 +7,7 @@ package ch.ethz.ast.gdblancer.janus.schema;
  */
 public interface Predicate {
 
-    // TODO: Support text and geo predicates
+    // TODO: Support full text search: https://docs.janusgraph.org/index-backend/text-search/
+    // TODO: Support geo predicates
 
 }

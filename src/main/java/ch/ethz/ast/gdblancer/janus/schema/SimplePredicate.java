@@ -26,7 +26,15 @@ public class SimplePredicate implements Predicate {
         GREATER_THAN("gt"),
         LESS_THAN("lt"),
         GREATER_THAN_EQUAL("gte"),
-        LESS_THAN_EQUAL("lte");
+        LESS_THAN_EQUAL("lte"),
+
+        // String predicates
+        STARTING_WITH("startingWith"),
+        ENDING_WITH("endingWith"),
+        CONTAINING("containing"),
+        NOT_STARTING_WITH("notStartingWith"),
+        NOT_ENDING_WITH("notEndingWith"),
+        NOT_CONTAINING("notContaining");
 
         private final String name;
 
