@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer.janus.gen;
 
 import ch.ethz.ast.gdblancer.common.schema.Index;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.JanusBugs;
 import ch.ethz.ast.gdblancer.janus.query.JanusCreateIndexQuery;
 import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
@@ -23,12 +24,11 @@ public class JanusCreateIndexGenerator {
 
             Map<String, JanusType> typeMap = schema.getEntityByLabel(label).getAvailableProperties();
 
-            // Make sure that no character property is to be indexed.
-            // See: https://github.com/JanusGraph/janusgraph/discussions/3144
-            if (properties.stream().noneMatch(s -> typeMap.get(s).equals(JanusType.CHARACTER))) {
-                break;
+            if (JanusBugs.bug3144) {
+                if (properties.stream().noneMatch(s -> typeMap.get(s).equals(JanusType.CHARACTER))) {
+                    break;
+                }
             }
-
         }
 
         String indexName = schema.generateRandomIndexName(JanusCreateIndexGenerator::generateValidLuceneName);
