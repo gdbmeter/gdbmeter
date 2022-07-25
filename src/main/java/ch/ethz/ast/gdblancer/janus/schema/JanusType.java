@@ -13,8 +13,8 @@ public enum JanusType {
     FLOAT(Float.class),
     DOUBLE(Double.class),
     DATE(java.util.Date.class),
-    // GEOSHAPE, // Point, Circle or Box
     UUID(java.util.UUID.class);
+    // TODO: Support geoshape
 
     private final Class<?> javaClass;
 
