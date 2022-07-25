@@ -20,6 +20,10 @@ public class Randomization {
         return random.nextInt();
     }
 
+    public static long nextLong() {
+        return random.nextLong();
+    }
+
     public static short getShort() {
         if (smallBiasProbability()) {
             return Randomization.fromOptions((short) 0, Short.MAX_VALUE, Short.MIN_VALUE);

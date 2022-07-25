@@ -1,11 +1,14 @@
 package ch.ethz.ast.gdblancer.janus.schema;
 
+import ch.ethz.ast.gdblancer.janus.JanusBugs;
 import ch.ethz.ast.gdblancer.janus.gen.JanusValueGenerator;
+import ch.ethz.ast.gdblancer.janus.schema.SimplePredicate.Type;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.Set;
 
 import static ch.ethz.ast.gdblancer.janus.schema.JanusType.*;
+import static ch.ethz.ast.gdblancer.janus.schema.SimplePredicate.Type.*;
 
 public class PredicateGenerator {
 
@@ -43,12 +46,19 @@ public class PredicateGenerator {
 
     private Predicate generateSimplePredicate(JanusType type) {
         if (Set.of(STRING, CHARACTER, BYTE, SHORT, INTEGER, LONG, FLOAT, DOUBLE, DATE).contains(type)) {
-            return new SimplePredicate(
-                    SimplePredicate.Type.getRandom(),
-                    JanusValueGenerator.generate(type));
+            Type predicateType = getRandom();
+            Object value;
+
+            if (JanusBugs.bug6571) {
+                value = JanusValueGenerator.generateWithoutMaxMinValues(type);
+            } else {
+                value = JanusValueGenerator.generate(type);
+            }
+
+            return new SimplePredicate(predicateType, value);
         } else if (type.equals(UUID) || type.equals(BOOLEAN)) {
             return new SimplePredicate(
-                    Randomization.fromOptions(SimplePredicate.Type.EQUALS, SimplePredicate.Type.NOT_EQUALS),
+                    Randomization.fromOptions(EQUALS, NOT_EQUALS),
                     JanusValueGenerator.generate(type)
             );
         } else {
@@ -58,7 +68,17 @@ public class PredicateGenerator {
 
     // TODO: Maybe only generate "valid" ranges
     private Predicate generateRangePredicate(JanusType type) {
-        return new RangePredicate(RangePredicate.Type.getRandom(), JanusValueGenerator.generate(type), JanusValueGenerator.generate(type));
+        if (JanusBugs.bug6571) {
+            return new RangePredicate(
+                    RangePredicate.Type.getRandom(),
+                    JanusValueGenerator.generateWithoutMaxMinValues(type),
+                    JanusValueGenerator.generateWithoutMaxMinValues(type));
+        } else {
+            return new RangePredicate(
+                    RangePredicate.Type.getRandom(),
+                    JanusValueGenerator.generate(type),
+                    JanusValueGenerator.generate(type));
+        }
     }
 
 }

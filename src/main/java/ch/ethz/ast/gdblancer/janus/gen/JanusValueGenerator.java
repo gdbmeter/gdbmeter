@@ -5,6 +5,8 @@ import ch.ethz.ast.gdblancer.util.Randomization;
 
 import java.util.UUID;
 
+import static ch.ethz.ast.gdblancer.janus.schema.JanusType.LONG;
+
 public class JanusValueGenerator {
 
     private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\r|&\\";
@@ -39,6 +41,14 @@ public class JanusValueGenerator {
                 return String.format("new Date(%sL)", Randomization.getInteger());
             default:
                 throw new AssertionError(type);
+        }
+    }
+
+    public static String generateWithoutMaxMinValues(JanusType type) {
+        if (type == LONG) {
+            return String.format("%sL", Randomization.nextLong());
+        } else {
+            return generate(type);
         }
     }
 
