@@ -24,24 +24,34 @@ public class PredicateGenerator {
 
     private Predicate generateForInternal(JanusType type) {
         currentDepth++;
+        PredicateType predicateType;
 
-        if (currentDepth >= MAX_DEPTH || Randomization.getBoolean()) {
-            return generateTerminatingPredicate(type);
+        if (currentDepth >= MAX_DEPTH) {
+            predicateType = PredicateType.getRandomTerminatingType();
         } else {
-            return generateBinaryPredicate(type);
+            predicateType = PredicateType.getRandom();
         }
+
+        switch (predicateType) {
+            case RANGE_PREDICATE:
+                return generateRangePredicate(type);
+            case BINARY_PREDICATE:
+                return generateBinaryPredicate(type);
+            case UNARY_PREDICATE:
+                return generateUnaryPredicate(type);
+            case SIMPLE_PREDICATE:
+                return generateSimplePredicate(type);
+            default:
+                throw new AssertionError(predicateType);
+        }
+    }
+
+    private Predicate generateUnaryPredicate(JanusType type) {
+        return new UnaryPredicate(UnaryPredicate.Type.getRandom(), generateForInternal(type));
     }
 
     private Predicate generateBinaryPredicate(JanusType type) {
         return new BinaryPredicate(BinaryPredicate.Type.getRandom(), generateForInternal(type), generateForInternal(type));
-    }
-
-    private Predicate generateTerminatingPredicate(JanusType type) {
-        if (Randomization.getBoolean()) {
-            return generateSimplePredicate(type);
-        } else {
-            return generateRangePredicate(type);
-        }
     }
 
     private Predicate generateSimplePredicate(JanusType type) {
@@ -87,6 +97,21 @@ public class PredicateGenerator {
                     RangePredicate.Type.getRandom(),
                     JanusValueGenerator.generate(type),
                     JanusValueGenerator.generate(type));
+        }
+    }
+
+    private enum PredicateType {
+        RANGE_PREDICATE,
+        SIMPLE_PREDICATE,
+        BINARY_PREDICATE,
+        UNARY_PREDICATE;
+
+        static PredicateType getRandom() {
+            return Randomization.fromOptions(values());
+        }
+
+        static PredicateType getRandomTerminatingType() {
+            return Randomization.fromOptions(RANGE_PREDICATE, SIMPLE_PREDICATE);
         }
     }
 

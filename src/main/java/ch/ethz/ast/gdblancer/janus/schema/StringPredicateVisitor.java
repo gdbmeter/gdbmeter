@@ -15,6 +15,14 @@ public class StringPredicateVisitor implements PredicateVisitor {
     }
 
     @Override
+    public void visit(UnaryPredicate predicate) {
+        builder.append(predicate.getType().getName());
+        builder.append("(");
+        visit(predicate.getArgument());
+        builder.append(")");
+    }
+
+    @Override
     public void visit(SimplePredicate predicate) {
         builder.append(predicate.getType().getName());
         builder.append("(");
