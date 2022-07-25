@@ -58,7 +58,7 @@ public class PredicateGenerator {
 
             Object value;
 
-            if (JanusBugs.bug6571) {
+            if (JanusBugs.bug3154) {
                 value = JanusValueGenerator.generateWithoutMaxMinValues(type);
             } else {
                 value = JanusValueGenerator.generate(type);
@@ -77,7 +77,7 @@ public class PredicateGenerator {
 
     // TODO: Maybe only generate "valid" ranges
     private Predicate generateRangePredicate(JanusType type) {
-        if (JanusBugs.bug6571) {
+        if (JanusBugs.bug3154) {
             return new RangePredicate(
                     RangePredicate.Type.getRandom(),
                     JanusValueGenerator.generateWithoutMaxMinValues(type),
