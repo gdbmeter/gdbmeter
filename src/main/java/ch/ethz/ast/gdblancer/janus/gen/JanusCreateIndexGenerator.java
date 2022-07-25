@@ -34,9 +34,10 @@ public class JanusCreateIndexGenerator {
             }
         }
 
-        String indexName = schema.generateRandomIndexName(JanusCreateIndexGenerator::generateValidLuceneName);
-
-        return new JanusCreateIndexQuery(label, properties, indexName, composite);
+        return new JanusCreateIndexQuery(label,
+                properties,
+                schema.generateRandomIndexName(JanusCreateIndexGenerator::generateValidLuceneName),
+                composite);
     }
 
     private static final Set<String> KEYWORDS = Set.of(
