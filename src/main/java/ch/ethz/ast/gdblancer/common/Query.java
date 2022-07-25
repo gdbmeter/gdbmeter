@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class Query<C extends Connection> {
+
     private final ExpectedErrors expectedErrors;
     private final boolean couldAffectSchema;
 
