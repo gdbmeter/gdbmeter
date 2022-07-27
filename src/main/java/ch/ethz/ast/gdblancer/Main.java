@@ -13,7 +13,7 @@ import java.nio.file.FileSystems;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
+        if (args.length < 1) {
             System.out.println("Use 0/1/2 as the first parameter");
             System.exit(0);
         }
@@ -33,12 +33,22 @@ public class Main {
                 provider = new JanusProvider();
                 break;
             default:
-                System.out.println("Unknown option, use 0 or 1");
+                System.out.println("Unknown option, use either 0, 1 or 2");
                 System.exit(0);
                 return;
         }
 
-        run(provider, type);
+        int mode = 0;
+
+        if (args.length >= 2) {
+            mode = Integer.parseInt(args[1]);
+        }
+
+        if (mode == 0) {
+            run(provider, type);
+        } else {
+            replayQueries(provider);
+        }
     }
 
     private static void replayQueries(Provider<?, ?> provider) throws IOException {
