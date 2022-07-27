@@ -17,6 +17,8 @@ public class JanusOracleFactory implements OracleFactory<JanusConnection, JanusT
                 return new JanusEmptyResultOracle(state, schema);
             case NON_EMPTY_RESULT:
                 return new JanusNonEmptyResultOracle(state, schema);
+            case PARTITION:
+                return new JanusPartitionOracle(state, schema);
             default:
                 throw new AssertionError(type);
         }

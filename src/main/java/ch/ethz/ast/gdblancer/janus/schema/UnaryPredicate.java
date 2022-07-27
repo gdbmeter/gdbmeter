@@ -22,7 +22,7 @@ public class UnaryPredicate implements Predicate {
 
     public enum Type {
 
-        AND("not");
+        NOT("not");
 
         private final String name;
 

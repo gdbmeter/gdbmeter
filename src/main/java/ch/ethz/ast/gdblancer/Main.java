@@ -20,7 +20,7 @@ public class Main {
 
         int option = Integer.parseInt(args[0]);
         Provider<?, ?> provider;
-        OracleType type = OracleType.NON_EMPTY_RESULT;
+        OracleType type = OracleType.PARTITION;
 
         switch (option) {
             case 0:
