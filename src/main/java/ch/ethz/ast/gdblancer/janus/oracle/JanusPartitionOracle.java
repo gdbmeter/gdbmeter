@@ -5,6 +5,7 @@ import ch.ethz.ast.gdblancer.common.Oracle;
 import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.JanusBugs;
 import ch.ethz.ast.gdblancer.janus.JanusConnection;
 import ch.ethz.ast.gdblancer.janus.query.JanusQuery;
 import ch.ethz.ast.gdblancer.janus.schema.*;
@@ -46,9 +47,13 @@ public class JanusPartitionOracle implements Oracle {
         String property = Randomization.fromSet(properties);
         JanusType type = entity.getAvailableProperties().get(property);
 
+        if (JanusBugs.bug6578 && type == JanusType.UUID) {
+            throw new IgnoreMeException();
+        }
+
         Predicate predicate = PredicateGenerator.generateFor(type);
         String query = "g.V().hasLabel('%s').has('%s', %s).count().next()";
-        
+
         Query<JanusConnection> firstQuery = new JanusQuery(String.format(query, label, property, PredicateVisitor.asString(predicate)));
         result = firstQuery.executeAndGet(state);
         Long first = 0L;
