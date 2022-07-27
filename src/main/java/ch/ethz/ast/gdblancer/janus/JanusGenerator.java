@@ -12,8 +12,10 @@ import ch.ethz.ast.gdblancer.util.Randomization;
 import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -51,7 +53,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
                 break;
             case CREATE_INDEX:
             case DROP_INDEX:
-                selectedNumber = Randomization.nextInt(0,  4);
+                selectedNumber = Randomization.nextInt(0, 4);
                 break;
             default:
                 throw new AssertionError(action);
@@ -66,38 +68,50 @@ public class JanusGenerator implements Generator<JanusConnection> {
         this.schema = schema;
     }
 
-    public void createJanusSchema(JanusGraph graph) {
+    public void createJanusSchema(JanusGraph graph, Logger logger) {
         JanusGraphManagement management = graph.openManagement();
+        List<String> logBacklog = new LinkedList<>();
 
         for (String label : schema.getLabels()) {
+            logBacklog.add(String.format("VL:%s", label));
             management.makeVertexLabel(label).make();
 
             Entity<JanusType> entity = schema.getEntityByLabel(label);
 
             for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
-                management.makePropertyKey(property.getKey())
+                String key = property.getKey();
+                Class<?> clazz = property.getValue().getJavaClass();
+
+                logBacklog.add(String.format("PK:%s:%s", key, clazz.getName()));
+                management.makePropertyKey(key)
                         .cardinality(Cardinality.SINGLE)
-                        .dataType(property.getValue().getJavaClass()).make();
+                        .dataType(clazz).make();
             }
         }
 
         for (String label : schema.getTypes()) {
+            logBacklog.add(String.format("EL:%s", label));
             management.makeEdgeLabel(label).make();
 
             Entity<JanusType> entity = schema.getEntityByType(label);
 
             for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
-                management.makePropertyKey(property.getKey())
+                String key = property.getKey();
+                Class<?> clazz = property.getValue().getJavaClass();
+
+                logBacklog.add(String.format("PK:%s:%s", key, clazz.getName()));
+                management.makePropertyKey(key)
                         .cardinality(Cardinality.SINGLE)
-                        .dataType(property.getValue().getJavaClass()).make();
+                        .dataType(clazz).make();
             }
         }
 
+        logger.info("[Schema {}]", String.join(" ", logBacklog));
         management.commit();
     }
 
     public void generate(GlobalState<JanusConnection> globalState) {
-        createJanusSchema(globalState.getConnection().getGraph());
+        createJanusSchema(globalState.getConnection().getGraph(), globalState.getLogger());
         List<Function<Schema<JanusType>, JanusQueryAdapter>> queries = new ArrayList<>();
 
         // Sample the actions
