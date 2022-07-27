@@ -82,7 +82,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
                 String key = property.getKey();
                 Class<?> clazz = property.getValue().getJavaClass();
 
-                logBacklog.add(String.format("PK:%s:%s", key, clazz.getName()));
+                logBacklog.add(String.format("PK:%s:%s", key, clazz.getCanonicalName()));
                 management.makePropertyKey(key)
                         .cardinality(Cardinality.SINGLE)
                         .dataType(clazz).make();
@@ -99,7 +99,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
                 String key = property.getKey();
                 Class<?> clazz = property.getValue().getJavaClass();
 
-                logBacklog.add(String.format("PK:%s:%s", key, clazz.getName()));
+                logBacklog.add(String.format("PK:%s:%s", key, clazz.getCanonicalName()));
                 management.makePropertyKey(key)
                         .cardinality(Cardinality.SINGLE)
                         .dataType(clazz).make();
