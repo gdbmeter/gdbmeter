@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class JanusConnection implements Connection {
@@ -28,6 +29,7 @@ public class JanusConnection implements Connection {
     private JanusGraph graph;
     private GremlinExecutor executor;
     private GraphTraversalSource traversal;
+    private ExecutorService executorService;
 
     @Override
     public void connect() throws ConfigurationException {
@@ -42,12 +44,13 @@ public class JanusConnection implements Connection {
         traversal = graph.traversal();
         bindings.put("g", traversal);
 
+        executorService = Executors.newFixedThreadPool(1);
         executor = GremlinExecutor.build()
                 .evaluationTimeout(4000L)
                 .globalBindings(bindings)
                 // this makes sure that all queries are executed in the same thread
                 // it seems to prevent PermanentLockingExceptions
-                .executorService(Executors.newFixedThreadPool(1))
+                .executorService(executorService)
                 .create();
     }
 
@@ -58,6 +61,9 @@ public class JanusConnection implements Connection {
         executor.close();
         traversal.close();
         graph.close();
+
+        // Since we supply our own executor service, we are responsible for closing it
+        executorService.shutdown();
     }
 
     public List<Map<String, Object>> execute(JanusQuery query) throws ExecutionException, InterruptedException {
