@@ -34,6 +34,6 @@ public class JanusProvider implements Provider<JanusConnection, JanusType> {
 
     @Override
     public QueryReplay getQueryReplay() {
-        return null;
+        return new JanusQueryReplay();
     }
 }
