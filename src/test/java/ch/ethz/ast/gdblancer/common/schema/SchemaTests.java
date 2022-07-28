@@ -113,4 +113,16 @@ public class SchemaTests {
         assertTrue(schema.hasIndices());
     }
 
+    @Test
+    void testGetLabelsNotEmpty() {
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
+        assertFalse(schema.getLabels().isEmpty());
+    }
+
+    @Test
+    void testGetTypesNotEmpty() {
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
+        assertFalse(schema.getTypes().isEmpty());
+    }
+
 }
