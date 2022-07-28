@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.janus.query;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.janus.JanusConnection;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-public class JanusCreateIndexQuery extends JanusQueryAdapter {
+public class JanusCreateIndexQuery extends Query<JanusConnection> {
 
     private final String label;
     private final Set<String> properties;

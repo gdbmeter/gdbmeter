@@ -1,9 +1,10 @@
 package ch.ethz.ast.gdblancer.janus.gen;
 
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.JanusConnection;
 import ch.ethz.ast.gdblancer.janus.query.JanusQuery;
-import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import ch.ethz.ast.gdblancer.janus.schema.Predicate;
 import ch.ethz.ast.gdblancer.janus.schema.PredicateGenerator;
@@ -21,7 +22,7 @@ public class JanusDeleteGenerator {
         this.schema = schema;
     }
 
-    public static JanusQueryAdapter deleteNodes(Schema<JanusType> schema) {
+    public static Query<JanusConnection> deleteNodes(Schema<JanusType> schema) {
         return new JanusDeleteGenerator(schema).generateDelete();
     }
 

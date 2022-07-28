@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.janus.query;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.janus.JanusConnection;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class JanusRemoveIndexQuery extends JanusQueryAdapter {
+public class JanusRemoveIndexQuery extends Query<JanusConnection> {
 
     private final String indexName;
 

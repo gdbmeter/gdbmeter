@@ -2,10 +2,10 @@ package ch.ethz.ast.gdblancer.janus;
 
 import ch.ethz.ast.gdblancer.common.Generator;
 import ch.ethz.ast.gdblancer.common.GlobalState;
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.common.schema.Entity;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.janus.gen.*;
-import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import ch.ethz.ast.gdblancer.util.Randomization;
@@ -30,9 +30,9 @@ public class JanusGenerator implements Generator<JanusConnection> {
         SET(JanusPropertyUpdateGenerator::updateProperties),
         REMOVE(JanusPropertyRemoveGenerator::removeProperties);
 
-        private final Function<Schema<JanusType>, JanusQueryAdapter> generator;
+        private final Function<Schema<JanusType>, Query<JanusConnection>> generator;
 
-        Action(Function<Schema<JanusType>, JanusQueryAdapter> generator) {
+        Action(Function<Schema<JanusType>, Query<JanusConnection>> generator) {
             this.generator = generator;
         }
     }
@@ -112,7 +112,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
 
     public void generate(GlobalState<JanusConnection> globalState) {
         createJanusSchema(globalState.getConnection().getGraph(), globalState.getLogger());
-        List<Function<Schema<JanusType>, JanusQueryAdapter>> queries = new ArrayList<>();
+        List<Function<Schema<JanusType>, Query<JanusConnection>>> queries = new ArrayList<>();
 
         // Sample the actions
         for (Action action : Action.values()) {
@@ -125,11 +125,11 @@ public class JanusGenerator implements Generator<JanusConnection> {
 
         Randomization.shuffleList(queries);
 
-        for (Function<Schema<JanusType>, JanusQueryAdapter> queryGenerator : queries) {
+        for (Function<Schema<JanusType>, Query<JanusConnection>> queryGenerator : queries) {
             try {
                 int tries = 0;
                 boolean success;
-                JanusQueryAdapter query;
+                Query<JanusConnection> query;
 
                 do {
                     query = queryGenerator.apply(schema);

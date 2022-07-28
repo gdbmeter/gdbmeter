@@ -1,10 +1,11 @@
 package ch.ethz.ast.gdblancer.janus.gen;
 
+import ch.ethz.ast.gdblancer.common.Query;
 import ch.ethz.ast.gdblancer.common.schema.Index;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.janus.JanusBugs;
+import ch.ethz.ast.gdblancer.janus.JanusConnection;
 import ch.ethz.ast.gdblancer.janus.query.JanusCreateIndexQuery;
-import ch.ethz.ast.gdblancer.janus.query.JanusQueryAdapter;
 import ch.ethz.ast.gdblancer.janus.schema.JanusType;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 
 public class JanusCreateIndexGenerator {
 
-    public static JanusQueryAdapter createIndex(Schema<JanusType> schema) {
+    public static Query<JanusConnection> createIndex(Schema<JanusType> schema) {
         String label;
         Set<String> properties;
         boolean composite = Randomization.getBoolean();
