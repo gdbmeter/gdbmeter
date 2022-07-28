@@ -35,7 +35,7 @@ public class JanusCreateIndexQuery extends Query<JanusConnection> {
 
     @Override
     public boolean execute(GlobalState<JanusConnection> globalState) {
-        globalState.getLogger().info("Creating {} index {} on label {} and properties {}", composite ? "composite" : "mixed", indexName, label, properties);
+        globalState.getLogger().info("[CI:{}:{}:{}:{}]", indexName, composite, label, properties);
 
         JanusConnection connection = globalState.getConnection();
         JanusGraph graph = connection.getGraph();

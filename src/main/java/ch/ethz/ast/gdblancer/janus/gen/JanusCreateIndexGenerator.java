@@ -43,6 +43,7 @@ public class JanusCreateIndexGenerator {
                 composite);
     }
 
+    // TODO: Check if this is necessary and if so create JanusUtil
     private static final Set<String> KEYWORDS = Set.of(
             "KEY", "VERTEX", "EDGE", "ELEMENT", "PROPERTY", "LABEL"
     );

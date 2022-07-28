@@ -2,10 +2,15 @@ package ch.ethz.ast.gdblancer.janus;
 
 import ch.ethz.ast.gdblancer.common.GlobalState;
 import ch.ethz.ast.gdblancer.common.QueryReplay;
+import ch.ethz.ast.gdblancer.janus.query.JanusCreateIndexQuery;
 import ch.ethz.ast.gdblancer.janus.query.JanusQuery;
+import ch.ethz.ast.gdblancer.janus.query.JanusRemoveIndexQuery;
 import org.janusgraph.core.schema.JanusGraphManagement;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JanusQueryReplay extends QueryReplay {
 
@@ -43,6 +48,21 @@ public class JanusQueryReplay extends QueryReplay {
                     }
 
                     m.commit();
+                } else if (query.startsWith("[CI")) {
+                    String[] parts = query.split(":");
+
+                    String indexName = parts[1];
+                    boolean composite = Boolean.parseBoolean(parts[2]);
+                    String label = parts[3];
+                    String[] properties = parts[4].substring(1, parts[4].length() - 2).split(", ");
+                    Set<String> propertySet = new HashSet<>(Arrays.asList(properties));
+
+                    new JanusCreateIndexQuery(label, propertySet, indexName, composite).execute(state);
+                } else if (query.startsWith("[DI")) {
+                    String[] parts = query.split(":");
+                    String indexName = parts[1].substring(0, parts[1].length() - 1);
+
+                    new JanusRemoveIndexQuery(indexName).execute(state);
                 } else {
                     new JanusQuery(query).execute(state);
                 }

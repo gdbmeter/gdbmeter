@@ -32,7 +32,7 @@ public class JanusRemoveIndexQuery extends Query<JanusConnection> {
 
         try {
             isComposite = management.getGraphIndex(indexName).isCompositeIndex();
-            globalState.getLogger().info("Deleting {} index {}", isComposite ? "composite" : "mixed", indexName);
+            globalState.getLogger().info("[DI:{}]", indexName);
 
             management.updateIndex(management.getGraphIndex(indexName), SchemaAction.DISABLE_INDEX).get();
             management.commit();
