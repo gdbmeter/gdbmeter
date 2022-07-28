@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class Schema<T> {
 
+    // TODO: Rename the following two maps
     private final Map<String, Entity<T>> nodeSchema;
     private final Map<String, Entity<T>> relationshipSchema;
     private Set<String> indices;
@@ -21,19 +23,32 @@ public class Schema<T> {
         this.indices = new HashSet<>();
     }
 
+    /**
+     * Generates a random schema and uses the CypherUtil to generate valid names.
+     * Property and label names are unique to avoid schema problems.
+     */
     public static <E> Schema<E> generateRandomSchema(Set<E> availableTypes) {
         Map<String, Entity<E>> nodeSchema = new HashMap<>();
         Map<String, Entity<E>> relationshipSchema = new HashMap<>();
+        Set<String> takenNames = new HashSet<>();
 
         for (int i = 0; i < Randomization.nextInt(3, 10); i++) {
-            nodeSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes));
+            String name = Randomization.generateUniqueElement(takenNames, CypherUtil::generateValidName);
+            takenNames.add(name);
+            Entity<E> entity = Entity.generateRandomEntity(availableTypes, takenNames);
+
+            nodeSchema.put(name, entity);
         }
 
         for (int i = 0; i < Randomization.nextInt(3, 4); i++) {
-            relationshipSchema.put(CypherUtil.generateValidName(), Entity.generateRandomEntity(availableTypes));
+            String name = Randomization.generateUniqueElement(takenNames, CypherUtil::generateValidName);
+            takenNames.add(name);
+            Entity<E> entity = Entity.generateRandomEntity(availableTypes, takenNames);
+
+            relationshipSchema.put(name, entity);
         }
 
-        return new Schema<E>(nodeSchema, relationshipSchema);
+        return new Schema<>(nodeSchema, relationshipSchema);
     }
 
     public void setIndices(Set<String> indices) {
@@ -91,14 +106,8 @@ public class Schema<T> {
         return new Index(label, Set.of(property));
     }
 
-    public String generateRandomIndexName() {
-        String name;
-
-        do {
-            name = CypherUtil.generateValidName();
-        } while (indices.contains(name));
-
-        return name;
+    public String generateRandomIndexName(Supplier<String> generator) {
+        return Randomization.generateUniqueElement(indices, generator);
     }
 
     private Map<String, Set<String>> getNodeSchemaByPropertyType(T type) {
@@ -117,6 +126,14 @@ public class Schema<T> {
         }
 
         return schema;
+    }
+
+    public Set<String> getLabels() {
+        return nodeSchema.keySet();
+    }
+
+    public Set<String> getTypes() {
+        return relationshipSchema.keySet();
     }
 
 }

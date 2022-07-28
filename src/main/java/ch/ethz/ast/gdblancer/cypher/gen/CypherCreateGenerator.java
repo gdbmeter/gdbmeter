@@ -217,6 +217,6 @@ public abstract class CypherCreateGenerator<T> {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    protected abstract CypherPropertyGenerator getPropertyGenerator(Entity<T> entity, Map<String, Entity<T>> variables);
+    protected abstract CypherPropertyGenerator<T> getPropertyGenerator(Entity<T> entity, Map<String, Entity<T>> variables);
 
 }

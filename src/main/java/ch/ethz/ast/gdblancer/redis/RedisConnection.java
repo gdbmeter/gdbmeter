@@ -9,7 +9,6 @@ import redis.clients.jedis.exceptions.JedisDataException;
 import redis.clients.jedis.graph.Record;
 import redis.clients.jedis.graph.ResultSet;
 
-import java.io.IOException;
 import java.util.*;
 
 public class RedisConnection implements Connection {
@@ -17,7 +16,7 @@ public class RedisConnection implements Connection {
     private Jedis jedis;
 
     @Override
-    public void connect() throws IOException {
+    public void connect() {
         jedis = new Jedis("localhost", 6379);
 
         try (Transaction transaction = jedis.multi()) {

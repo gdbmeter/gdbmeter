@@ -2,12 +2,12 @@ package ch.ethz.ast.gdblancer.neo4j;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.common.StringQuery;
 
 import java.util.List;
 import java.util.Map;
 
-public class Neo4JQuery extends Query<Neo4JConnection> {
+public class Neo4JQuery extends StringQuery<Neo4JConnection> {
 
     public Neo4JQuery(String query) {
         super(query);

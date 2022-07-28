@@ -20,7 +20,10 @@
 
     <root level="info">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
     </root>
+
+    <logger name="ch.ethz.ast.gdblancer.common.GlobalState">
+        <appender-ref ref="FILE" />
+    </logger>
 
 </configuration>

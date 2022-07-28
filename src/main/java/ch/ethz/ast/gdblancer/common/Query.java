@@ -5,31 +5,27 @@ import java.util.Map;
 
 public abstract class Query<C extends Connection> {
 
-    private final String query;
     private final ExpectedErrors expectedErrors;
     private final boolean couldAffectSchema;
 
-    public Query(String query) {
-        this(query, new ExpectedErrors());
+    public Query() {
+        this(new ExpectedErrors());
     }
 
-    public Query(String query, boolean couldAffectSchema) {
-        this(query, new ExpectedErrors(), couldAffectSchema);
+    public Query(boolean couldAffectSchema) {
+        this(new ExpectedErrors(), couldAffectSchema);
     }
 
-    public Query(String query, ExpectedErrors expectedErrors) {
-        this(query, expectedErrors, false);
+    public Query(ExpectedErrors expectedErrors) {
+        this(expectedErrors, false);
     }
 
-    public Query(String query, ExpectedErrors expectedErrors, boolean couldAffectSchema) {
-        this.query = query;
+    public Query(ExpectedErrors expectedErrors, boolean couldAffectSchema) {
         this.expectedErrors = expectedErrors;
         this.couldAffectSchema = couldAffectSchema;
     }
 
-    public String getQuery() {
-        return query;
-    }
+    public abstract String getQuery();
 
     public ExpectedErrors getExpectedErrors() {
         return expectedErrors;

@@ -364,7 +364,7 @@ public class Neo4JExpressionGenerator {
         }
     }
 
-    private CypherFunctionCall generateFunction(int depth, Neo4JType returnType) {
+    private CypherFunctionCall<Neo4JType> generateFunction(int depth, Neo4JType returnType) {
         List<Neo4JFunction> functions = Stream.of(Neo4JFunction.values())
                 .filter(function -> function.supportReturnType(returnType))
                 .collect(Collectors.toList());
@@ -393,7 +393,7 @@ public class Neo4JExpressionGenerator {
             arguments[i] = generateExpression(depth + 1, argumentTypes[i]);
         }
 
-        return new CypherFunctionCall(chosenFunction, arguments);
+        return new CypherFunctionCall<>(chosenFunction, arguments);
     }
 
 }

@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.common.schema;
 
+import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
@@ -60,7 +61,7 @@ public class SchemaTests {
     void testGetEntityByLabel() {
         Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String label = schema.getRandomLabel();
-        Entity entity = schema.getEntityByLabel(label);
+        Entity<String> entity = schema.getEntityByLabel(label);
 
         assertNotNull(entity);
     }
@@ -69,7 +70,7 @@ public class SchemaTests {
     void testGetEntityByType() {
         Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         String type = schema.getRandomType();
-        Entity entity = schema.getEntityByType(type);
+        Entity<String> entity = schema.getEntityByType(type);
 
         assertNotNull(entity);
     }
@@ -77,13 +78,14 @@ public class SchemaTests {
     @Test
     void testTwoRandomIndexNamesAreNotEqual() {
         Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
-        assertNotEquals(schema.generateRandomIndexName(), schema.generateRandomIndexName());
+        assertNotEquals(schema.generateRandomIndexName(CypherUtil::generateValidName),
+                schema.generateRandomIndexName(CypherUtil::generateValidName));
 
         String name = "forbidden";
         schema.setIndices(Set.of(name));
 
         for (int i = 0; i < 100; i++) {
-            assertNotEquals(name, schema.generateRandomIndexName());
+            assertNotEquals(name, schema.generateRandomIndexName(CypherUtil::generateValidName));
         }
     }
 
@@ -94,7 +96,7 @@ public class SchemaTests {
         schema.setIndices(Set.of(name));
 
         for (int i = 0; i < 100; i++) {
-            assertNotEquals(name, schema.generateRandomIndexName());
+            assertNotEquals(name, schema.generateRandomIndexName(CypherUtil::generateValidName));
         }
     }
 
@@ -109,6 +111,18 @@ public class SchemaTests {
         Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
         schema.setIndices(Set.of("something"));
         assertTrue(schema.hasIndices());
+    }
+
+    @Test
+    void testGetLabelsNotEmpty() {
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
+        assertFalse(schema.getLabels().isEmpty());
+    }
+
+    @Test
+    void testGetTypesNotEmpty() {
+        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
+        assertFalse(schema.getTypes().isEmpty());
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Describes an entity of a cypher database.
+ * Describes an entity of a graph database.
  * This could be either a node or an edge.
  */
 public class Entity<T> {
@@ -20,16 +20,20 @@ public class Entity<T> {
     }
 
     /**
-     * Generates a cypher entity based on a set of available types.
+     * Generates an entity based on a set of available types.
+     * The property names are enforced to be unique by consulting takenNames.
      */
-    public static <E> Entity<E> generateRandomEntity(Set<E> availableTypes) {
+    public static <E> Entity<E> generateRandomEntity(Set<E> availableTypes, Set<String> takenNames) {
         Map<String, E> availableProperties = new HashMap<>();
 
         for (int i = 0; i < Randomization.nextInt(1, 6); i++) {
-            availableProperties.put(CypherUtil.generateValidName(), Randomization.fromSet(availableTypes));
+            String name = Randomization.generateUniqueElement(takenNames, CypherUtil::generateValidName);
+            takenNames.add(name);
+
+            availableProperties.put(name, Randomization.fromSet(availableTypes));
         }
 
-        return new Entity<E>(availableProperties);
+        return new Entity<>(availableProperties);
     }
 
     public Map<String, T> getAvailableProperties() {

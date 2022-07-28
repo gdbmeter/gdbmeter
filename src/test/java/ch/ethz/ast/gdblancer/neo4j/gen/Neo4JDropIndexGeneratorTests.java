@@ -1,11 +1,11 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.Query;
-import ch.ethz.ast.gdblancer.common.schema.Schema;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Neo4JDropIndexGeneratorTests extends Neo4JSchemaGenerator {
 
@@ -18,7 +18,7 @@ public class Neo4JDropIndexGeneratorTests extends Neo4JSchemaGenerator {
                 assertNotNull(query);
                 assertTrue(query.getQuery().startsWith("DROP INDEX"));
                 break;
-            } catch (IgnoreMeException exception) {}
+            } catch (IgnoreMeException ignored) {}
         }
     }
 

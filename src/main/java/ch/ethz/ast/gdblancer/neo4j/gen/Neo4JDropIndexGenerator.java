@@ -9,14 +9,14 @@ import ch.ethz.ast.gdblancer.util.Randomization;
 
 public class Neo4JDropIndexGenerator {
 
-    private final Schema schema;
+    private final Schema<Neo4JType> schema;
     private final StringBuilder query = new StringBuilder();
 
     public Neo4JDropIndexGenerator(Schema<Neo4JType> schema) {
         this.schema = schema;
     }
 
-    public static Neo4JQuery dropIndex(Schema schema) {
+    public static Neo4JQuery dropIndex(Schema<Neo4JType> schema) {
         return new Neo4JDropIndexGenerator(schema).generateDropIndex();
     }
 

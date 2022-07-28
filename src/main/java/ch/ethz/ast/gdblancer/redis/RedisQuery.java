@@ -2,12 +2,12 @@ package ch.ethz.ast.gdblancer.redis;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
 import ch.ethz.ast.gdblancer.common.GlobalState;
-import ch.ethz.ast.gdblancer.common.Query;
+import ch.ethz.ast.gdblancer.common.StringQuery;
 
 import java.util.List;
 import java.util.Map;
 
-public class RedisQuery extends Query<RedisConnection> {
+public class RedisQuery extends StringQuery<RedisConnection> {
 
     public RedisQuery(String query) {
         super(query);

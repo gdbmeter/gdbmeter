@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer.util;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 
 public class Randomization {
 
@@ -13,6 +14,30 @@ public class Randomization {
 
     public static int nextInt(int lower, int upper) {
         return random.nextInt(lower, upper);
+    }
+
+    public static int nextInt() {
+        return random.nextInt();
+    }
+
+    public static long nextLong() {
+        return random.nextLong();
+    }
+
+    public static short getShort() {
+        if (smallBiasProbability()) {
+            return Randomization.fromOptions((short) 0, Short.MAX_VALUE, Short.MIN_VALUE);
+        }
+
+        return (short) random.nextInt(Short.MAX_VALUE + 1);
+    }
+
+    public static byte getByte() {
+        if (smallBiasProbability()) {
+            return Randomization.fromOptions((byte) 0, Byte.MAX_VALUE, Byte.MIN_VALUE);
+        }
+
+        return (byte) random.nextInt(Byte.MAX_VALUE + 1);
     }
 
     public static float nextFloat() {
@@ -120,6 +145,16 @@ public class Randomization {
 
     public static String getString() {
         return getStringOfAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#<>/.,~-+'*()[]{} ^*?%_\t\n\r|&\\");
+    }
+    
+    public static <E> E generateUniqueElement(Set<E> elements, Supplier<E> generator) {
+        E element;
+
+        do {
+            element = generator.get();
+        } while (elements.contains(element));
+
+        return element;
     }
 
 }

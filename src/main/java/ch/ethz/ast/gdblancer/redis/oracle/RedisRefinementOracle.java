@@ -55,7 +55,7 @@ public class RedisRefinementOracle implements Oracle {
 
         for (int i = 0; i < amount; i++) {
             String label = labels.get(i);
-            Entity entity = schema.getEntityByLabel(label);
+            Entity<RedisType> entity = schema.getEntityByLabel(label);
 
             query.append(separator);
             query.append(String.format("(n%d:%s)", i, label));
@@ -123,9 +123,11 @@ public class RedisRefinementOracle implements Oracle {
                             // Floating point numbers are truncated by RedisGraph
                             // this means we have to compare the string representation instead
                             // See: https://github.com/RedisGraph/RedisGraph/issues/2417
-                            expectedConstant = new CypherConstant.StringConstant(String.format("%f", value));
+
+                            Double refinedValue = (Double) value;
+                            expectedConstant = new CypherConstant.StringConstant(String.format("%f", refinedValue));
                             CypherVariablePropertyAccess access = new CypherVariablePropertyAccess(String.format("n%d.%s", current, key));
-                            CypherFunctionCall functionCall = new CypherFunctionCall(RedisFunction.TO_STRING, new CypherExpression[]{access});
+                            CypherFunctionCall<RedisType> functionCall = new CypherFunctionCall<>(RedisFunction.TO_STRING, new CypherExpression[]{access});
 
                             CypherExpression branch = new CypherBinaryComparisonOperation(functionCall, expectedConstant, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
                             refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);

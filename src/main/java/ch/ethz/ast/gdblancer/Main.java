@@ -2,6 +2,7 @@ package ch.ethz.ast.gdblancer;
 
 import ch.ethz.ast.gdblancer.common.*;
 import ch.ethz.ast.gdblancer.common.schema.Schema;
+import ch.ethz.ast.gdblancer.janus.JanusProvider;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JProvider;
 import ch.ethz.ast.gdblancer.redis.RedisProvider;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
@@ -12,8 +13,8 @@ import java.nio.file.FileSystems;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
-            System.out.println("Use 0/1 as the first parameter");
+        if (args.length < 1) {
+            System.out.println("Use 0/1/2 as the first parameter");
             System.exit(0);
         }
 
@@ -28,13 +29,26 @@ public class Main {
             case 1:
                 provider = new RedisProvider();
                 break;
+            case 2:
+                provider = new JanusProvider();
+                break;
             default:
-                System.out.println("Unknown option, use 0 or 1");
+                System.out.println("Unknown option, use either 0, 1 or 2");
                 System.exit(0);
                 return;
         }
 
-        run(provider, type);
+        int mode = 0;
+
+        if (args.length >= 2) {
+            mode = Integer.parseInt(args[1]);
+        }
+
+        if (mode == 0) {
+            run(provider, type);
+        } else {
+            replayQueries(provider);
+        }
     }
 
     private static void replayQueries(Provider<?, ?> provider) throws IOException {
@@ -51,11 +65,11 @@ public class Main {
                 state.setConnection(connection);
 
                 Schema<T> schema = provider.getSchema();
-
                 Oracle oracle = factory.createOracle(oracleType, state, schema);
                 oracle.onGenerate();
 
                 provider.getGenerator(schema).generate(state);
+
                 state.getLogger().info("Running oracle");
 
                 try {

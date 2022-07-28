@@ -1,6 +1,6 @@
 package ch.ethz.ast.gdblancer.cypher.ast;
 
-public class BinaryOperatorNode<T, O extends Operator> {
+public class BinaryOperatorNode<T extends CypherExpression, O extends Operator> {
 
     private final O operator;
     private final T left;
