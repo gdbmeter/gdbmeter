@@ -76,38 +76,30 @@ public class JanusGenerator implements Generator<JanusConnection> {
             logBacklog.add(String.format("VL:%s", label));
             management.makeVertexLabel(label).make();
 
-            Entity<JanusType> entity = schema.getEntityByLabel(label);
-
-            for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
-                String key = property.getKey();
-                Class<?> clazz = property.getValue().getJavaClass();
-
-                logBacklog.add(String.format("PK:%s:%s", key, clazz.getCanonicalName()));
-                management.makePropertyKey(key)
-                        .cardinality(Cardinality.SINGLE)
-                        .dataType(clazz).make();
-            }
+            createPropertyKeys(schema.getEntityByLabel(label), management, logBacklog);
         }
 
         for (String label : schema.getTypes()) {
             logBacklog.add(String.format("EL:%s", label));
             management.makeEdgeLabel(label).make();
 
-            Entity<JanusType> entity = schema.getEntityByType(label);
-
-            for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
-                String key = property.getKey();
-                Class<?> clazz = property.getValue().getJavaClass();
-
-                logBacklog.add(String.format("PK:%s:%s", key, clazz.getCanonicalName()));
-                management.makePropertyKey(key)
-                        .cardinality(Cardinality.SINGLE)
-                        .dataType(clazz).make();
-            }
+            createPropertyKeys(schema.getEntityByType(label), management, logBacklog);
         }
 
         logger.info("[Schema {}]", String.join(" ", logBacklog));
         management.commit();
+    }
+
+    public void createPropertyKeys(Entity<JanusType> entity, JanusGraphManagement management, List<String> logBacklog) {
+        for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
+            String key = property.getKey();
+            Class<?> clazz = property.getValue().getJavaClass();
+
+            logBacklog.add(String.format("PK:%s:%s", key, clazz.getCanonicalName()));
+            management.makePropertyKey(key)
+                    .cardinality(Cardinality.SINGLE)
+                    .dataType(clazz).make();
+        }
     }
 
     public void generate(GlobalState<JanusConnection> globalState) {
