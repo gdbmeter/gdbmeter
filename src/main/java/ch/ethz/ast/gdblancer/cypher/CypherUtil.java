@@ -12,6 +12,7 @@ public class CypherUtil {
             "KEY", "VERTEX", "EDGE", "ELEMENT", "PROPERTY", "LABEL"
     );
 
+    // TODO: The following function should not be used in common.schema and janus.gen
     /**
      * A valid name begins with an alphabetic character and not with a number
      * Furthermore, a valid name does not contain symbols except for underscores

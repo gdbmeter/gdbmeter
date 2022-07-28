@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 public class Schema<T> {
 
+    // TODO: Rename the following two maps
     private final Map<String, Entity<T>> nodeSchema;
     private final Map<String, Entity<T>> relationshipSchema;
     private Set<String> indices;
