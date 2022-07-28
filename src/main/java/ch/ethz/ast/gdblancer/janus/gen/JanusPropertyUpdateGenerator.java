@@ -10,11 +10,13 @@ import ch.ethz.ast.gdblancer.janus.schema.PredicateGenerator;
 import ch.ethz.ast.gdblancer.janus.schema.PredicateVisitor;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.Map;
+
 public class JanusPropertyUpdateGenerator {
 
     private final Schema<JanusType> schema;
-
     private final StringBuilder query = new StringBuilder();
+
     public JanusPropertyUpdateGenerator(Schema<JanusType> schema) {
         this.schema = schema;
     }
@@ -26,11 +28,13 @@ public class JanusPropertyUpdateGenerator {
     private JanusQuery generateUpdate() {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
-        String matchProperty = Randomization.fromSet(entity.getAvailableProperties().keySet());
-        String updateProperty = Randomization.fromSet(entity.getAvailableProperties().keySet());
+        Map<String, JanusType> properties = entity.getAvailableProperties();
 
-        JanusType matchType = entity.getAvailableProperties().get(matchProperty);
-        JanusType updateType = entity.getAvailableProperties().get(updateProperty);
+        String matchProperty = Randomization.fromSet(properties.keySet());
+        String updateProperty = Randomization.fromSet(properties.keySet());
+
+        JanusType matchType = properties.get(matchProperty);
+        JanusType updateType = properties.get(updateProperty);
 
         Predicate predicate = PredicateGenerator.generateFor(matchType);
 

@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdblancer.neo4j.gen;
 
 import ch.ethz.ast.gdblancer.common.ExpectedErrors;
+import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.cypher.gen.CypherCreateIndexGenerator;
 import ch.ethz.ast.gdblancer.common.schema.Index;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JQuery;
@@ -27,7 +28,7 @@ public class Neo4JCreateIndexGenerator extends CypherCreateIndexGenerator<Neo4JT
     @Override
     protected void generateTextIndex(Index index) {
         query.append("CREATE TEXT INDEX ");
-        query.append(schema.generateRandomIndexName());
+        query.append(schema.generateRandomIndexName(CypherUtil::generateValidName));
         query.append(" ");
 
         // TODO: Maybe choose same name deliberately in this case?
@@ -48,7 +49,7 @@ public class Neo4JCreateIndexGenerator extends CypherCreateIndexGenerator<Neo4JT
         query.append("INDEX ");
 
         // TODO: Maybe add support for unnamed indices
-        query.append(schema.generateRandomIndexName());
+        query.append(schema.generateRandomIndexName(CypherUtil::generateValidName));
         query.append(" ");
 
         // TODO: Maybe choose same name deliberately in this case?

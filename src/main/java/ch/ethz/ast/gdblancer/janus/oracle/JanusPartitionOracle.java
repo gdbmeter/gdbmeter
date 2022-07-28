@@ -28,8 +28,6 @@ public class JanusPartitionOracle implements Oracle {
 
     @Override
     public void check() {
-        int exceptions = 0;
-
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
 
@@ -56,38 +54,34 @@ public class JanusPartitionOracle implements Oracle {
 
         Query<JanusConnection> firstQuery = new JanusQuery(String.format(query, label, property, PredicateVisitor.asString(predicate)));
         result = firstQuery.executeAndGet(state);
-        Long first = 0L;
+        Long first;
 
         if (result != null) {
             first = (Long) result.get(0).get("count");
         } else {
-            exceptions++;
+            throw new AssertionError("Unexpected exception");
         }
 
         Predicate negatedPredicate = new UnaryPredicate(UnaryPredicate.Type.NOT, predicate);
         Query<JanusConnection> secondQuery = new JanusQuery(String.format(query, label, property, PredicateVisitor.asString(negatedPredicate)));
 
         result = secondQuery.executeAndGet(state);
-        Long second = 0L;
+        Long second;
 
         if (result != null) {
             second = (Long) result.get(0).get("count");
         } else {
-            exceptions++;
+            throw new AssertionError("Unexpected exception");
         }
 
         Query<JanusConnection> thirdQuery = new JanusQuery(String.format("g.V().hasLabel('%s').hasNot('%s').count().next()", label, property));
         result = thirdQuery.executeAndGet(state);
-        Long third = 0L;
+        Long third;
 
         if (result != null) {
             third = (Long) result.get(0).get("count");
         } else {
-            exceptions++;
-        }
-
-        if (exceptions > 0) {
-            throw new IgnoreMeException();
+            throw new AssertionError("Unexpected exception");
         }
 
         if (first + second + third != expectedTotal) {

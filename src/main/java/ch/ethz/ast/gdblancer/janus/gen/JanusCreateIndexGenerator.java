@@ -18,6 +18,8 @@ public class JanusCreateIndexGenerator {
         Set<String> properties;
         boolean composite = Randomization.getBoolean();
 
+        // The following ensures that there's no property of type char selected.
+        // This is because Lucene indices don't support char types.
         while (true) {
             Index index = schema.generateRandomNodeIndex();
             label = index.getLabel();

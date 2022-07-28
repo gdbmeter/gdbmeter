@@ -24,6 +24,7 @@ public class JanusQueryReplay extends QueryReplay {
                     query = query.substring(0, query.length() - 1);
                     String[] parts = query.split(" ");
 
+                    // We start at index 1 since the first one contains "[Schema"
                     for (int i = 1, splitLength = parts.length; i < splitLength; i++) {
                         String part = parts[i];
                         String[] subParts = part.split(":");

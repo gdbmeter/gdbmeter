@@ -1,5 +1,6 @@
 package ch.ethz.ast.gdblancer.common.schema;
 
+import ch.ethz.ast.gdblancer.cypher.CypherUtil;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
@@ -77,13 +78,14 @@ public class SchemaTests {
     @Test
     void testTwoRandomIndexNamesAreNotEqual() {
         Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
-        assertNotEquals(schema.generateRandomIndexName(), schema.generateRandomIndexName());
+        assertNotEquals(schema.generateRandomIndexName(CypherUtil::generateValidName),
+                schema.generateRandomIndexName(CypherUtil::generateValidName));
 
         String name = "forbidden";
         schema.setIndices(Set.of(name));
 
         for (int i = 0; i < 100; i++) {
-            assertNotEquals(name, schema.generateRandomIndexName());
+            assertNotEquals(name, schema.generateRandomIndexName(CypherUtil::generateValidName));
         }
     }
 
@@ -94,7 +96,7 @@ public class SchemaTests {
         schema.setIndices(Set.of(name));
 
         for (int i = 0; i < 100; i++) {
-            assertNotEquals(name, schema.generateRandomIndexName());
+            assertNotEquals(name, schema.generateRandomIndexName(CypherUtil::generateValidName));
         }
     }
 

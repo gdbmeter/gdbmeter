@@ -105,10 +105,6 @@ public class Schema<T> {
         return new Index(label, Set.of(property));
     }
 
-    public String generateRandomIndexName() {
-        return generateRandomIndexName(CypherUtil::generateValidName);
-    }
-
     public String generateRandomIndexName(Supplier<String> generator) {
         return Randomization.generateUniqueElement(indices, generator);
     }

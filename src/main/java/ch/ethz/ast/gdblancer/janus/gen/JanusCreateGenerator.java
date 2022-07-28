@@ -48,11 +48,13 @@ public class JanusCreateGenerator {
     private void generateNode() {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
-        Set<String> selectedProperties = Randomization.nonEmptySubset(entity.getAvailableProperties().keySet());
+
+        Map<String, JanusType> properties = entity.getAvailableProperties();
+        Set<String> selectedProperties = Randomization.nonEmptySubset(properties.keySet());
 
         query.append(String.format(".addV('%s')", label));
 
-        generateProperties(selectedProperties, entity.getAvailableProperties());
+        generateProperties(selectedProperties, properties);
 
         String name = Randomization.generateUniqueElement(nodeVariables, CypherUtil::generateValidName);
         nodeVariables.add(name);
@@ -73,13 +75,15 @@ public class JanusCreateGenerator {
     private void generateEdge(String from, String to) {
         String type = schema.getRandomType();
         Entity<JanusType> entity = schema.getEntityByType(type);
-        Set<String> selectedProperties = Randomization.nonEmptySubset(entity.getAvailableProperties().keySet());
+
+        Map<String, JanusType> properties = entity.getAvailableProperties();
+        Set<String> selectedProperties = Randomization.nonEmptySubset(properties.keySet());
 
         query.append(String.format(".addE('%s')", type));
         query.append(String.format(".from('%s')", from));
         query.append(String.format(".to('%s')", to));
 
-        generateProperties(selectedProperties, entity.getAvailableProperties());
+        generateProperties(selectedProperties, properties);
     }
 
 }

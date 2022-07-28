@@ -10,11 +10,13 @@ import ch.ethz.ast.gdblancer.janus.schema.PredicateGenerator;
 import ch.ethz.ast.gdblancer.janus.schema.PredicateVisitor;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.Map;
+
 public class JanusPropertyRemoveGenerator {
 
     private final Schema<JanusType> schema;
-
     private final StringBuilder query = new StringBuilder();
+
     public JanusPropertyRemoveGenerator(Schema<JanusType> schema) {
         this.schema = schema;
     }
@@ -26,11 +28,11 @@ public class JanusPropertyRemoveGenerator {
     private JanusQuery generateRemove() {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
-        String matchProperty = Randomization.fromSet(entity.getAvailableProperties().keySet());
-        String removeProperty = Randomization.fromSet(entity.getAvailableProperties().keySet());
+        Map<String, JanusType> properties = entity.getAvailableProperties();
 
-        JanusType matchType = entity.getAvailableProperties().get(matchProperty);
-
+        String matchProperty = Randomization.fromSet(properties.keySet());
+        String removeProperty = Randomization.fromSet(properties.keySet());
+        JanusType matchType = properties.get(matchProperty);
         Predicate predicate = PredicateGenerator.generateFor(matchType);
 
         query.append(String.format("g.V().hasLabel('%s').has('%s', %s).properties('%s').drop().iterate()",

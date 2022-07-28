@@ -11,7 +11,6 @@ public class StringPredicateVisitor implements PredicateVisitor {
         builder.append("(");
         visit(predicate.getRight());
         builder.append(")");
-
     }
 
     @Override

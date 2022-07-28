@@ -10,6 +10,8 @@ import ch.ethz.ast.gdblancer.janus.schema.PredicateGenerator;
 import ch.ethz.ast.gdblancer.janus.schema.PredicateVisitor;
 import ch.ethz.ast.gdblancer.util.Randomization;
 
+import java.util.Map;
+
 public class JanusDeleteGenerator {
 
     private final Schema<JanusType> schema;
@@ -26,9 +28,10 @@ public class JanusDeleteGenerator {
     private JanusQuery generateDelete() {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
-        String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+        Map<String, JanusType> properties = entity.getAvailableProperties();
 
-        JanusType type = entity.getAvailableProperties().get(property);
+        String property = Randomization.fromSet(properties.keySet());
+        JanusType type = properties.get(property);
         Predicate predicate = PredicateGenerator.generateFor(type);
 
         query.append(String.format("g.V().hasLabel('%s').has('%s', %s).drop().iterate()",
