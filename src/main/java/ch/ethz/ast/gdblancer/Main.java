@@ -6,48 +6,87 @@ import ch.ethz.ast.gdblancer.janus.JanusProvider;
 import ch.ethz.ast.gdblancer.neo4j.Neo4JProvider;
 import ch.ethz.ast.gdblancer.redis.RedisProvider;
 import ch.ethz.ast.gdblancer.util.IgnoreMeException;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.Parameters;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
 
 public class Main {
 
+    @Parameters(separators = "=")
+    static
+    class Options {
+
+        @Parameter
+        private String databaseName;
+
+        @Parameter(names = {"--oracle", "--method", "-o"}, description = "The oracle that should be executed on the database")
+        private OracleType oracleType;
+
+        @SuppressWarnings("FieldMayBeFinal")
+        @Parameter(names = {"--reproduce", "--replay", "-r"}, description = "Whether the queries under logs/replay should be ran or not")
+        private boolean reproduce = false;
+
+        @Parameter(names = {"--help", "-h"}, description = "Lists all supported options", help = true)
+        private boolean help = false;
+
+    }
+
     public static void main(String[] args) throws Exception {
-        if (args.length < 1) {
-            System.out.println("Use 0/1/2 as the first parameter");
-            System.exit(0);
+        Options options = new Options();
+
+        JCommander jc = JCommander.newBuilder()
+                .addObject(options)
+                .programName("GDBLancer")
+                .build();
+
+        jc.parse(args);
+
+        if (options.help) {
+            jc.usage();
+            return;
         }
 
-        int option = Integer.parseInt(args[0]);
         Provider<?, ?> provider;
-        OracleType type = OracleType.PARTITION;
 
-        switch (option) {
-            case 0:
+        switch (options.databaseName.toLowerCase()) {
+            case "neo4j":
                 provider = new Neo4JProvider();
                 break;
-            case 1:
+            case "redis":
                 provider = new RedisProvider();
                 break;
-            case 2:
+            case "janus":
                 provider = new JanusProvider();
                 break;
             default:
-                System.out.println("Unknown option, use either 0, 1 or 2");
-                System.exit(0);
+                System.err.println("Unknown database, please use either neo4j, redis or janus");
+                System.exit(1);
                 return;
         }
 
-        int mode = 0;
+        System.out.printf(" _____ ______ ______  _                                     \n" +
+                "|  __ \\|  _  \\| ___ \\| |                                    \n" +
+                "| |  \\/| | | || |_/ /| |      __ _  _ __    ___   ___  _ __ \n" +
+                "| | __ | | | || ___ \\| |     / _` || '_ \\  / __| / _ \\| '__|\n" +
+                "| |_\\ \\| |/ / | |_/ /| |____| (_| || | | || (__ |  __/| |   \n" +
+                " \\____/|___/  \\____/ \\_____/ \\__,_||_| |_| \\___| \\___||_|   \n" +
+                "                                                            \n" +
+                "                                                            \n" +
+                "Version: 1.0\n" +
+                "Selected Database: %s\n\n", options.databaseName);
 
-        if (args.length >= 2) {
-            mode = Integer.parseInt(args[1]);
-        }
-
-        if (mode == 0) {
-            run(provider, type);
-        } else {
+        if (options.reproduce) {
             replayQueries(provider);
+        } else {
+            if (options.oracleType == null) {
+                System.err.println("Select an oracle to execute");
+                System.exit(1);
+            }
+
+            run(provider, options.oracleType);
         }
     }
 
@@ -78,7 +117,8 @@ public class Main {
                     for (int i = 0; i < 100; i++) {
                         try {
                             oracle.check();
-                        } catch (IgnoreMeException ignored) {}
+                        } catch (IgnoreMeException ignored) {
+                        }
                     }
                 } finally {
                     oracle.onComplete();
