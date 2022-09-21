@@ -1,8 +1,8 @@
-# GDBLancer
+# GDBMeter
 
-[![Test](https://github.com/InverseIntegral/gdblancer/actions/workflows/maven.yml/badge.svg)](https://github.com/InverseIntegral/gdblancer/actions/workflows/maven.yml)
+[![Test](https://github.com/InverseIntegral/gdbmeter/actions/workflows/maven.yml/badge.svg)](https://github.com/InverseIntegral/gdbmeter/actions/workflows/maven.yml)
 
-GDBLancer is a tool that automatically tests Graph Database Management Systems (GDBMS).
+GDBMeter  is a tool that automatically tests Graph Database Management Systems (GDBMS).
 It tries to find logic bugs i.e. bugs that cause the GDBMS to fetch an incorrect result set.
 
 ## Getting Started
@@ -14,13 +14,13 @@ Required Software:
 
 The following commands clone the repository, build a JAR file and start GDBLancer:
 ```
-git clone git@github.com:InverseIntegral/gdblancer.git
+git clone https://github.com/InverseIntegral/gdbmeter.git
 cd gdblancer
 mvn package -DskipTests
 cd target
-java -jar gdblancer-*.jar
+java -jar gdbmeter-*.jar
 ```
-This will run GDBLancer until a bug has been found.
+This will run GDBMeter until a bug has been found.
 
 ## Testing Approaches
 
@@ -32,9 +32,7 @@ This will run GDBLancer until a bug has been found.
 | [RedisGraph](https://github.com/RedisGraph/RedisGraph) | Working    | This implementation is based on the common Cypher logic. Running this implementation will most likely uncover more unreported logic bugs. |
 | [JanusGraph](https://github.com/JanusGraph/janusgraph) | Working    | Supports a (small) subset of the Gremlin query language. Currently, only the inmemory version with the lucene index backend are tested.   |
 
-## Found bugs
-
-## Using GDBLancer
+## Using GDBMeter
 
 ### Logs
 
