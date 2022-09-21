@@ -5,30 +5,30 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ch.ethz.ast</groupId>
-    <artifactId>gdblancer</artifactId>
+    <artifactId>gdbmeter</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>GDBLancer</name>
-    <description>GDBLancer finds logic bugs in Graph Database Management Systems through automatic testing</description>
-    <url>https://github.com/InverseIntegral/gdblancer</url>
+    <name>GDBMeter</name>
+    <description>GDBMeter finds logic bugs in Graph Database Management Systems through automatic testing</description>
+    <url>https://github.com/InverseIntegral/gdbmeter</url>
     <inceptionYear>2022</inceptionYear>
 
     <licenses>
         <license>
             <name>MIT</name>
             <distribution>repo</distribution>
-            <url>https://github.com/InverseIntegral/gdblancer/blob/main/LICENSE</url>
+            <url>https://github.com/InverseIntegral/gdbmeter/blob/main/LICENSE</url>
         </license>
     </licenses>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/InverseIntegral/gdblancer/issues</url>
+        <url>https://github.com/InverseIntegral/gdbmeter/issues</url>
     </issueManagement>
 
     <scm>
-        <url>https://github.com/InverseIntegral/gdblancer</url>
-        <developerConnection>scm:git:git@github.com:InverseIntegral/gdblancer.git</developerConnection>
+        <url>https://github.com/InverseIntegral/gdbmeter</url>
+        <developerConnection>scm:git:git@github.com:InverseIntegral/gdbmeter.git</developerConnection>
     </scm>
 
     <build>

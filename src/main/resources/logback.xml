@@ -22,7 +22,7 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="ch.ethz.ast.gdblancer.common.GlobalState">
+    <logger name="ch.ethz.ast.gdbmeter.common.GlobalState">
         <appender-ref ref="FILE" />
     </logger>
 
