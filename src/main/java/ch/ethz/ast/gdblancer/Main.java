@@ -29,6 +29,7 @@ public class Main {
         @Parameter(names = {"--reproduce", "--replay", "-r"}, description = "Whether the queries under logs/replay should be ran or not")
         private boolean reproduce = false;
 
+        @SuppressWarnings("FieldMayBeFinal")
         @Parameter(names = {"--help", "-h"}, description = "Lists all supported options", help = true)
         private boolean help = false;
 
