@@ -33,7 +33,7 @@ public class JanusConnection implements Connection {
 
     @Override
     public void connect() throws ConfigurationException {
-        PropertiesConfiguration conf = ConfigurationUtil.loadPropertiesConfig("conf/test.properties");
+        PropertiesConfiguration conf = ConfigurationUtil.loadPropertiesConfig("test.properties");
         graph = JanusGraphFactory.open(conf);
 
         // This is a workaround to be able to use strings as queries
