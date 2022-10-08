@@ -369,15 +369,14 @@ public class Neo4JExpressionGenerator {
                 .filter(function -> function.supportReturnType(returnType))
                 .collect(Collectors.toList());
 
-        if (Neo4JBugs.PartitionOracleSpecific.bug12887) {
-            functions.remove(Neo4JFunction.LTRIM);
-        }
-
         if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
             functions.remove(Neo4JFunction.SQRT);
             functions.remove(Neo4JFunction.LOG);
             functions.remove(Neo4JFunction.LOG_10);
-            functions.remove(Neo4JFunction.EXP); // removed so that no infinity is generated
+
+            // removed so that no infinity is generated
+            functions.remove(Neo4JFunction.EXP);
+            functions.remove(Neo4JFunction.POINT_DISTANCE);
         }
 
         if (functions.isEmpty()) {

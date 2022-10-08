@@ -1,7 +1,6 @@
 package ch.ethz.ast.gdbmeter.common;
 
 import ch.ethz.ast.gdbmeter.neo4j.Neo4JBugs;
-import ch.ethz.ast.gdbmeter.redis.RedisBugs;
 import org.neo4j.graphdb.QueryExecutionException;
 
 import java.util.HashSet;
@@ -48,16 +47,6 @@ public class ExpectedErrors {
         if (Neo4JBugs.bug12911) {
             if (exception instanceof IllegalStateException) {
                 if (message.equalsIgnoreCase("Planning a distinct for union, but no union was planned before.")) {
-                    return true;
-                }
-            }
-        }
-
-        if (RedisBugs.bug3010) {
-            if (exception instanceof NumberFormatException) {
-                if (message.equals("For input string: \"inf\"") ||
-                        message.equals("For input string: \"-nan\"") ||
-                        message.equals("For input string: \"-inf\"")) {
                     return true;
                 }
             }
