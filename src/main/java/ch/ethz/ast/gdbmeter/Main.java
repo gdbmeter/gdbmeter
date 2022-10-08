@@ -75,7 +75,7 @@ public class Main {
                         " | |__| | |__| | |_) | |  | |  __/ ||  __/ |   \n" +
                         "  \\_____|_____/|____/|_|  |_|\\___|\\__\\___|_|   \n" +
                         "                                               \n" +
-                        "                                               " +
+                        "                                               \n" +
                 "Version: 1.0\n" +
                 "Selected Database: %s\n\n", options.databaseName);
 
