@@ -39,11 +39,12 @@ public class Neo4JCreateIndexGenerator extends CypherCreateIndexGenerator<Neo4JT
         query.append(String.format("FOR (n:%s) ON (n.%s)", index.getLabel(), index.getPropertyNames().toArray()[0]));
     }
 
+    // TODO: Support point indices
     private void generateIndex(String format, Index index) {
         query.append("CREATE ");
 
         if (Randomization.getBoolean()) {
-            query.append("BTREE ");
+            query.append("RANGE ");
         }
 
         query.append("INDEX ");
