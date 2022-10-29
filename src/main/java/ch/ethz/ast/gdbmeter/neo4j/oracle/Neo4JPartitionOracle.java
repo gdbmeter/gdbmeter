@@ -39,11 +39,6 @@ public class Neo4JPartitionOracle extends CypherPartitionOracle<Neo4JConnection,
     }
 
     @Override
-    public void onGenerate() {
-        Neo4JBugs.PartitionOracleSpecific.bug12883 = true;
-    }
-
-    @Override
     public void onStart() {
         Neo4JBugs.PartitionOracleSpecific.enableAll();
     }
