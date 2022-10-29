@@ -39,6 +39,9 @@ public class Neo4JUtil {
         errors.add("Invalid input for length value in function 'right()': Expected a numeric value but got: NO_VALUE");
         errors.add("Invalid input for length value in function 'substring()': Expected a numeric value but got: NO_VALUE");
         errors.add("Invalid input for start value in function 'substring()': Expected a numeric value but got: NO_VALUE");
+        errors.addRegex("Invalid input for length value in function 'substring\\(\\)': Expected an integer between -2147483648 and 2147483647, but got: .*");
+        errors.addRegex("Invalid input for start value in function 'substring\\(\\)': Expected an integer between -2147483648 and 2147483647, but got: .*");
+        errors.addRegex("negative length"); // for right functions
     }
 
 }
