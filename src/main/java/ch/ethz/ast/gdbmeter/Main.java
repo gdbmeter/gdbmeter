@@ -84,9 +84,7 @@ public class Main {
                 "Selected Database: %s\n\n", options.databaseName);
 
         if (options.reproduce) {
-            while (true) {
-                replayQueries(provider);
-            }
+            replayQueries(provider);
         } else {
             if (options.oracleType == null) {
                 System.err.println("Select an oracle to execute");
