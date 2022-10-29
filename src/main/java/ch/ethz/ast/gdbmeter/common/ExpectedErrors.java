@@ -1,5 +1,7 @@
 package ch.ethz.ast.gdbmeter.common;
 
+import ch.ethz.ast.gdbmeter.neo4j.Neo4JBugs;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -28,6 +30,10 @@ public class ExpectedErrors {
      */
     public boolean isExpected(Exception exception) {
         String message = exception.getMessage();
+
+        if (Neo4JBugs.bug12869 && exception instanceof IndexOutOfBoundsException) {
+            return true;
+        }
 
         if (message == null) {
             return false;
