@@ -28,7 +28,7 @@ public class Neo4JQuery extends StringQuery<Neo4JConnection> {
     @Override
     public boolean execute(GlobalState<Neo4JConnection> globalState) {
         Neo4JConnection connection = globalState.getConnection();
-        globalState.getLogger().info(getQuery());
+        globalState.appendToLog(getQuery());
 
         try {
             connection.execute(this);
@@ -42,7 +42,7 @@ public class Neo4JQuery extends StringQuery<Neo4JConnection> {
     @Override
     public List<Map<String, Object>> executeAndGet(GlobalState<Neo4JConnection> globalState) {
         Neo4JConnection connection = globalState.getConnection();
-        globalState.getLogger().info(getQuery());
+        globalState.appendToLog(getQuery());
 
         try {
             return connection.execute(this);

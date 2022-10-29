@@ -28,7 +28,7 @@ public class RedisQuery extends StringQuery<RedisConnection> {
     @Override
     public boolean execute(GlobalState<RedisConnection> globalState) {
         RedisConnection connection = globalState.getConnection();
-        globalState.getLogger().info(getQuery());
+        globalState.appendToLog(getQuery());
 
         try {
             connection.execute(this);
@@ -42,7 +42,7 @@ public class RedisQuery extends StringQuery<RedisConnection> {
     @Override
     public List<Map<String, Object>> executeAndGet(GlobalState<RedisConnection> globalState) {
         RedisConnection connection = globalState.getConnection();
-        globalState.getLogger().info(getQuery());
+        globalState.appendToLog(getQuery());
 
         try {
             return connection.execute(this);

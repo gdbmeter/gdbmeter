@@ -9,6 +9,7 @@ import ch.ethz.ast.gdbmeter.util.IgnoreMeException;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -28,6 +29,9 @@ public class Main {
         @SuppressWarnings("FieldMayBeFinal")
         @Parameter(names = {"--reproduce", "--replay", "-r"}, description = "Whether the queries under logs/replay should be ran or not")
         private boolean reproduce = false;
+
+        @Parameter(names = {"--verbose", "-v"}, description = "Whether all queries should be logged or not")
+        private boolean verbose = false;
 
         @SuppressWarnings("FieldMayBeFinal")
         @Parameter(names = {"--help", "-h"}, description = "Lists all supported options", help = true)
@@ -80,14 +84,16 @@ public class Main {
                 "Selected Database: %s\n\n", options.databaseName);
 
         if (options.reproduce) {
-            replayQueries(provider);
+            while (true) {
+                replayQueries(provider);
+            }
         } else {
             if (options.oracleType == null) {
                 System.err.println("Select an oracle to execute");
                 System.exit(1);
             }
 
-            run(provider, options.oracleType);
+            run(provider, options.oracleType, options.verbose);
         }
     }
 
@@ -95,11 +101,13 @@ public class Main {
         provider.getQueryReplay().replayFromFile(FileSystems.getDefault().getPath("logs/replay").toFile());
     }
 
-    private static <C extends Connection, T> void run(Provider<C, T> provider, OracleType oracleType) throws Exception {
+    private static <C extends Connection, T> void run(Provider<C, T> provider, OracleType oracleType, boolean verbose) {
         GlobalState<C> state = new GlobalState<>();
         OracleFactory<C, T> factory = provider.getOracleFactory();
 
         while (true) {
+            state.clearLog();
+
             try (C connection = provider.getConnection()) {
                 connection.connect();
                 state.setConnection(connection);
@@ -109,8 +117,6 @@ public class Main {
                 oracle.onGenerate();
 
                 provider.getGenerator(schema).generate(state);
-
-                state.getLogger().info("Running oracle");
 
                 try {
                     oracle.onStart();
@@ -124,8 +130,14 @@ public class Main {
                 } finally {
                     oracle.onComplete();
                 }
-            } finally {
-                state.getLogger().info("Finished iteration, closing database");
+
+                if (verbose) {
+                    state.logCurrentExecution();
+                }
+            } catch (Throwable throwable) {
+                state.appendToLog(ExceptionUtils.getStackTrace(throwable));
+                state.logCurrentExecution();
+                break;
             }
         }
     }

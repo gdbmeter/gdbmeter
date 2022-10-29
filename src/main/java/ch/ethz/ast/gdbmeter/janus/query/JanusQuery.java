@@ -16,7 +16,7 @@ public class JanusQuery extends StringQuery<JanusConnection> {
     @Override
     public boolean execute(GlobalState<JanusConnection> globalState) {
         JanusConnection connection = globalState.getConnection();
-        globalState.getLogger().info(getQuery());
+        globalState.appendToLog(getQuery());
 
         try {
             connection.execute(this);
@@ -30,7 +30,7 @@ public class JanusQuery extends StringQuery<JanusConnection> {
     @Override
     public List<Map<String, Object>> executeAndGet(GlobalState<JanusConnection> globalState) {
         JanusConnection connection = globalState.getConnection();
-        globalState.getLogger().info(getQuery());
+        globalState.appendToLog(getQuery());
 
         try {
             return connection.execute(this);

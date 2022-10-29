@@ -12,7 +12,6 @@ import ch.ethz.ast.gdbmeter.util.Randomization;
 import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.schema.JanusGraphManagement;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -68,7 +67,9 @@ public class JanusGenerator implements Generator<JanusConnection> {
         this.schema = schema;
     }
 
-    public void createJanusSchema(JanusGraph graph, Logger logger) {
+    public void createJanusSchema(GlobalState<JanusConnection> globalState) {
+        JanusGraph graph = globalState.getConnection().getGraph();
+
         JanusGraphManagement management = graph.openManagement();
         List<String> logBacklog = new LinkedList<>();
 
@@ -86,7 +87,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
             createPropertyKeys(schema.getEntityByType(label), management, logBacklog);
         }
 
-        logger.info("[Schema {}]", String.join(" ", logBacklog));
+        globalState.appendToLog(String.format("[Schema %s]", String.join(" ", logBacklog)));
         management.commit();
     }
 
@@ -103,7 +104,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
     }
 
     public void generate(GlobalState<JanusConnection> globalState) {
-        createJanusSchema(globalState.getConnection().getGraph(), globalState.getLogger());
+        createJanusSchema(globalState);
         List<Function<Schema<JanusType>, Query<JanusConnection>>> queries = new ArrayList<>();
 
         // Sample the actions

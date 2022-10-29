@@ -35,7 +35,7 @@ public class JanusCreateIndexQuery extends Query<JanusConnection> {
 
     @Override
     public boolean execute(GlobalState<JanusConnection> globalState) {
-        globalState.getLogger().info("[CI:{}:{}:{}:{}]", indexName, composite, label, properties);
+        globalState.appendToLog(String.format("[CI:%s:%s:%s:%s]", indexName, composite, label, properties));
 
         JanusConnection connection = globalState.getConnection();
         JanusGraph graph = connection.getGraph();
@@ -75,7 +75,6 @@ public class JanusCreateIndexQuery extends Query<JanusConnection> {
             JanusGraphManagement.IndexJobFuture future = management.updateIndex(graphIndex, SchemaAction.REINDEX);
 
             if (future == null) {
-                globalState.getLogger().warn("The returned future from updateIndex is null");
                 return false;
             }
 

@@ -6,6 +6,7 @@ import ch.ethz.ast.gdbmeter.common.QueryReplay;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class Neo4JQueryReplay extends QueryReplay {
 
@@ -26,11 +27,14 @@ public class Neo4JQueryReplay extends QueryReplay {
             state.setConnection(connection);
 
             for (String query : queries) {
-                System.out.println(new Neo4JQuery(query, errors).executeAndGet(state));
+                List<Map<String, Object>> result = new Neo4JQuery(query, errors).executeAndGet(state);
+                state.appendToLog(result == null ? "null" : result.toString());
             }
-
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            state.logCurrentExecution();
+            state.clearLog();
         }
     }
 
