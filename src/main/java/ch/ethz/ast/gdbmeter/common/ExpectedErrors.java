@@ -36,24 +36,16 @@ public class ExpectedErrors {
             return true;
         }
 
+        if (message == null) {
+            return false;
+        }
+
         if (exception instanceof QueryExecutionException) {
             if (Neo4JBugs.bug12878) {
                 if (message.startsWith("Node with id") && message.endsWith("has been deleted in this transaction")) {
                     return true;
                 }
             }
-        }
-
-        if (Neo4JBugs.bug12911) {
-            if (exception instanceof IllegalStateException) {
-                if (message.equalsIgnoreCase("Planning a distinct for union, but no union was planned before.")) {
-                    return true;
-                }
-            }
-        }
-
-        if (message == null) {
-            return false;
         }
 
         for (String error : errors) {

@@ -1,7 +1,6 @@
 package ch.ethz.ast.gdbmeter.cypher.ast;
 
 import ch.ethz.ast.gdbmeter.cypher.CypherUtil;
-import ch.ethz.ast.gdbmeter.util.Randomization;
 
 public abstract class CypherConstant implements CypherExpression {
 
@@ -60,20 +59,8 @@ public abstract class CypherConstant implements CypherExpression {
 
     public static class IntegerOctalConstant extends IntegerConstant {
 
-        public enum OctalPrefix {
-            ZERO,
-            ZERO_O;
-
-            public static OctalPrefix getRandom() {
-                return Randomization.fromOptions(OctalPrefix.values());
-            }
-        }
-
-        private final OctalPrefix prefix;
-
-        public IntegerOctalConstant(long value, OctalPrefix prefix) {
+        public IntegerOctalConstant(long value) {
             super(value);
-            this.prefix = prefix;
         }
 
         @Override
@@ -86,18 +73,9 @@ public abstract class CypherConstant implements CypherExpression {
                 modifiedValue *= -1;
             }
 
-            switch (prefix) {
-                case ZERO:
-                    sb.append("0").append(Long.toOctalString(modifiedValue));
-                    break;
-                case ZERO_O:
-                    sb.append("0o").append(Long.toOctalString(modifiedValue));
-                    break;
-                default:
-                    throw new AssertionError(prefix);
-            }
-
-            return sb.toString();
+            return sb.append("0o")
+                    .append(Long.toOctalString(modifiedValue))
+                    .toString();
         }
     }
 

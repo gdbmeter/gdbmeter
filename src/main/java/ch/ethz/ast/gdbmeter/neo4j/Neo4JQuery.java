@@ -48,6 +48,14 @@ public class Neo4JQuery extends StringQuery<Neo4JConnection> {
             return connection.execute(this);
         } catch (Exception exception) {
             checkException(exception);
+        } catch (NoSuchMethodError error) {
+            if (Neo4JBugs.bug12967) {
+                if (error.getMessage().equals("'int org.apache.lucene.search.IndexSearcher.getMaxClauseCount()'")) {
+                    return null;
+                }
+            }
+
+            throw error;
         }
 
         return null;

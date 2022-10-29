@@ -3,8 +3,6 @@ package ch.ethz.ast.gdbmeter.cypher.ast;
 import ch.ethz.ast.gdbmeter.cypher.ast.CypherConstant.*;
 import org.junit.jupiter.api.Test;
 
-import static ch.ethz.ast.gdbmeter.cypher.ast.CypherConstant.IntegerOctalConstant.OctalPrefix.ZERO;
-import static ch.ethz.ast.gdbmeter.cypher.ast.CypherConstant.IntegerOctalConstant.OctalPrefix.ZERO_O;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CypherConstantTests {
@@ -28,10 +26,8 @@ public class CypherConstantTests {
 
     @Test
     void testIntegerOctalConstants() {
-        assertEquals(new IntegerOctalConstant(100L, ZERO).getTextRepresentation(), "0144");
-        assertEquals(new IntegerOctalConstant(100L, ZERO_O).getTextRepresentation(), "0o144");
-        assertEquals(new IntegerOctalConstant(-100L, ZERO).getTextRepresentation(), "-0144");
-        assertEquals(new IntegerOctalConstant(-100L, ZERO_O).getTextRepresentation(), "-0o144");
+        assertEquals(new IntegerOctalConstant(100L).getTextRepresentation(), "0o144");
+        assertEquals(new IntegerOctalConstant(-100L).getTextRepresentation(), "-0o144");
     }
 
     @Test
