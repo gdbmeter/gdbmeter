@@ -1,6 +1,7 @@
 package ch.ethz.ast.gdbmeter.common;
 
 import ch.ethz.ast.gdbmeter.neo4j.Neo4JBugs;
+import org.neo4j.graphdb.QueryExecutionException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,6 +38,14 @@ public class ExpectedErrors {
 
         if (message == null) {
             return false;
+        }
+
+        if (exception instanceof QueryExecutionException) {
+            if (Neo4JBugs.bug12878) {
+                if (message.startsWith("Node with id") && message.endsWith("has been deleted in this transaction")) {
+                    return true;
+                }
+            }
         }
 
         for (String error : errors) {
