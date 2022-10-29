@@ -29,22 +29,10 @@ public class CypherBinaryArithmeticOperation
             return Randomization.fromOptions(ADDITION, SUBTRACTION, MULTIPLICATION, MODULO, DIVISION);
         }
 
-        /**
-         * Returns only NaN safe operators i.e. operators that cannot generate NaNs.
-         * Strictly speaking multiplication and addition can also generate NaNs when Infinity occurs in the operands.
-         * However, this can not happen in our case.
-         */
-        public static ArithmeticOperator getRandomIntegerOperatorNaNSafe() {
-            return Randomization.fromOptions(ADDITION, SUBTRACTION, MULTIPLICATION);
-        }
-
         public static ArithmeticOperator getRandomFloatOperator() {
             return Randomization.fromOptions(values());
         }
 
-        public static ArithmeticOperator getRandomFloatOperatorNaNSafe() {
-            return Randomization.fromOptions(ADDITION, SUBTRACTION, MULTIPLICATION);
-        }
     }
 
     public CypherBinaryArithmeticOperation(CypherExpression left,

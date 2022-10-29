@@ -45,7 +45,7 @@ public class Neo4JExpressionGenerator {
                     case HEX_INTEGER:
                         return new CypherConstant.IntegerHexConstant(Randomization.getInteger());
                     case OCTAL_INTEGER:
-                        return new CypherConstant.IntegerOctalConstant(Randomization.getInteger(), CypherConstant.IntegerOctalConstant.OctalPrefix.getRandom());
+                        return new CypherConstant.IntegerOctalConstant(Randomization.getInteger());
                 }
             case BOOLEAN:
                 return new CypherConstant.BooleanConstant(Randomization.getBoolean());
@@ -213,11 +213,7 @@ public class Neo4JExpressionGenerator {
                 CypherExpression left = generateExpression(depth + 1, Neo4JType.INTEGER);
                 CypherExpression right = generateExpression(depth + 1, Neo4JType.INTEGER);
 
-                if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
-                    return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperatorNaNSafe());
-                } else {
-                    return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
-                }
+                return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomIntegerOperator());
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.INTEGER);
             default:
@@ -256,12 +252,7 @@ public class Neo4JExpressionGenerator {
                     }
                 }
 
-                if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
-                    return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperatorNaNSafe());
-                } else {
-                    return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
-                }
-
+                return new CypherBinaryArithmeticOperation(left, right, ArithmeticOperator.getRandomFloatOperator());
             case FUNCTION:
                 return generateFunction(depth + 1, Neo4JType.FLOAT);
             default:
@@ -368,16 +359,6 @@ public class Neo4JExpressionGenerator {
         List<Neo4JFunction> functions = Stream.of(Neo4JFunction.values())
                 .filter(function -> function.supportReturnType(returnType))
                 .collect(Collectors.toList());
-
-        if (Neo4JBugs.PartitionOracleSpecific.bug12883) {
-            functions.remove(Neo4JFunction.SQRT);
-            functions.remove(Neo4JFunction.LOG);
-            functions.remove(Neo4JFunction.LOG_10);
-
-            // removed so that no infinity is generated
-            functions.remove(Neo4JFunction.EXP);
-            functions.remove(Neo4JFunction.POINT_DISTANCE);
-        }
 
         if (functions.isEmpty()) {
             throw new IgnoreMeException();

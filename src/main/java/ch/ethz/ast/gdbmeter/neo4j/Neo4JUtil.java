@@ -25,6 +25,7 @@ public class Neo4JUtil {
         errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
         errors.add("Invalid Regex: Illegal Unicode escape sequence");           // RETURN ""=~("\\uA")
         errors.add("Invalid Regex: Illegal control escape sequence");           // RETURN ""=~("\\c")
+        errors.addRegex("Invalid Regex: Unescaped trailing backslash near index [0-9]+\n.*");
     }
 
     public static void addArithmeticErrors(ExpectedErrors errors) {
@@ -39,6 +40,9 @@ public class Neo4JUtil {
         errors.add("Invalid input for length value in function 'right()': Expected a numeric value but got: NO_VALUE");
         errors.add("Invalid input for length value in function 'substring()': Expected a numeric value but got: NO_VALUE");
         errors.add("Invalid input for start value in function 'substring()': Expected a numeric value but got: NO_VALUE");
+        errors.addRegex("Invalid input for length value in function 'substring\\(\\)': Expected an integer between -2147483648 and 2147483647, but got: .*");
+        errors.addRegex("Invalid input for start value in function 'substring\\(\\)': Expected an integer between -2147483648 and 2147483647, but got: .*");
+        errors.addRegex("negative length"); // for right functions
     }
 
 }

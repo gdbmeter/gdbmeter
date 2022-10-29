@@ -367,7 +367,7 @@ public enum Neo4JFunction implements CypherFunctionDescription<Neo4JType> {
 
         @Override
         public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[]{ Neo4JType.FLOAT };
+            return new Neo4JType[]{ Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
         }
     },
     LOG("log", 1) {
@@ -378,7 +378,7 @@ public enum Neo4JFunction implements CypherFunctionDescription<Neo4JType> {
 
         @Override
         public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[]{ Neo4JType.FLOAT };
+            return new Neo4JType[]{ Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
         }
     },
     LOG_10("log10", 1) {
@@ -389,7 +389,7 @@ public enum Neo4JFunction implements CypherFunctionDescription<Neo4JType> {
 
         @Override
         public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[]{ Neo4JType.FLOAT };
+            return new Neo4JType[]{ Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
         }
     },
     SQRT("sqrt", 1) {
@@ -400,7 +400,18 @@ public enum Neo4JFunction implements CypherFunctionDescription<Neo4JType> {
 
         @Override
         public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
-            return new Neo4JType[]{ Neo4JType.FLOAT };
+            return new Neo4JType[]{ Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
+        }
+    },
+    IS_NAN("isNaN", 1) {
+        @Override
+        public boolean supportReturnType(Neo4JType returnType) {
+            return returnType == Neo4JType.BOOLEAN;
+        }
+
+        @Override
+        public Neo4JType[] getArgumentTypes(Neo4JType returnType) {
+            return new Neo4JType[]{ Randomization.fromOptions(Neo4JType.INTEGER, Neo4JType.FLOAT) };
         }
     };
 
