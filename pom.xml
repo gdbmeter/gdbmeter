@@ -105,12 +105,6 @@
             <artifactId>janusgraph-inmemory</artifactId>
             <version>${janusgraph.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.janusgraph</groupId>
-            <artifactId>janusgraph-lucene</artifactId>
-            <version>${janusgraph.version}</version>
-            <scope>runtime</scope>
-        </dependency>
     </dependencies>
 
 </project>
