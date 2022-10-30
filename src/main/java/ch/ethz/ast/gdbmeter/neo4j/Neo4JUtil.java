@@ -25,7 +25,7 @@ public class Neo4JUtil {
         errors.add("Invalid Regex: Illegal character name escape sequence");    // RETURN (""=~"\NZ")
         errors.add("Invalid Regex: Illegal Unicode escape sequence");           // RETURN ""=~("\\uA")
         errors.add("Invalid Regex: Illegal control escape sequence");           // RETURN ""=~("\\c")
-        errors.addRegex("Invalid Regex: Unescaped trailing backslash near index [0-9]+\n.*");
+        errors.addRegex("Invalid Regex: Unescaped trailing backslash near index [0-9]+\n[\\S\\s]*");
     }
 
     public static void addArithmeticErrors(ExpectedErrors errors) {
