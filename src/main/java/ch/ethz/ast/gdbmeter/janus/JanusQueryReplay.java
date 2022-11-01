@@ -35,15 +35,9 @@ public class JanusQueryReplay extends QueryReplay {
                         String[] subParts = part.split(":");
 
                         switch (subParts[0]) {
-                            case "VL":
-                                m.makeVertexLabel(subParts[1]).make();
-                                break;
-                            case "EL":
-                                m.makeEdgeLabel(subParts[1]).make();
-                                break;
-                            case "PK":
-                                m.makePropertyKey(subParts[1]).dataType(Class.forName(subParts[2])).make();
-                                break;
+                            case "VL" -> m.makeVertexLabel(subParts[1]).make();
+                            case "EL" -> m.makeEdgeLabel(subParts[1]).make();
+                            case "PK" -> m.makePropertyKey(subParts[1]).dataType(Class.forName(subParts[2])).make();
                         }
                     }
 

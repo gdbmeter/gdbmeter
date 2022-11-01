@@ -85,7 +85,7 @@ public abstract class CypherCreateGenerator<T> {
 
             if (Randomization.getBoolean()) {
                 Entity<T> entity = allVariables.get(variable);
-                String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+                String property = Randomization.fromSet(entity.availableProperties().keySet());
 
                 query.append(".");
                 query.append(property);
@@ -148,7 +148,7 @@ public abstract class CypherCreateGenerator<T> {
 
             if (Randomization.getBoolean()) {
                 Entity<T> entity = allVariables.get(variable);
-                String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+                String property = Randomization.fromSet(entity.availableProperties().keySet());
 
                 query.append(".");
                 query.append(property);

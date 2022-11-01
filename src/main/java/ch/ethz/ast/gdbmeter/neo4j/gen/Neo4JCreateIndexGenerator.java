@@ -36,7 +36,7 @@ public class Neo4JCreateIndexGenerator extends CypherCreateIndexGenerator<Neo4JT
             query.append("IF NOT EXISTS ");
         }
 
-        query.append(String.format("FOR (n:%s) ON (n.%s)", index.getLabel(), index.getPropertyNames().toArray()[0]));
+        query.append(String.format("FOR (n:%s) ON (n.%s)", index.label(), index.propertyNames().toArray()[0]));
     }
 
     // TODO: Support point indices
@@ -58,8 +58,8 @@ public class Neo4JCreateIndexGenerator extends CypherCreateIndexGenerator<Neo4JT
             query.append("IF NOT EXISTS ");
         }
 
-        query.append(String.format(format, index.getLabel()));
-        generateOnClause(index.getPropertyNames());
+        query.append(String.format(format, index.label()));
+        generateOnClause(index.propertyNames());
     }
 
     public static Neo4JQuery createIndex(Schema<Neo4JType> schema) {

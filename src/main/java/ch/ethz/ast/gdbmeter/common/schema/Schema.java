@@ -81,14 +81,14 @@ public class Schema<T> {
 
     public Index generateRandomNodeIndex() {
         String label = getRandomLabel();
-        Set<String> properties = Randomization.nonEmptySubset(nodeSchema.get(label).getAvailableProperties().keySet());
+        Set<String> properties = Randomization.nonEmptySubset(nodeSchema.get(label).availableProperties().keySet());
 
         return new Index(label, properties);
     }
 
     public Index generateRandomRelationshipIndex() {
         String type = getRandomType();
-        Set<String> properties = Randomization.nonEmptySubset(relationshipSchema.get(type).getAvailableProperties().keySet());
+        Set<String> properties = Randomization.nonEmptySubset(relationshipSchema.get(type).availableProperties().keySet());
 
         return new Index(type, properties);
     }
@@ -114,7 +114,7 @@ public class Schema<T> {
         Map<String, Set<String>> schema = new HashMap<>();
 
         for (String label : nodeSchema.keySet()) {
-            Map<String, T> properties = nodeSchema.get(label).getAvailableProperties();
+            Map<String, T> properties = nodeSchema.get(label).availableProperties();
 
             for (Map.Entry<String, T> entry : properties.entrySet()) {
                 if (entry.getValue() == type) {

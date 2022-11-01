@@ -39,14 +39,11 @@ public class Neo4JExpressionGenerator {
 
         switch (type) {
             case INTEGER:
-                switch (Randomization.fromOptions(IntegerConstantFormat.values())) {
-                    case NORMAL_INTEGER:
-                        return new CypherConstant.IntegerConstant(Randomization.getInteger());
-                    case HEX_INTEGER:
-                        return new CypherConstant.IntegerHexConstant(Randomization.getInteger());
-                    case OCTAL_INTEGER:
-                        return new CypherConstant.IntegerOctalConstant(Randomization.getInteger());
-                }
+                return switch (Randomization.fromOptions(IntegerConstantFormat.values())) {
+                    case NORMAL_INTEGER -> new CypherConstant.IntegerConstant(Randomization.getInteger());
+                    case HEX_INTEGER -> new CypherConstant.IntegerHexConstant(Randomization.getInteger());
+                    case OCTAL_INTEGER -> new CypherConstant.IntegerOctalConstant(Randomization.getInteger());
+                };
             case BOOLEAN:
                 return new CypherConstant.BooleanConstant(Randomization.getBoolean());
             case FLOAT:
@@ -321,7 +318,7 @@ public class Neo4JExpressionGenerator {
             List<String> filteredVariables = new ArrayList<>();
 
             for (String variable : variables.keySet()) {
-                Map<String, Neo4JType> properties = variables.get(variable).getAvailableProperties();
+                Map<String, Neo4JType> properties = variables.get(variable).availableProperties();
 
                 for (String property : properties.keySet()) {
                     if (properties.get(property) == type) {
@@ -338,20 +335,14 @@ public class Neo4JExpressionGenerator {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
-            switch (type) {
-                case BOOLEAN:
-                    return generateBooleanExpression(depth);
-                case INTEGER:
-                    return generateIntegerExpression(depth);
-                case STRING:
-                    return generateStringExpression(depth);
-                case DURATION:
-                    return generateDurationExpression(depth);
-                case FLOAT:
-                    return generateFloatExpression(depth);
-                default:
-                    return generateConstant(type);
-            }
+            return switch (type) {
+                case BOOLEAN -> generateBooleanExpression(depth);
+                case INTEGER -> generateIntegerExpression(depth);
+                case STRING -> generateStringExpression(depth);
+                case DURATION -> generateDurationExpression(depth);
+                case FLOAT -> generateFloatExpression(depth);
+                default -> generateConstant(type);
+            };
         }
     }
 

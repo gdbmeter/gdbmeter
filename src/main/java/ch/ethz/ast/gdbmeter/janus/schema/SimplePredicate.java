@@ -2,23 +2,8 @@ package ch.ethz.ast.gdbmeter.janus.schema;
 
 import ch.ethz.ast.gdbmeter.util.Randomization;
 
-public class SimplePredicate implements Predicate {
-
-    private final Type type;
-    private final Object value;
-
-    public SimplePredicate(Type type, Object value) {
-        this.type = type;
-        this.value = value;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public Object getValue() {
-        return value;
-    }
+public record SimplePredicate(Type type,
+                              Object value) implements Predicate {
 
     public enum Type {
         EQUALS("eq"),

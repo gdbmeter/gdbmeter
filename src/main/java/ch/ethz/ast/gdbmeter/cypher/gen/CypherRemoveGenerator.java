@@ -23,7 +23,7 @@ public abstract class CypherRemoveGenerator<T> {
 
         query.append(String.format("MATCH (n:%s) WHERE %s", label, generateWhereClause(entity)));
 
-        String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+        String property = Randomization.fromSet(entity.availableProperties().keySet());
         query.append(generateRemoveClause(property));
 
         if (Randomization.getBoolean()) {

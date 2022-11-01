@@ -27,17 +27,10 @@ public class RedisDropIndexGenerator {
 
     private RedisQuery generateDropIndex() {
         switch (Randomization.fromOptions(CypherIndexTypes.values())) {
-            case NODE_INDEX:
-                dropNodeIndex();
-                break;
-            case RELATIONSHIP_INDEX:
-                dropRelationshipIndex();
-                break;
-            case TEXT_INDEX:
-                dropFulltextIndex();
-                break;
-            default:
-                throw new AssertionError();
+            case NODE_INDEX -> dropNodeIndex();
+            case RELATIONSHIP_INDEX -> dropRelationshipIndex();
+            case TEXT_INDEX -> dropFulltextIndex();
+            default -> throw new AssertionError();
         }
 
         // TODO: Somehow store the label, property combinations to drop indices that definitely exist.
@@ -49,7 +42,7 @@ public class RedisDropIndexGenerator {
     private void dropNodeIndex() {
         String label = schema.getRandomLabel();
         Entity<RedisType> entity = schema.getEntityByLabel(label);
-        String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+        String property = Randomization.fromSet(entity.availableProperties().keySet());
 
         query.append(String.format("DROP INDEX ON :%s(%s)", label, property));
     }
@@ -57,7 +50,7 @@ public class RedisDropIndexGenerator {
     private void dropRelationshipIndex() {
         String type = schema.getRandomType();
         Entity<RedisType> entity = schema.getEntityByType(type);
-        String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
+        String property = Randomization.fromSet(entity.availableProperties().keySet());
 
         query.append(String.format("DROP INDEX ON :%s(%s)", type, property));
     }

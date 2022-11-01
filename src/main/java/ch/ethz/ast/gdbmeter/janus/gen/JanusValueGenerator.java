@@ -14,43 +14,27 @@ public class JanusValueGenerator {
     }
 
     public static String generate(JanusType type) {
-        switch (type) {
-            case STRING:
-                return String.format("\"%s\"", escape(Randomization.getStringOfAlphabet(ALPHABET)));
-            case CHARACTER:
-                return String.format("(char) %s", Randomization.nextInt(0, Character.MAX_VALUE + 1));
-            case BOOLEAN:
-                return Randomization.getBoolean() ? "true" : "false";
-            case BYTE:
-                return String.format("(byte) %s", Randomization.getByte());
-            case SHORT:
-                return String.format("(short) %s", Randomization.getShort());
-            case INTEGER:
-                return String.format("(int) %s", Randomization.nextInt());
-            case LONG:
-                return String.format("%sL", Randomization.getInteger());
-            case FLOAT:
-                return String.format("%sf", Randomization.nextFloat());
-            case DOUBLE:
-                return String.format("%sd", Randomization.getDouble());
-            case UUID:
-                return String.format("UUID.fromString('%s')", UUID.randomUUID());
-            case DATE:
-                return String.format("new Date(%sL)", Randomization.getInteger());
-            default:
-                throw new AssertionError(type);
-        }
+        return switch (type) {
+            case STRING -> String.format("\"%s\"", escape(Randomization.getStringOfAlphabet(ALPHABET)));
+            case CHARACTER -> String.format("(char) %s", Randomization.nextInt(0, Character.MAX_VALUE + 1));
+            case BOOLEAN -> Randomization.getBoolean() ? "true" : "false";
+            case BYTE -> String.format("(byte) %s", Randomization.getByte());
+            case SHORT -> String.format("(short) %s", Randomization.getShort());
+            case INTEGER -> String.format("(int) %s", Randomization.nextInt());
+            case LONG -> String.format("%sL", Randomization.getInteger());
+            case FLOAT -> String.format("%sf", Randomization.nextFloat());
+            case DOUBLE -> String.format("%sd", Randomization.getDouble());
+            case UUID -> String.format("UUID.fromString('%s')", UUID.randomUUID());
+            case DATE -> String.format("new Date(%sL)", Randomization.getInteger());
+        };
     }
 
     public static String generateWithoutMaxMinValues(JanusType type) {
-        switch (type) {
-            case LONG:
-                return String.format("%sL", Randomization.nextLong());
-            case DATE:
-                return String.format("new Date(%sL)", Randomization.nextLong());
-            default:
-                return generate(type);
-        }
+        return switch (type) {
+            case LONG -> String.format("%sL", Randomization.nextLong());
+            case DATE -> String.format("new Date(%sL)", Randomization.nextLong());
+            default -> generate(type);
+        };
     }
 
     private static String escape(String original) {

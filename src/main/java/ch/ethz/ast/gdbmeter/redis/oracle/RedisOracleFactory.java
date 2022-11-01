@@ -12,18 +12,12 @@ public class RedisOracleFactory implements OracleFactory<RedisConnection, RedisT
 
     @Override
     public Oracle createOracle(OracleType type, GlobalState<RedisConnection> state, Schema<RedisType> schema) {
-        switch (type) {
-            case EMPTY_RESULT:
-                return new RedisEmptyResultOracle(state, schema);
-            case NON_EMPTY_RESULT:
-                return new RedisNonEmptyResultOracle(state, schema);
-            case PARTITION:
-                return new RedisPartitionOracle(state, schema);
-            case REFINEMENT:
-                return new RedisRefinementOracle(state, schema);
-            default:
-                throw new AssertionError(type);
-        }
+        return switch (type) {
+            case EMPTY_RESULT -> new RedisEmptyResultOracle(state, schema);
+            case NON_EMPTY_RESULT -> new RedisNonEmptyResultOracle(state, schema);
+            case PARTITION -> new RedisPartitionOracle(state, schema);
+            case REFINEMENT -> new RedisRefinementOracle(state, schema);
+        };
     }
 
 }

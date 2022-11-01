@@ -16,15 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class JanusPartitionOracle implements Oracle {
-
-    private final GlobalState<JanusConnection> state;
-    private final Schema<JanusType> schema;
-
-    public JanusPartitionOracle(GlobalState<JanusConnection> state, Schema<JanusType> schema) {
-        this.state = state;
-        this.schema = schema;
-    }
+public record JanusPartitionOracle(
+        GlobalState<JanusConnection> state,
+        Schema<JanusType> schema) implements Oracle {
 
     @Override
     public void check() {
@@ -41,9 +35,9 @@ public class JanusPartitionOracle implements Oracle {
             throw new AssertionError("Unexpected exception when fetching total");
         }
 
-        Set<String> properties = entity.getAvailableProperties().keySet();
+        Set<String> properties = entity.availableProperties().keySet();
         String property = Randomization.fromSet(properties);
-        JanusType type = entity.getAvailableProperties().get(property);
+        JanusType type = entity.availableProperties().get(property);
 
         if (JanusBugs.bug6578 && type == JanusType.UUID) {
             throw new IgnoreMeException();

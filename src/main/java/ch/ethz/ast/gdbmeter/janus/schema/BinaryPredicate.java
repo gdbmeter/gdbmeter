@@ -2,29 +2,9 @@ package ch.ethz.ast.gdbmeter.janus.schema;
 
 import ch.ethz.ast.gdbmeter.util.Randomization;
 
-public class BinaryPredicate implements Predicate {
-
-    private final Type type;
-    private final Predicate left;
-    private final Predicate right;
-
-    public BinaryPredicate(Type type, Predicate left, Predicate right) {
-        this.type = type;
-        this.left = left;
-        this.right = right;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public Predicate getLeft() {
-        return left;
-    }
-
-    public Predicate getRight() {
-        return right;
-    }
+public record BinaryPredicate(Type type,
+                              Predicate left,
+                              Predicate right) implements Predicate {
 
     public enum Type {
 

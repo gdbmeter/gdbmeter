@@ -11,13 +11,7 @@ import java.util.Set;
  * Describes an entity of a graph database.
  * This could be either a node or an edge.
  */
-public class Entity<T> {
-
-    private final Map<String, T> availableProperties;
-
-    protected Entity(Map<String, T> availableProperties) {
-        this.availableProperties = availableProperties;
-    }
+public record Entity<T>(Map<String, T> availableProperties) {
 
     /**
      * Generates an entity based on a set of available types.
@@ -34,10 +28,6 @@ public class Entity<T> {
         }
 
         return new Entity<>(availableProperties);
-    }
-
-    public Map<String, T> getAvailableProperties() {
-        return availableProperties;
     }
 
 }
