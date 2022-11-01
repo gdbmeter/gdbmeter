@@ -50,7 +50,7 @@ public class Neo4JExpressionGenerator {
             case BOOLEAN:
                 return new CypherConstant.BooleanConstant(Randomization.getBoolean());
             case FLOAT:
-                return new CypherConstant.FloatConstant(Randomization.nextFloat());
+                return new CypherConstant.FloatConstant(Randomization.getFloat());
             case STRING:
                 return new CypherConstant.StringConstant(Randomization.getString());
             case POINT:
