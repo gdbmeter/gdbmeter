@@ -119,23 +119,9 @@ public class Neo4JRefinementOracle implements Oracle {
                         case FLOAT:
                             double refinedFloat = (Double) value;
 
-                            // Handle special cases such as Infinity and NaN which aren't supported in Neo4J directly
-                            if (Double.isInfinite(refinedFloat)) {
-                                if (refinedFloat > 0) {
-                                    expectedConstant = new CypherBinaryArithmeticOperation(new CypherConstant.FloatConstant(1.0D),
-                                            new CypherConstant.FloatConstant(0.0D),
-                                            CypherBinaryArithmeticOperation.ArithmeticOperator.DIVISION);
-                                } else {
-                                    expectedConstant = new CypherBinaryArithmeticOperation(new CypherConstant.FloatConstant(-1.0D),
-                                            new CypherConstant.FloatConstant(0.0D),
-                                            CypherBinaryArithmeticOperation.ArithmeticOperator.DIVISION);
-                                }
-                            } else if (Double.isNaN(refinedFloat)) {
-                                // NaN == NaN is always false
-                                // Therefore we use toString(n.p) == "NaN" which should work
-                                CypherExpression toString = new CypherFunctionCall<>(Neo4JFunction.TO_STRING, new CypherVariablePropertyAccess[]{new CypherVariablePropertyAccess(String.format("n%d.%s", current, key))});
-                                CypherExpression expectedString = new CypherConstant.StringConstant("NaN");
-                                CypherExpression branch = new CypherBinaryComparisonOperation(toString, expectedString, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
+                            // Handle NaN as a special case
+                            if (Double.isNaN(refinedFloat)) {
+                                CypherExpression branch = new CypherFunctionCall<Neo4JType>(Neo4JFunction.IS_NAN, new CypherExpression[]{new CypherConstant.FloatConstant(refinedFloat)});
                                 refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);
                                 continue;
                             } else {
