@@ -1,3 +1,4 @@
+![GDBMeter logo](gdbmeter.png)
 # GDBMeter
 
 [![Test](https://github.com/InverseIntegral/gdbmeter/actions/workflows/maven.yml/badge.svg)](https://github.com/InverseIntegral/gdbmeter/actions/workflows/maven.yml)
