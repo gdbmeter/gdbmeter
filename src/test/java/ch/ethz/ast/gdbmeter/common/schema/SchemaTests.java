@@ -1,7 +1,6 @@
 package ch.ethz.ast.gdbmeter.common.schema;
 
 import ch.ethz.ast.gdbmeter.cypher.CypherUtil;
-import ch.ethz.ast.gdbmeter.util.IgnoreMeException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -32,29 +31,6 @@ public class SchemaTests {
         schema.setIndices(Set.of(name));
 
         assertEquals(name, schema.getRandomIndex());
-    }
-
-    @Test
-    void testGenerateRandomNodeIndex() {
-        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
-        assertNotEquals(schema.generateRandomNodeIndex(), schema.generateRandomNodeIndex());
-    }
-
-    @Test
-    void testGenerateRandomTextIndex() {
-        while (true) {
-            Schema<String> schema = Schema.generateRandomSchema(Set.of("type"));
-            try {
-                assertNotEquals(schema.generateRandomTextIndex("type"), schema.generateRandomTextIndex("type"));
-                break;
-            } catch (IgnoreMeException ignored) {}
-        }
-    }
-
-    @Test
-    void testGenerateRandomRelationshipIndex() {
-        Schema<String> schema = Schema.generateRandomSchema(Set.of("a"));
-        assertNotEquals(schema.generateRandomRelationshipIndex(), schema.generateRandomRelationshipIndex());
     }
 
     @Test
