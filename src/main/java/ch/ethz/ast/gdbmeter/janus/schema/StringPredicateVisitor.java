@@ -6,36 +6,36 @@ public class StringPredicateVisitor implements PredicateVisitor {
 
     @Override
     public void visit(BinaryPredicate predicate) {
-        visit(predicate.getLeft());
-        builder.append(".").append(predicate.getType().getName());
+        visit(predicate.left());
+        builder.append(".").append(predicate.type().getName());
         builder.append("(");
-        visit(predicate.getRight());
+        visit(predicate.right());
         builder.append(")");
     }
 
     @Override
     public void visit(UnaryPredicate predicate) {
-        builder.append(predicate.getType().getName());
+        builder.append(predicate.type().getName());
         builder.append("(");
-        visit(predicate.getArgument());
+        visit(predicate.argument());
         builder.append(")");
     }
 
     @Override
     public void visit(SimplePredicate predicate) {
-        builder.append(predicate.getType().getName());
+        builder.append(predicate.type().getName());
         builder.append("(");
-        builder.append(predicate.getValue());
+        builder.append(predicate.value());
         builder.append(")");
     }
 
     @Override
     public void visit(RangePredicate predicate) {
-        builder.append(predicate.getType().getName());
+        builder.append(predicate.type().getName());
         builder.append("(");
-        builder.append(predicate.getLeft());
+        builder.append(predicate.left());
         builder.append(", ");
-        builder.append(predicate.getRight());
+        builder.append(predicate.right());
         builder.append(")");
     }
 

@@ -32,18 +32,12 @@ public class PredicateGenerator {
             predicateType = PredicateType.getRandom();
         }
 
-        switch (predicateType) {
-            case RANGE_PREDICATE:
-                return generateRangePredicate(type);
-            case BINARY_PREDICATE:
-                return generateBinaryPredicate(type);
-            case UNARY_PREDICATE:
-                return generateUnaryPredicate(type);
-            case SIMPLE_PREDICATE:
-                return generateSimplePredicate(type);
-            default:
-                throw new AssertionError(predicateType);
-        }
+        return switch (predicateType) {
+            case RANGE_PREDICATE -> generateRangePredicate(type);
+            case BINARY_PREDICATE -> generateBinaryPredicate(type);
+            case UNARY_PREDICATE -> generateUnaryPredicate(type);
+            case SIMPLE_PREDICATE -> generateSimplePredicate(type);
+        };
     }
 
     private Predicate generateUnaryPredicate(JanusType type) {

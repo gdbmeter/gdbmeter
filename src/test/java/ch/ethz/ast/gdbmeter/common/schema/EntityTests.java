@@ -14,7 +14,7 @@ public class EntityTests {
     @Test
     void testGenerateRandomEntity() {
         Entity<Neo4JType> entity = Entity.generateRandomEntity(Set.of(Neo4JType.values()), new HashSet<>());
-        Map<String, Neo4JType> availableProperties = entity.getAvailableProperties();
+        Map<String, Neo4JType> availableProperties = entity.availableProperties();
 
         assertNotNull(entity);
         assertNotNull(availableProperties);
@@ -27,8 +27,8 @@ public class EntityTests {
         Entity<Neo4JType> entity = Entity.generateRandomEntity(Set.of(Neo4JType.values()), names);
         Entity<Neo4JType> entity2 = Entity.generateRandomEntity(Set.of(Neo4JType.values()), names);
 
-        for (String key : entity.getAvailableProperties().keySet()) {
-            if (entity2.getAvailableProperties().containsKey(key)) {
+        for (String key : entity.availableProperties().keySet()) {
+            if (entity2.availableProperties().containsKey(key)) {
                 fail(String.format("The name %s is contained in two entities", key));
             }
         }

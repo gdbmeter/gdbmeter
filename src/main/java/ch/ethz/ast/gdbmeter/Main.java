@@ -57,31 +57,29 @@ public class Main {
         Provider<?, ?> provider;
 
         switch (options.databaseName.toLowerCase()) {
-            case "neo4j":
-                provider = new Neo4JProvider();
-                break;
-            case "redis":
-                provider = new RedisProvider();
-                break;
-            case "janus":
-                provider = new JanusProvider();
-                break;
-            default:
+            case "neo4j" -> provider = new Neo4JProvider();
+            case "redis" -> provider = new RedisProvider();
+            case "janus" -> provider = new JanusProvider();
+            default -> {
                 System.err.println("Unknown database, please use either neo4j, redis or janus");
                 System.exit(1);
                 return;
+            }
         }
 
-        System.out.printf("   _____ _____  ____  __  __      _            \n" +
-                        "  / ____|  __ \\|  _ \\|  \\/  |    | |           \n" +
-                        " | |  __| |  | | |_) | \\  / | ___| |_ ___ _ __ \n" +
-                        " | | |_ | |  | |  _ <| |\\/| |/ _ \\ __/ _ \\ '__|\n" +
-                        " | |__| | |__| | |_) | |  | |  __/ ||  __/ |   \n" +
-                        "  \\_____|_____/|____/|_|  |_|\\___|\\__\\___|_|   \n" +
-                        "                                               \n" +
-                        "                                               \n" +
-                "Version: 1.0\n" +
-                "Selected Database: %s\n\n", options.databaseName);
+        System.out.printf("""
+                   _____ _____  ____  __  __      _           \s
+                  / ____|  __ \\|  _ \\|  \\/  |    | |          \s
+                 | |  __| |  | | |_) | \\  / | ___| |_ ___ _ __\s
+                 | | |_ | |  | |  _ <| |\\/| |/ _ \\ __/ _ \\ '__|
+                 | |__| | |__| | |_) | |  | |  __/ ||  __/ |  \s
+                  \\_____|_____/|____/|_|  |_|\\___|\\__\\___|_|  \s
+                                                              \s
+                                                              \s
+                Version: 1.0
+                Selected Database: %s
+
+                """, options.databaseName);
 
         if (options.reproduce) {
             replayQueries(provider);

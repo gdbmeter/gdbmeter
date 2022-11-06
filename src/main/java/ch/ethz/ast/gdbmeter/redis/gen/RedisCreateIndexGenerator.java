@@ -21,18 +21,18 @@ public class RedisCreateIndexGenerator extends CypherCreateIndexGenerator<RedisT
 
     @Override
     protected void generateNodeIndex(Index index) {
-        query.append(String.format("CREATE INDEX FOR (n:%s) ", index.getLabel()));
-        generateOnClause(index.getPropertyNames());
+        query.append(String.format("CREATE INDEX FOR (n:%s) ", index.label()));
+        generateOnClause(index.propertyNames());
     }
 
     @Override
     protected void generateRelationshipIndex(Index index) {
-        query.append(String.format("CREATE INDEX FOR ()-[n:%s]-() ", index.getLabel()));
-        generateOnClause(index.getPropertyNames());
+        query.append(String.format("CREATE INDEX FOR ()-[n:%s]-() ", index.label()));
+        generateOnClause(index.propertyNames());
     }
 
     @Override
     protected void generateTextIndex(Index index) {
-        query.append(String.format("CALL db.idx.fulltext.createNodeIndex('%s', '%s')", index.getLabel(), index.getPropertyNames().toArray()[0]));
+        query.append(String.format("CALL db.idx.fulltext.createNodeIndex('%s', '%s')", index.label(), index.propertyNames().toArray()[0]));
     }
 }

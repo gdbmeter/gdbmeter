@@ -19,15 +19,9 @@ public abstract class CypherCreateIndexGenerator<T> {
 
     protected void generateCreateIndex() {
         switch (Randomization.fromOptions(CypherIndexTypes.values())) {
-            case NODE_INDEX:
-                generateNodeIndex(schema.generateRandomNodeIndex());
-                break;
-            case RELATIONSHIP_INDEX:
-                generateRelationshipIndex(schema.generateRandomRelationshipIndex());
-                break;
-            case TEXT_INDEX:
-                generateTextIndex(schema.generateRandomTextIndex(stringType));
-                break;
+            case NODE_INDEX -> generateNodeIndex(schema.generateRandomNodeIndex());
+            case RELATIONSHIP_INDEX -> generateRelationshipIndex(schema.generateRandomRelationshipIndex());
+            case TEXT_INDEX -> generateTextIndex(schema.generateRandomTextIndex(stringType));
         }
     }
 

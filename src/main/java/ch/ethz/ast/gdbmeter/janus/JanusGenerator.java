@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class JanusGenerator implements Generator<JanusConnection> {
+public record JanusGenerator(
+        Schema<JanusType> schema) implements Generator<JanusConnection> {
 
     enum Action {
         CREATE(JanusCreateGenerator::createEntities),
@@ -37,34 +38,12 @@ public class JanusGenerator implements Generator<JanusConnection> {
     }
 
     private static int mapAction(Action action) {
-        int selectedNumber;
-
-        switch (action) {
-            case CREATE:
-                selectedNumber = Randomization.nextInt(20, 30);
-                break;
-            case SET:
-            case REMOVE:
-                selectedNumber = Randomization.nextInt(5, 15);
-                break;
-            case DELETE:
-                selectedNumber = Randomization.nextInt(5, 10);
-                break;
-            case CREATE_INDEX:
-            case DROP_INDEX:
-                selectedNumber = Randomization.nextInt(0, 4);
-                break;
-            default:
-                throw new AssertionError(action);
-        }
-
-        return selectedNumber;
-    }
-
-    private final Schema<JanusType> schema;
-
-    public JanusGenerator(Schema<JanusType> schema) {
-        this.schema = schema;
+        return switch (action) {
+            case CREATE -> Randomization.nextInt(20, 30);
+            case SET, REMOVE -> Randomization.nextInt(5, 15);
+            case DELETE -> Randomization.nextInt(5, 10);
+            case CREATE_INDEX, DROP_INDEX -> Randomization.nextInt(0, 4);
+        };
     }
 
     public void createJanusSchema(GlobalState<JanusConnection> globalState) {
@@ -92,7 +71,7 @@ public class JanusGenerator implements Generator<JanusConnection> {
     }
 
     public void createPropertyKeys(Entity<JanusType> entity, JanusGraphManagement management, List<String> logBacklog) {
-        for (Map.Entry<String, JanusType> property : entity.getAvailableProperties().entrySet()) {
+        for (Map.Entry<String, JanusType> property : entity.availableProperties().entrySet()) {
             String key = property.getKey();
             Class<?> clazz = property.getValue().getJavaClass();
 
@@ -132,7 +111,8 @@ public class JanusGenerator implements Generator<JanusConnection> {
                 if (success && query.couldAffectSchema()) {
                     schema.setIndices(globalState.getConnection().getIndexNames());
                 }
-            } catch (IgnoreMeException ignored) {}
+            } catch (IgnoreMeException ignored) {
+            }
         }
     }
 
