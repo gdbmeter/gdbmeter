@@ -23,16 +23,12 @@ java -jar gdbmeter-*.jar
 ```
 This will run GDBMeter until a bug has been found.
 
-## Testing Approaches
+## Testing Approach
 
-
-| **Name**         | **Description**                                                                                                                                             |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Partitioning     | This approach is based on Ternary Logic Partitioning (TLP). The core idea is that we can partition a result set based on a predicate into disjoint subsets. |
-| Empty Result     | A query that has an empty result set should return an empty result whenever no new nodes are added.                                                         |
-| Non-Empty Result | A query that has a non-empty result set should remain unchanged as long as we don't remove any nodes of said result set.                                    |
-| Refinement       | Matching on (a subset of) the exact values of a previous query should return (a superset of) the previous result set.                                       |
-
+Our testing approach, called Predicate Partitioning, is based on the idea that we can partition a result set through
+a predicate into disjoint subsets. Combining these subsets should again give the complete original result set. This
+approach has been successfully applied to SQL databases and has been termed [Ternary Logic Partitioning
+(TLP)](https://www.manuelrigger.at/preprints/TLP.pdf).
 
 ## Supported GDBMS
 
@@ -61,3 +57,14 @@ Continue this until a minimal example is left. We plan on adding support for an 
 
 In case you found a bug using GDBMeter we would appreciate it if you mention our project when reporting the bug.
 We would, of course, be very happy if you use GDBMeter or if you would like to contribute.
+
+## Alternative Testing Approaches
+
+GDBMeter also supports other, less successful, testing approaches:
+
+| **Name**         | **Description**                                                                                                                                             |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Empty Result     | A query that has an empty result set should return an empty result whenever no new nodes are added.                                                         |
+| Non-Empty Result | A query that has a non-empty result set should remain unchanged as long as we don't remove any nodes of said result set.                                    |
+| Refinement       | Matching on (a subset of) the exact values of a previous query should return (a superset of) the previous result set.                                       |
+
