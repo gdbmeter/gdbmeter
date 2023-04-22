@@ -20,8 +20,8 @@ public class Main {
     static
     class Options {
 
-        @Parameter
-        private String databaseName;
+        @Parameter(names = {"--database", "-db"}, description = "The database that should be tested")
+        private GraphDatabase database;
 
         @Parameter(names = {"--oracle", "--method", "-o"}, description = "The oracle that should be executed on the database")
         private OracleType oracleType;
@@ -30,6 +30,7 @@ public class Main {
         @Parameter(names = {"--reproduce", "--replay", "-r"}, description = "Whether the queries under logs/replay should be ran or not")
         private boolean reproduce = false;
 
+        @SuppressWarnings("FieldMayBeFinal")
         @Parameter(names = {"--verbose", "-v"}, description = "Whether all queries should be logged or not")
         private boolean verbose = false;
 
@@ -49,19 +50,19 @@ public class Main {
 
         jc.parse(args);
 
-        if (options.help) {
+        if (options.help || options.database == null) {
             jc.usage();
             return;
         }
 
         Provider<?, ?> provider;
 
-        switch (options.databaseName.toLowerCase()) {
-            case "neo4j" -> provider = new Neo4JProvider();
-            case "redis" -> provider = new RedisProvider();
-            case "janus" -> provider = new JanusProvider();
-            default -> {
-                System.err.println("Unknown database, please use either neo4j, redis or janus");
+        switch (options.database) {
+            case NEO4J -> provider = new Neo4JProvider();
+            case REDIS -> provider = new RedisProvider();
+            case JANUS -> provider = new JanusProvider();
+            default ->               {
+                System.err.println("Missing provider implementation for database");
                 System.exit(1);
                 return;
             }
@@ -79,7 +80,7 @@ public class Main {
                 Version: 1.0
                 Selected Database: %s
 
-                """, options.databaseName);
+                """, options.database);
 
         if (options.reproduce) {
             replayQueries(provider);

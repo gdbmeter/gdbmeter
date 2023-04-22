@@ -9,16 +9,15 @@ It tries to find bugs that cause the GDBMS to fetch an incorrect result set.
 ## Getting Started
 
 Required Software:
-- Java 11
-- Maven
+- Java 17
 - The graph database you want to test (Neo4J and JanusGraph are both tested in embedded mode)
 
 The following commands clone the repository, build a JAR file and start GDBLancer:
 ```
 git clone https://github.com/InverseIntegral/gdbmeter.git
-cd gdblancer
-mvn package -DskipTests
-cd target
+cd gdbmeter
+./gradlew clean assemble
+cd build/libs
 java -jar gdbmeter-*.jar
 ```
 This will run GDBMeter until a bug has been found.
@@ -32,11 +31,11 @@ approach has been successfully applied to SQL databases and has been termed [Ter
 
 ## Supported GDBMS
 
-| **GDBMS**                                              | **Status** | **Description**                                                                                                                           |
-|--------------------------------------------------------|------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| [Neo4J](https://github.com/neo4j/neo4j)                | Working    | Reference implementation for other GDBMS. This implementation is based on the common Cypher logic.                                        |
-| [RedisGraph](https://github.com/RedisGraph/RedisGraph) | Working    | This implementation is based on the common Cypher logic. Running this implementation will most likely uncover more unreported logic bugs. |
-| [JanusGraph](https://github.com/JanusGraph/janusgraph) | Working    | Supports a (small) subset of the Gremlin query language. Currently, only the inmemory version with the lucene index backend are tested.   |
+| **GDBMS**                                              | Tested Version | **Status** | **Description**                                                                                                                           |
+|--------------------------------------------------------|----------------|------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| [Neo4J](https://github.com/neo4j/neo4j)                | 5.1.0          | Working    | Reference implementation for other GDBMS. This implementation is based on the common Cypher logic.                                        |
+| [RedisGraph](https://github.com/RedisGraph/RedisGraph) | 2.8.13         | Working    | This implementation is based on the common Cypher logic. Running this implementation will most likely uncover more unreported logic bugs. |
+| [JanusGraph](https://github.com/JanusGraph/janusgraph) | 0.6.2          | Working    | Supports a (small) subset of the Gremlin query language. Currently, only the inmemory version with the lucene index backend are tested.   |
 
 ## Using GDBMeter
 
