@@ -18,7 +18,7 @@ git clone https://github.com/InverseIntegral/gdbmeter.git
 cd gdbmeter
 ./gradlew clean assemble
 cd build/libs
-java -jar gdbmeter-*.jar
+java -jar gdbmeter-*.jar -db neo4j -o partition
 ```
 This will run GDBMeter until a bug has been found.
 

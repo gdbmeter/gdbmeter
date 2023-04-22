@@ -20,7 +20,7 @@ public class Main {
     static
     class Options {
 
-        @Parameter(names = {"--database", "-db"}, description = "The database that should be tested")
+        @Parameter(names = {"--database", "-db"}, description = "The database that should be tested", required = true)
         private GraphDatabase database;
 
         @Parameter(names = {"--oracle", "--method", "-o"}, description = "The oracle that should be executed on the database")
