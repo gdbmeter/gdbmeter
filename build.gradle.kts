@@ -18,6 +18,7 @@ dependencies {
     api("org.janusgraph:janusgraph-core:0.6.2")
     api("org.janusgraph:janusgraph-inmemory:0.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }
 
 repositories {
@@ -39,3 +40,6 @@ tasks.withType<Jar> {
     exclude("META-INF/*.DSA")
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
