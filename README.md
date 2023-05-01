@@ -1,7 +1,7 @@
 ![GDBMeter logo](gdbmeter.png)
 # GDBMeter
 
-[![Test](https://github.com/InverseIntegral/gdbmeter/actions/workflows/maven.yml/badge.svg)](https://github.com/InverseIntegral/gdbmeter/actions/workflows/maven.yml)
+[![Java CI](https://github.com/InverseIntegral/gdbmeter/actions/workflows/gradle.yml/badge.svg)](https://github.com/InverseIntegral/gdbmeter/actions/workflows/gradle.yml)
 
 GDBMeter (Graph Database Metamorphic Tester) is a tool that automatically tests Graph Database Management Systems (GDBMS).
 It tries to find bugs that cause the GDBMS to fetch an incorrect result set.
