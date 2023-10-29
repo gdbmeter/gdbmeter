@@ -19,9 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public record JanusEmptyResultOracle(
-        GlobalState<JanusConnection> state,
-        Schema<JanusType> schema) implements Oracle {
+public class JanusEmptyResultOracle implements Oracle {
+
+    private final GlobalState<JanusConnection> state;
+    private final Schema<JanusType> schema;
+
+    public JanusEmptyResultOracle(GlobalState<JanusConnection> state, Schema<JanusType> schema) {
+        this.state = state;
+        this.schema = schema;
+    }
 
     @Override
     public void check() {
@@ -39,7 +45,7 @@ public record JanusEmptyResultOracle(
 
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
-        Map<String, JanusType> availableProperties = entity.availableProperties();
+        Map<String, JanusType> availableProperties = entity.getAvailableProperties();
 
         String matchProperty = Randomization.fromSet(availableProperties.keySet());
         JanusType matchType = availableProperties.get(matchProperty);

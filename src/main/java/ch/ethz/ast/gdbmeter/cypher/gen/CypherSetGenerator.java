@@ -32,9 +32,9 @@ public abstract class CypherSetGenerator<T> {
         if (Randomization.smallBiasProbability()) {
             query.append(" SET n = {}");
         } else {
-            Set<String> properties = entity.availableProperties().keySet();
+            Set<String> properties = entity.getAvailableProperties().keySet();
             String property = Randomization.fromSet(properties);
-            T type = entity.availableProperties().get(property);
+            T type = entity.getAvailableProperties().get(property);
             CypherExpression expression;
 
             if (Randomization.getBoolean()) {

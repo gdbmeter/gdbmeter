@@ -44,14 +44,6 @@ public class Randomization {
         return random.nextFloat();
     }
 
-    public static float getFloat() {
-        if (smallBiasProbability()) {
-            return Randomization.fromOptions(0.0f, -0.0f, Float.NaN, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
-        }
-
-        return random.nextFloat();
-    }
-
     public static double getDouble() {
         if (smallBiasProbability()) {
             return Randomization.fromOptions(0.0, -0.0, Double.MAX_VALUE, -Double.MAX_VALUE);

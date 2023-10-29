@@ -49,7 +49,7 @@ public class JanusCreateGenerator {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
 
-        Map<String, JanusType> properties = entity.availableProperties();
+        Map<String, JanusType> properties = entity.getAvailableProperties();
         Set<String> selectedProperties = Randomization.nonEmptySubset(properties.keySet());
 
         query.append(String.format(".addV('%s')", label));
@@ -76,7 +76,7 @@ public class JanusCreateGenerator {
         String type = schema.getRandomType();
         Entity<JanusType> entity = schema.getEntityByType(type);
 
-        Map<String, JanusType> properties = entity.availableProperties();
+        Map<String, JanusType> properties = entity.getAvailableProperties();
         Set<String> selectedProperties = Randomization.nonEmptySubset(properties.keySet());
 
         query.append(String.format(".addE('%s')", type));

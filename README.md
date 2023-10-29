@@ -1,4 +1,5 @@
 ![GDBMeter logo](gdbmeter.png)
+
 # GDBMeter
 
 [![Java CI](https://github.com/InverseIntegral/gdbmeter/actions/workflows/gradle.yml/badge.svg)](https://github.com/InverseIntegral/gdbmeter/actions/workflows/gradle.yml)
@@ -9,8 +10,11 @@ It tries to find bugs that cause the GDBMS to fetch an incorrect result set.
 ## Getting Started
 
 Required Software:
-- Java 17
-- The graph database you want to test (Neo4J and JanusGraph are both tested in embedded mode)
+
+- [JDK 11](https://www.oracle.com/java/technologies/downloads/)
+- [Gradle 8.0.2](https://gradle.org/) which we provide bundled with our source code
+- The graph database you want to test ([Neo4J](https://neo4j.com/) and [JanusGraph](https://janusgraph.org/) are both embedded into the JAR for ease of use)
+    - We recommend testing [RedisGraph](https://redis.io/docs/stack/graph/) via a Docker container
 
 The following commands clone the repository, build a JAR file and start GDBLancer:
 ```
@@ -61,9 +65,9 @@ We would, of course, be very happy if you use GDBMeter or if you would like to c
 
 GDBMeter also supports other, less successful, testing approaches:
 
-| **Name**         | **Description**                                                                                                                                             |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Empty Result     | A query that has an empty result set should return an empty result whenever no new nodes are added.                                                         |
-| Non-Empty Result | A query that has a non-empty result set should remain unchanged as long as we don't remove any nodes of said result set.                                    |
-| Refinement       | Matching on (a subset of) the exact values of a previous query should return (a superset of) the previous result set.                                       |
+| **Name**         | **Description**                                                                                                          |
+|------------------|--------------------------------------------------------------------------------------------------------------------------|
+| Empty Result     | A query that has an empty result set should return an empty result whenever no new nodes are added.                      |
+| Non-Empty Result | A query that has a non-empty result set should remain unchanged as long as we don't remove any nodes of said result set. |
+| Refinement       | Matching on (a subset of) the exact values of a previous query should return (a superset of) the previous result set.    |
 

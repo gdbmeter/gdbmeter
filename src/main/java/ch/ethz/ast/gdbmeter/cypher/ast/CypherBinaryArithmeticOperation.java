@@ -32,7 +32,6 @@ public class CypherBinaryArithmeticOperation
         public static ArithmeticOperator getRandomFloatOperator() {
             return Randomization.fromOptions(values());
         }
-
     }
 
     public CypherBinaryArithmeticOperation(CypherExpression left,

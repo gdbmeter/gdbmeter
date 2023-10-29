@@ -29,7 +29,7 @@ public class JanusDeleteGenerator {
     private JanusQuery generateDelete() {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
-        Map<String, JanusType> properties = entity.availableProperties();
+        Map<String, JanusType> properties = entity.getAvailableProperties();
 
         String property = Randomization.fromSet(properties.keySet());
         JanusType type = properties.get(property);

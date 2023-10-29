@@ -46,7 +46,7 @@ public class CypherReturnGenerator<T> {
 
             if (Randomization.getBoolean()) {
                 Entity<T> entity = entities.get(variable);
-                String property = Randomization.fromSet(entity.availableProperties().keySet());
+                String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
                 query.append(".");
                 query.append(property);
@@ -72,7 +72,7 @@ public class CypherReturnGenerator<T> {
 
             if (Randomization.getBoolean()) {
                 Entity<T> entity = entities.get(variable);
-                String property = Randomization.fromSet(entity.availableProperties().keySet());
+                String property = Randomization.fromSet(entity.getAvailableProperties().keySet());
 
                 query.append(".");
                 query.append(property);

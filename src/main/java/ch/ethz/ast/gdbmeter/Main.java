@@ -58,29 +58,31 @@ public class Main {
         Provider<?, ?> provider;
 
         switch (options.database) {
-            case NEO4J -> provider = new Neo4JProvider();
-            case REDIS -> provider = new RedisProvider();
-            case JANUS -> provider = new JanusProvider();
-            default ->               {
+            case NEO4J:
+                provider = new Neo4JProvider();
+                break;
+            case REDIS:
+                provider = new RedisProvider();
+                break;
+            case JANUS:
+                provider = new JanusProvider();
+                break;
+            default:
                 System.err.println("Missing provider implementation for database");
                 System.exit(1);
                 return;
-            }
         }
 
-        System.out.printf("""
-                   _____ _____  ____  __  __      _           \s
-                  / ____|  __ \\|  _ \\|  \\/  |    | |          \s
-                 | |  __| |  | | |_) | \\  / | ___| |_ ___ _ __\s
-                 | | |_ | |  | |  _ <| |\\/| |/ _ \\ __/ _ \\ '__|
-                 | |__| | |__| | |_) | |  | |  __/ ||  __/ |  \s
-                  \\_____|_____/|____/|_|  |_|\\___|\\__\\___|_|  \s
-                                                              \s
-                                                              \s
-                Version: 1.0
-                Selected Database: %s
-
-                """, options.database);
+        System.out.printf("   _____ _____  ____  __  __      _            \n" +
+                "  / ____|  __ \\|  _ \\|  \\/  |    | |           \n" +
+                " | |  __| |  | | |_) | \\  / | ___| |_ ___ _ __ \n" +
+                " | | |_ | |  | |  _ <| |\\/| |/ _ \\ __/ _ \\ '__|\n" +
+                " | |__| | |__| | |_) | |  | |  __/ ||  __/ |   \n" +
+                "  \\_____|_____/|____/|_|  |_|\\___|\\__\\___|_|   \n" +
+                "                                               \n" +
+                "                                               \n" +
+                "Version: 1.0\n" +
+                "Selected Database: %s\n\n", options.database.name());
 
         if (options.reproduce) {
             replayQueries(provider);

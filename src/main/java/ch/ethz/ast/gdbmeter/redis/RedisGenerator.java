@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public record RedisGenerator(
-        Schema<RedisType> schema) implements Generator<RedisConnection> {
+public class RedisGenerator implements Generator<RedisConnection> {
 
     enum Action {
         CREATE(RedisCreateGenerator::createEntities),
@@ -31,12 +30,34 @@ public record RedisGenerator(
     }
 
     private static int mapAction(Action action) {
-        return switch (action) {
-            case CREATE -> Randomization.nextInt(50, 70);
-            case CREATE_INDEX -> Randomization.nextInt(3, 10);
-            case REMOVE, SET, DELETE -> Randomization.nextInt(0, 8);
-            case DROP_INDEX -> Randomization.nextInt(2, 5);
-        };
+        int selectedNumber;
+
+        switch (action) {
+            case CREATE:
+                selectedNumber = Randomization.nextInt(50, 70);
+                break;
+            case CREATE_INDEX:
+                selectedNumber = Randomization.nextInt(3,  10);
+                break;
+            case REMOVE:
+            case SET:
+            case DELETE:
+                selectedNumber = Randomization.nextInt(0, 8);
+                break;
+            case DROP_INDEX:
+                selectedNumber = Randomization.nextInt(2,  5);
+                break;
+            default:
+                throw new AssertionError(action);
+        }
+
+        return selectedNumber;
+    }
+
+    private final Schema<RedisType> schema;
+
+    public RedisGenerator(Schema<RedisType> schema) {
+        this.schema = schema;
     }
 
     @Override
@@ -68,8 +89,7 @@ public record RedisGenerator(
                 if (success && query.couldAffectSchema()) {
                     schema.setIndices(globalState.getConnection().getIndexNames());
                 }
-            } catch (IgnoreMeException ignored) {
-            }
+            } catch (IgnoreMeException ignored) {}
         }
 
     }

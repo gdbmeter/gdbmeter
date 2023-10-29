@@ -31,15 +31,22 @@ public class RedisExpressionGenerator {
             return new CypherConstant.NullConstant();
         }
 
-        return switch (type) {
-            case INTEGER -> new CypherConstant.IntegerConstant(Randomization.getInteger());
-            case BOOLEAN -> new CypherConstant.BooleanConstant(Randomization.getBoolean());
-            case FLOAT -> new CypherConstant.FloatConstant(Randomization.nextFloat());
-            case STRING -> new CypherConstant.StringConstant(Randomization.getString());
-            case POINT -> new RedisPointConstant(
-                    Randomization.nextDouble(-180, 180),
-                    Randomization.nextDouble(-90, 90));
-        };
+        switch (type) {
+            case INTEGER:
+                return new CypherConstant.IntegerConstant(Randomization.getInteger());
+            case BOOLEAN:
+                return new CypherConstant.BooleanConstant(Randomization.getBoolean());
+            case FLOAT:
+                return new CypherConstant.FloatConstant(Randomization.nextFloat());
+            case STRING:
+                return new CypherConstant.StringConstant(Randomization.getString());
+            case POINT:
+                return new RedisPointConstant(
+                        Randomization.nextDouble(-180, 180),
+                        Randomization.nextDouble(-90, 90));
+            default:
+                throw new AssertionError(type);
+        }
     }
 
     private enum BooleanExpression {
@@ -216,7 +223,7 @@ public class RedisExpressionGenerator {
             List<String> filteredVariables = new ArrayList<>();
 
             for (String variable : variables.keySet()) {
-                Map<String, RedisType> properties = variables.get(variable).availableProperties();
+                Map<String, RedisType> properties = variables.get(variable).getAvailableProperties();
 
                 for (String property : properties.keySet()) {
                     if (properties.get(property) == type) {
@@ -233,13 +240,18 @@ public class RedisExpressionGenerator {
         if (depth > MAX_DEPTH || Randomization.smallBiasProbability()) {
             return generateConstant(type);
         } else {
-            return switch (type) {
-                case BOOLEAN -> generateBooleanExpression(depth);
-                case INTEGER -> generateIntegerExpression(depth);
-                case STRING -> generateStringExpression(depth);
-                case FLOAT -> generateFloatExpression(depth);
-                default -> generateConstant(type);
-            };
+            switch (type) {
+                case BOOLEAN:
+                    return generateBooleanExpression(depth);
+                case INTEGER:
+                    return generateIntegerExpression(depth);
+                case STRING:
+                    return generateStringExpression(depth);
+                case FLOAT:
+                    return generateFloatExpression(depth);
+                default:
+                    return generateConstant(type);
+            }
         }
     }
 

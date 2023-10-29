@@ -26,7 +26,7 @@ public abstract class CypherPropertyGenerator<T> {
     }
 
     public String generateProperties() {
-        Map<String, T> availableProperties = entity.availableProperties();
+        Map<String, T> availableProperties = entity.getAvailableProperties();
         Set<String> selectedProperties = Randomization.nonEmptySubset(availableProperties.keySet());
 
         if (selectedProperties.isEmpty()) {

@@ -2,8 +2,7 @@ package ch.ethz.ast.gdbmeter.cypher.ast;
 
 import ch.ethz.ast.gdbmeter.util.Randomization;
 
-public record CypherPrefixOperation(CypherExpression expression,
-                                    PrefixOperator operator) implements CypherExpression {
+public class CypherPrefixOperation implements CypherExpression {
 
     public enum PrefixOperator implements Operator {
 
@@ -26,6 +25,22 @@ public record CypherPrefixOperation(CypherExpression expression,
             return Randomization.fromOptions(values());
         }
 
+    }
+
+    private final CypherExpression expression;
+    private final PrefixOperator operator;
+
+    public CypherPrefixOperation(CypherExpression expression, PrefixOperator operator) {
+        this.expression = expression;
+        this.operator = operator;
+    }
+
+    public CypherExpression getExpression() {
+        return expression;
+    }
+
+    public PrefixOperator getOperator() {
+        return operator;
     }
 
 }

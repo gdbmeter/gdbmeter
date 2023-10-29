@@ -24,9 +24,15 @@ import java.util.Map;
 import java.util.Objects;
 
 // TODO: Reuse code form Neo4J oracle version
-public record RedisRefinementOracle(
-        GlobalState<RedisConnection> state,
-        Schema<RedisType> schema) implements Oracle {
+public class RedisRefinementOracle implements Oracle {
+
+    private final GlobalState<RedisConnection> state;
+    private final Schema<RedisType> schema;
+
+    public RedisRefinementOracle(GlobalState<RedisConnection> state, Schema<RedisType> schema) {
+        this.state = state;
+        this.schema = schema;
+    }
 
     @Override
     public void check() {
@@ -97,8 +103,8 @@ public record RedisRefinementOracle(
                 Node node = (Node) pivotResult.get(String.format("n%d", current));
                 String label = labels.get(current);
                 Entity<RedisType> entity = schema.getEntityByLabel(label);
-                String key = Randomization.fromSet(entity.availableProperties().keySet());
-                RedisType type = entity.availableProperties().get(key);
+                String key = Randomization.fromSet(entity.getAvailableProperties().keySet());
+                RedisType type = entity.getAvailableProperties().get(key);
 
                 Property<?> property = node.getProperty(key);
                 CypherExpression expectedConstant;
@@ -110,8 +116,10 @@ public record RedisRefinementOracle(
                     Object value = property.getValue();
 
                     switch (type) {
-                        case BOOLEAN -> expectedConstant = new CypherConstant.BooleanConstant((Boolean) value);
-                        case FLOAT -> {
+                        case BOOLEAN:
+                            expectedConstant = new CypherConstant.BooleanConstant((Boolean) value);
+                            break;
+                        case FLOAT:
                             // Floating point numbers are truncated by RedisGraph
                             // this means we have to compare the string representation instead
                             // See: https://github.com/RedisGraph/RedisGraph/issues/2417
@@ -120,17 +128,22 @@ public record RedisRefinementOracle(
                             expectedConstant = new CypherConstant.StringConstant(String.format("%f", refinedValue));
                             CypherVariablePropertyAccess access = new CypherVariablePropertyAccess(String.format("n%d.%s", current, key));
                             CypherFunctionCall<RedisType> functionCall = new CypherFunctionCall<>(RedisFunction.TO_STRING, new CypherExpression[]{access});
+
                             CypherExpression branch = new CypherBinaryComparisonOperation(functionCall, expectedConstant, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);
                             refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);
                             continue;
-                        }
-                        case INTEGER -> expectedConstant = new CypherConstant.IntegerConstant((Long) value);
-                        case STRING -> expectedConstant = new CypherConstant.StringConstant((String) value);
-                        case POINT -> {
+                        case INTEGER:
+                            expectedConstant = new CypherConstant.IntegerConstant((Long) value);
+                            break;
+                        case STRING:
+                            expectedConstant = new CypherConstant.StringConstant((String) value);
+                            break;
+                        case POINT:
                             Point point = (Point) value;
                             expectedConstant = new RedisPointConstant(point.getLongitude(), point.getLatitude());
-                        }
-                        default -> throw new AssertionError(type);
+                            break;
+                        default:
+                            throw new AssertionError(type);
                     }
 
                     CypherExpression branch = new CypherBinaryComparisonOperation(new CypherVariablePropertyAccess(String.format("n%d.%s", current, key)), expectedConstant, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);

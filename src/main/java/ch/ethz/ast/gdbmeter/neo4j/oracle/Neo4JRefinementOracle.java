@@ -22,9 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public record Neo4JRefinementOracle(
-        GlobalState<Neo4JConnection> state,
-        Schema<Neo4JType> schema) implements Oracle {
+public class Neo4JRefinementOracle implements Oracle {
+
+    private final GlobalState<Neo4JConnection> state;
+    private final Schema<Neo4JType> schema;
+
+    public Neo4JRefinementOracle(GlobalState<Neo4JConnection> state, Schema<Neo4JType> schema) {
+        this.state = state;
+        this.schema = schema;
+    }
 
     @Override
     public void check() {
@@ -96,8 +102,8 @@ public record Neo4JRefinementOracle(
                 Map<String, Object> properties = (Map<String, Object>) pivotResult.get(String.format("properties(n%d)", current));
                 String label = labels.get(current);
                 Entity<Neo4JType> entity = schema.getEntityByLabel(label);
-                String key = Randomization.fromSet(entity.availableProperties().keySet());
-                Neo4JType type = entity.availableProperties().get(key);
+                String key = Randomization.fromSet(entity.getAvailableProperties().keySet());
+                Neo4JType type = entity.getAvailableProperties().get(key);
 
                 Object value = properties.get(key);
                 CypherExpression expectedConstant;
@@ -107,8 +113,10 @@ public record Neo4JRefinementOracle(
                     refinedWhere = new CypherBinaryLogicalOperation(refinedWhere, branch, CypherBinaryLogicalOperation.BinaryLogicalOperator.AND);
                 } else {
                     switch (type) {
-                        case BOOLEAN -> expectedConstant = new CypherConstant.BooleanConstant((Boolean) value);
-                        case FLOAT -> {
+                        case BOOLEAN:
+                            expectedConstant = new CypherConstant.BooleanConstant((Boolean) value);
+                            break;
+                        case FLOAT:
                             double refinedFloat = (Double) value;
 
                             // Handle NaN as a special case
@@ -119,30 +127,37 @@ public record Neo4JRefinementOracle(
                             } else {
                                 expectedConstant = new CypherConstant.FloatConstant(refinedFloat);
                             }
-                        }
-                        case INTEGER -> expectedConstant = new CypherConstant.IntegerConstant((Long) value);
-                        case STRING -> expectedConstant = new CypherConstant.StringConstant((String) value);
-                        case DATE -> {
+
+                            break;
+                        case INTEGER:
+                            expectedConstant = new CypherConstant.IntegerConstant((Long) value);
+                            break;
+                        case STRING:
+                            expectedConstant = new CypherConstant.StringConstant((String) value);
+                            break;
+                        case DATE:
                             LocalDate refinedDate = (LocalDate) value;
                             expectedConstant = new Neo4JDateConstant(false, refinedDate.getYear(), refinedDate.getMonthValue(), refinedDate.getDayOfMonth());
-                        }
-                        case LOCAL_TIME -> {
+                            break;
+                        case LOCAL_TIME:
                             OffsetTime refinedTime = (OffsetTime) value;
                             expectedConstant = new Neo4JLocalTimeConstant(refinedTime.getHour(), "", refinedTime.getMinute(), refinedTime.getSecond(), ",", refinedTime.getNano());
-                        }
-                        case DURATION -> {
+                            break;
+                        case DURATION:
                             DurationValue refinedDuration = (DurationValue) value;
                             expectedConstant = new Neo4JDurationConstant(refinedDuration.toString());
-                        }
-                        case POINT -> {
+                            break;
+                        case POINT:
                             PointValue refinedPoint = (PointValue) value;
+
                             if (refinedPoint.coordinate().length == 2) {
                                 expectedConstant = new Neo4JPointConstant(refinedPoint.coordinate()[0], refinedPoint.coordinate()[1]);
                             } else {
                                 expectedConstant = new Neo4JPointConstant(refinedPoint.coordinate()[0], refinedPoint.coordinate()[1], refinedPoint.coordinate()[2]);
                             }
-                        }
-                        default -> throw new AssertionError(type);
+                            break;
+                        default:
+                            throw new AssertionError(type);
                     }
 
                     CypherExpression branch = new CypherBinaryComparisonOperation(new CypherVariablePropertyAccess(String.format("n%d.%s", current, key)), expectedConstant, CypherBinaryComparisonOperation.BinaryComparisonOperator.EQUALS);

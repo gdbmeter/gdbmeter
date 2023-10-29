@@ -44,5 +44,4 @@ public class Neo4JUtil {
         errors.addRegex("Invalid input for start value in function 'substring\\(\\)': Expected an integer between -2147483648 and 2147483647, but got: .*");
         errors.addRegex("negative length"); // for right functions
     }
-
 }

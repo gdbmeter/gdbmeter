@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public record Neo4JGenerator(
-        Schema<Neo4JType> schema) implements Generator<Neo4JConnection> {
+public class Neo4JGenerator implements Generator<Neo4JConnection> {
 
     enum Action {
         CREATE(Neo4JCreateGenerator::createEntities),
@@ -32,14 +31,39 @@ public record Neo4JGenerator(
             this.generator = generator;
         }
     }
-
+    
     private static int mapAction(Action action) {
-        return switch (action) {
-            case CREATE -> Randomization.nextInt(20, 30);
-            case DELETE, SET, REMOVE -> Randomization.nextInt(0, 8);
-            case CREATE_INDEX -> Randomization.nextInt(3, 10);
-            case DROP_INDEX, SHOW_FUNCTIONS, SHOW_PROCEDURES, SHOW_TRANSACTIONS -> Randomization.nextInt(2, 5);
-        };
+        int selectedNumber;
+
+        switch (action) {
+            case CREATE:
+                selectedNumber = Randomization.nextInt(20, 30);
+                break;
+            case DELETE:
+            case SET:
+            case REMOVE:
+                selectedNumber = Randomization.nextInt(0, 8);
+                break;
+            case CREATE_INDEX:
+                selectedNumber = Randomization.nextInt(3,  10);
+                break;
+            case DROP_INDEX:
+            case SHOW_FUNCTIONS:
+            case SHOW_PROCEDURES:
+            case SHOW_TRANSACTIONS:
+                selectedNumber = Randomization.nextInt(2,  5);
+                break;
+            default:
+                throw new AssertionError(action);
+        }
+
+        return selectedNumber;
+    }
+
+    private final Schema<Neo4JType> schema;
+
+    public Neo4JGenerator(Schema<Neo4JType> schema) {
+        this.schema = schema;
     }
 
     public void generate(GlobalState<Neo4JConnection> globalState) {
@@ -70,8 +94,7 @@ public record Neo4JGenerator(
                 if (success && query.couldAffectSchema()) {
                     schema.setIndices(globalState.getConnection().getIndexNames());
                 }
-            } catch (IgnoreMeException ignored) {
-            }
+            } catch (IgnoreMeException ignored) {}
         }
 
     }

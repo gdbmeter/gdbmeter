@@ -19,19 +19,19 @@ public class CypherToStringVisitor implements CypherVisitor {
 
     @Override
     public void visit(CypherRegularExpression expression) {
-        visit(expression.string());
+        visit(expression.getString());
         sb.append("=~");
-        visit(expression.regex());
+        visit(expression.getRegex());
     }
 
     @Override
     public void visit(CypherFunctionCall<?> functionCall) {
-        sb.append(functionCall.functionName());
+        sb.append(functionCall.getFunctionName());
         sb.append("(");
 
         String delimiter = "";
 
-        for (CypherExpression argument : functionCall.arguments()) {
+        for (CypherExpression argument : functionCall.getArguments()) {
             sb.append(delimiter);
             visit(argument);
             delimiter = ",";
@@ -42,7 +42,7 @@ public class CypherToStringVisitor implements CypherVisitor {
 
     @Override
     public void visit(CypherVariablePropertyAccess propertyAccess) {
-        sb.append(propertyAccess.variableName());
+        sb.append(propertyAccess.getVariableName());
     }
 
     @Override
@@ -52,18 +52,18 @@ public class CypherToStringVisitor implements CypherVisitor {
 
     @Override
     public void visit(CypherPrefixOperation operation) {
-        sb.append(operation.operator().getTextRepresentation());
+        sb.append(operation.getOperator().getTextRepresentation());
         sb.append("(");
-        visit(operation.expression());
+        visit(operation.getExpression());
         sb.append(")");
     }
 
     @Override
     public void visit(CypherPostfixOperation operation) {
         sb.append("(");
-        visit(operation.expression());
+        visit(operation.getExpression());
         sb.append(") ");
-        sb.append(operation.operator().getTextRepresentation());
+        sb.append(operation.getOperator().getTextRepresentation());
     }
 
     public String get() {

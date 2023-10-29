@@ -2,8 +2,23 @@ package ch.ethz.ast.gdbmeter.janus.schema;
 
 import ch.ethz.ast.gdbmeter.util.Randomization;
 
-public record UnaryPredicate(Type type,
-                             Predicate argument) implements Predicate {
+public class UnaryPredicate implements Predicate {
+
+    private final Type type;
+    private final Predicate argument;
+
+    public UnaryPredicate(Type type, Predicate argument) {
+        this.type = type;
+        this.argument = argument;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Predicate getArgument() {
+        return argument;
+    }
 
     public enum Type {
 

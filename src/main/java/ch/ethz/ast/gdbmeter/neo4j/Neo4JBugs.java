@@ -26,7 +26,5 @@ public class Neo4JBugs {
         public static void disableAll() {
             bug12884 = false;
         }
-
     }
-
 }

@@ -29,7 +29,7 @@ public class JanusPropertyUpdateGenerator {
     private JanusQuery generateUpdate() {
         String label = schema.getRandomLabel();
         Entity<JanusType> entity = schema.getEntityByLabel(label);
-        Map<String, JanusType> properties = entity.availableProperties();
+        Map<String, JanusType> properties = entity.getAvailableProperties();
 
         String matchProperty = Randomization.fromSet(properties.keySet());
         String updateProperty = Randomization.fromSet(properties.keySet());

@@ -23,14 +23,14 @@ public class JanusCreateIndexGenerator {
         // This is because Lucene indices don't support char types.
         while (true) {
             Index index = schema.generateRandomNodeIndex();
-            label = index.label();
-            properties = index.propertyNames();
+            label = index.getLabel();
+            properties = index.getPropertyNames();
 
             if (composite || !JanusBugs.bug3144) {
                 break;
             }
 
-            Map<String, JanusType> typeMap = schema.getEntityByLabel(label).availableProperties();
+            Map<String, JanusType> typeMap = schema.getEntityByLabel(label).getAvailableProperties();
 
             if (properties.stream().noneMatch(s -> typeMap.get(s).equals(JanusType.CHARACTER))) {
                 break;

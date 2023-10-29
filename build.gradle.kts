@@ -7,16 +7,20 @@ plugins {
 group = "ch.ethz.ast"
 version = "1.0.0-SNAPSHOT"
 description = "GDBMeter"
-java.sourceCompatibility = JavaVersion.VERSION_17
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 dependencies {
     api("com.beust:jcommander:1.82")
     api("org.neo4j:neo4j:5.1.0")
-    api("org.apache.maven.plugins:maven-compiler-plugin:3.10.1")
     api("ch.qos.logback:logback-classic:1.4.4")
     api("redis.clients:jedis:4.3.1")
     api("org.janusgraph:janusgraph-core:0.6.2")
     api("org.janusgraph:janusgraph-inmemory:0.6.2")
+    api("org.janusgraph:janusgraph-lucene:0.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
 }

@@ -1,10 +1,22 @@
 package ch.ethz.ast.gdbmeter.cypher.ast;
 
-public record CypherFunctionCall<T>(CypherFunctionDescription<T> function,
-                                    CypherExpression[] arguments) implements CypherExpression {
+public class CypherFunctionCall<T> implements CypherExpression {
 
-    public String functionName() {
+    private final CypherFunctionDescription<T> function;
+    private final CypherExpression[] arguments;
+
+    public CypherFunctionCall(CypherFunctionDescription<T> function,
+                              CypherExpression[] arguments) {
+        this.function = function;
+        this.arguments = arguments;
+    }
+
+    public String getFunctionName() {
         return function.getName();
+    }
+
+    public CypherExpression[] getArguments() {
+        return arguments;
     }
 
 }

@@ -2,8 +2,29 @@ package ch.ethz.ast.gdbmeter.janus.schema;
 
 import ch.ethz.ast.gdbmeter.util.Randomization;
 
-public record RangePredicate(Type type, Object left,
-                             Object right) implements Predicate {
+public class RangePredicate implements Predicate {
+
+    private final Type type;
+    private final Object left;
+    private final Object right;
+
+    public RangePredicate(Type type, Object left, Object right) {
+        this.type = type;
+        this.left = left;
+        this.right = right;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Object getLeft() {
+        return left;
+    }
+
+    public Object getRight() {
+        return right;
+    }
 
     public enum Type {
         INSIDE("inside"),
