@@ -16,15 +16,16 @@ Required Software:
 - The graph database you want to test ([Neo4J](https://neo4j.com/) and [JanusGraph](https://janusgraph.org/) are both embedded into the JAR for ease of use)
     - We recommend testing [RedisGraph](https://redis.io/docs/stack/graph/) via a Docker container
 
-The following commands clone the repository, build a JAR file and start GDBLancer:
-```
-git clone https://github.com/InverseIntegral/gdbmeter.git
-cd gdbmeter
-./gradlew clean assemble
+The following commands clone the repository, build a JAR file and start GDBMeter:
+
+```shell
+./gradlew clean shadowJar
 cd build/libs
-java -jar gdbmeter-*.jar -db neo4j -o partition
+java -jar gdbmeter-*.jar -db neo4j -o partition -v
 ```
-This will run GDBMeter until a bug has been found.
+
+When running GDBMeter in verbose mode (`-v`) the queries that were executed are printed periodically.
+If GDBMeter does not find any bugs, it executes infinitely. To see all available options one can use the `-h` option.
 
 ## Testing Approach
 
@@ -40,6 +41,12 @@ approach has been successfully applied to SQL databases and has been termed [Ter
 | [Neo4J](https://github.com/neo4j/neo4j)                | 5.1.0          | Working    | Reference implementation for other GDBMS. This implementation is based on the common Cypher logic.                                        |
 | [RedisGraph](https://github.com/RedisGraph/RedisGraph) | 2.8.13         | Working    | This implementation is based on the common Cypher logic. Running this implementation will most likely uncover more unreported logic bugs. |
 | [JanusGraph](https://github.com/JanusGraph/janusgraph) | 0.6.2          | Working    | Supports a (small) subset of the Gremlin query language. Currently, only the inmemory version with the lucene index backend are tested.   |
+
+To test the RedisGraph database, an external server has to be started. To do this we recommend the following docker command which starts the server in the appropriate version:
+
+```shell
+docker run -p 6379:6379 -it --rm redis/redis-stack-server:6.2.2-v5
+```
 
 ## Using GDBMeter
 

@@ -1,7 +1,12 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
+
 plugins {
     java
     `java-library`
     application
+
+    id("com.github.johnrengelman.shadow") version ("8.1.1")
 }
 
 group = "ch.ethz.ast"
@@ -33,15 +38,11 @@ application {
     mainClass.set("ch.ethz.ast.gdbmeter.Main")
 }
 
-tasks.withType<Jar> {
+tasks.withType<ShadowJar> {
+    mergeServiceFiles()
     manifest { attributes(mapOf("Main-Class" to application.mainClass)) }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
-
-    // Exclude other META-INFs
-    exclude("META-INF/*.RSA")
-    exclude("META-INF/*.SF")
-    exclude("META-INF/*.DSA")
+    transform(Log4j2PluginsCacheFileTransformer::class.java)
+    isZip64 = true
 }
 
 tasks.test {
